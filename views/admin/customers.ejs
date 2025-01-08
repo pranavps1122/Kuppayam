@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Users</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Reset some basic styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General page styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            font-size: 16px;
+        }
+
+        /* Container for the sidebar and main content */
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 260px;
+            background-color: #2d3e50;
+            color: #fff;
+            padding: 20px 20px 40px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+           
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .user-info {
+      
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom:20px;
+          
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .sidebar div {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+
+        /* Menu items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            font-size: 16px;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #34495e;
+            color: #fff;
+            transform: translateX(6px);
+        }
+
+        .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        /* Icon styling */
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px 40px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d3e50;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            font-size: 16px;
+            color: #2d3e50;
+        }
+
+        td {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        tr:hover {
+            background-color: #ecf0f1;
+        }
+
+        /* Button styles */
+        .btn {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 14px;
+            width: 300px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #2980b9;
+        }
+        .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0; /* Reduced margin for compactness */
+    gap: 8px; /* Adjusted spacing between the buttons */
+}
+
+    .pagination a {
+        margin: 0;
+        padding: 8px 12px; /* Smaller padding for compact size */
+        border: 1px solid #ccc;
+        border-radius: 6px; /* Rounded corners */
+        text-decoration: none;
+        color: #333;
+        font-size: 14px; /* Slightly smaller text */
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    }
+
+    .pagination a.active {
+        background-color: #2980b9;
+        color: white;
+        border-color: #2980b9;
+        font-weight: bold;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow for active state */
+        transform: scale(1.05); /* Slight scaling effect */
+    }
+
+    .pagination a:hover {
+        background-color: #f0f0f0;
+        border-color: #2980b9;
+        color: #2980b9;
+        transform: translateY(-1px); /* Slight lift effect */
+    }
+
+
+    
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="user-info">
+                <% if (user) { %>
+                    <div class="user-avatar"><%= user.name.charAt(0) %></div> <!-- Display the first initial -->
+                    <div><%= user.name %></div> <!-- Display the admin's name -->
+                <% } else { %>
+                    <div class="user-avatar">A</div> <!-- Default avatar if user is not defined -->
+                    <div>Guest</div> <!-- Default name if user is not defined -->
+                <% } %>
+            </div>
+            <a href="/admin" class="menu-item">
+                <span class="menu-icon">📊</span>
+                Dashboard
+            </a>
+            <a href="/admin/products" class="menu-item">
+                <span class="menu-icon">📦</span>
+                Products
+            </a>
+            <a href="/admin/category" class="menu-item">
+                <span class="menu-icon">📑</span>
+                Category
+            </a>
+            <a href="/admin/orders" class="menu-item">
+                <span class="menu-icon">🛍️</span>
+                Orders
+            </a>
+            <a href="/admin/coupons" class="menu-item">
+                <span class="menu-icon">🎟️</span>
+                Coupons
+            </a>
+            <a href="/admin/sales-report" class="menu-item">
+                <span class="menu-icon">📈</span>
+                Sales Report
+            </a>
+            <a href="/admin/users" class="menu-item active">
+                <span class="menu-icon">👥</span>
+                Users
+            </a>
+            <a href="/admin/banner" class="menu-item">
+                <span class="menu-icon">🖼️</span>
+                Banner
+            </a>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="logo">KUPPAYAM</div>
+                <a href="/admin/logout" class="logout-btn">
+                    <span>Logout</span>
+                </a>
+            </div>
+
+            <div class="content">
+                <h2>Users List</h2>
+                
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <form action="/admin/customers" method="GET">
+                        <input type="text" class="search-input" name="search" placeholder="Search users..." id="searchInput" value="<%= search %>"> <!-- Pre-fill with the search term -->
+                        <button type="submit" class="btn">Search</button>
+                    </form>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+       
+                    
+                    <tbody id="userTable">
+                        <% users.forEach(user => { %> <!-- Ensure 'users' is defined -->
+                            <tr>
+                                <td><%= user._id %></td>
+                                <td><%= user.name %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.isBlocked ? 'Blocked' : 'Active' %></td>
+                                <td>
+                                    <% if (!user.isBlocked) { %>
+                                        <form action="/admin/blockCustomer" method="POST">
+                                            <input type="hidden" name="id" value="<%= user._id %>">
+                                            <button type="submit" class="btn">Block</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form action="/admin/unblockCustomer" method="POST">
+                                            <input type="hidden" name="id" value="<%= user._id %>">
+                                            <button type="submit" class="btn">Unblock</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="/admin/customers?page=<%= currentPage - 1 %>&search=<%= search %>">Previous</a>
+                    <% } %>
+                
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <a href="/admin/customers?page=<%= i %>&search=<%= search %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                    <% } %>
+                
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/admin/customers?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+   
+    </div>
+    
+
+</body>
+</html>

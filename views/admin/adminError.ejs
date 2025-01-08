@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Error Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .error-number {
+            font-size: 120px;
+            color: #333;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .zero {
+            width: 100px;
+            height: 140px;
+            background: #f1f3f5;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character {
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .monitor {
+            width: 60px;
+            height: 50px;
+            background: #4dabf7;
+            border-radius: 8px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .screen {
+            width: 50px;
+            height: 40px;
+            background: #212529;
+            border-radius: 4px;
+            margin: 5px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-line {
+            position: absolute;
+            height: 2px;
+            background: #4dabf7;
+            animation: codetype 2s infinite;
+        }
+
+        .code-line:nth-child(1) {
+            width: 20px;
+            top: 10px;
+            left: 5px;
+        }
+
+        .code-line:nth-child(2) {
+            width: 30px;
+            top: 20px;
+            left: 5px;
+            animation-delay: 0.5s;
+        }
+
+        .code-line:nth-child(3) {
+            width: 15px;
+            top: 30px;
+            left: 5px;
+            animation-delay: 1s;
+        }
+
+        @keyframes codetype {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        .stand {
+            width: 20px;
+            height: 15px;
+            background: #4dabf7;
+            margin: 0 auto;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .error-text {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .error-description {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #4dabf7;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .button.outline {
+            background: transparent;
+            color: #4dabf7;
+            border: 2px solid #4dabf7;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(77, 171, 247, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .error-number {
+                font-size: 80px;
+            }
+            
+            .zero {
+                width: 80px;
+                height: 120px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-number">
+            4
+            <div class="zero">
+                <div class="character">
+                    <div class="monitor">
+                        <div class="screen">
+                            <div class="code-line"></div>
+                            <div class="code-line"></div>
+                            <div class="code-line"></div>
+                        </div>
+                        <div class="stand"></div>
+                    </div>
+                </div>
+            </div>
+            4
+        </div>
+        <h1 class="error-text">Access Denied</h1>
+        <p class="error-description">Sorry, you don't have permission to access this page or the resource you're looking for doesn't exist.</p>
+        <div class="button-group">
+            <a href="/admin/dashboard" class="button">← Back to Dashboard</a>
+            <a href="/admin/support" class="button outline">Contact Support</a>
+        </div>
+    </div>
+</body>
+</html>

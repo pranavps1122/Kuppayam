@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #4dabf7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-number {
+            font-size: 120px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .zero {
+            width: 100px;
+            height: 140px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .character {
+            position: relative;
+        }
+
+        .head {
+            width: 50px;
+            height: 50px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .body {
+            width: 60px;
+            height: 60px;
+            background: #ff6b6b;
+            border-radius: 8px 8px 0 0;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cap {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cap-bottom {
+            width: 40px;
+            height: 15px;
+            background: #ff4040;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .cap-top {
+            width: 25px;
+            height: 8px;
+            background: #dc3545;
+            border-radius: 4px 4px 0 0;
+            margin: 0 auto;
+        }
+
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            top: -40px;
+            right: -20px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .leaves {
+            position: absolute;
+            color: #76e4f7;
+            font-size: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .leaves.left {
+            left: -40px;
+        }
+
+        .leaves.right {
+            right: -40px;
+        }
+
+        .leaf {
+            transform: rotate(45deg);
+        }
+
+        .leaf:nth-child(2) {
+            transform: rotate(-45deg);
+        }
+
+        .error-text {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .home-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: linear-gradient(to right, #76e4f7, #4dd4e1);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background: linear-gradient(to right, #4dd4e1, #4dc0e1);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .error-number {
+                font-size: 80px;
+            }
+            
+            .zero {
+                width: 80px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-number">
+            4
+            <div class="zero">
+                <div class="character">
+                    <div class="head">
+                        <div class="cap">
+                            <div class="cap-bottom"></div>
+                            <div class="cap-top"></div>
+                        </div>
+                    </div>
+                    <div class="body"></div>
+                    <div class="speech-bubble">Where am I?</div>
+                </div>
+            </div>
+            4
+            <div class="leaves left">
+                <span class="leaf">❋</span>
+                <span class="leaf">❋</span>
+            </div>
+            <div class="leaves right">
+                <span class="leaf">❋</span>
+                <span class="leaf">❋</span>
+            </div>
+        </div>
+        <h1 class="error-text">Oops!! something went wrong</h1>
+        <a href="/" class="home-button">← Go Back Home</a>
+    </div>
+</body>
+</html>

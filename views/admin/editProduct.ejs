@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Common styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        .back-btn {
+            background-color: transparent;
+            color: #3366ff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form styles */
+        .edit-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3366ff;
+            box-shadow: 0 0 0 2px rgba(51, 102, 255, 0.1);
+        }
+
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex: 1;
+        }
+
+        .save-btn {
+            background-color: #3366ff;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: #2952cc;
+        }
+
+        .cancel-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Product preview card */
+        .product-preview {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-header {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .preview-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .preview-item {
+            padding: 0.5rem;
+        }
+
+        .preview-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .preview-value {
+            font-weight: 500;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .save-btn, .cancel-btn {
+                width: 100%;
+            }
+
+            .preview-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Edit Product</h1>
+            <a href="/admin/products" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Products
+            </a>
+        </header>
+
+        <!-- Product Preview Card -->
+        <div class="product-preview">
+            <div class="preview-header">Current Product Details</div>
+            <div class="preview-content">
+                <div class="preview-item">
+                    <div class="preview-label">Product Name</div>
+                    <div class="preview-value"><%= product.productName %></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Category</div>
+                    <%= product.category ? product.category.categoryName : 'No Category' %>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Price</div>
+                    <div class="preview-value">₹<%= product.salePrice %></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Stock</div>
+                    <div class="preview-value"><%= product.quantity %></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Status</div>
+                    <div class="preview-value"><%= product.status %></div>
+                </div>
+            </div>
+        </div>
+
+        <form action="/admin/editProduct/<%= product._id %>" method="POST" class="edit-form">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" name="productName" value="<%= product.productName %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <% categories.forEach(category => { %>
+                        <option 
+                        value="<%= category._id %>"
+                        <%= (product.category && product.category._id.toString() === category._id.toString()) ? 'selected' : '' %>>
+                        <%= category.categoryName %>
+                        </option>
+                    <% }); %>
+                </select>
+                
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (₹)</label>
+                <input type="number" id="price" name="salePrice" value="<%= product.salePrice %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="stock">Stock</label>
+                <input type="number" id="stock" name="quantity" value="<%= product.quantity %>" required>
+            </div>
+
+            <div class="form-group">
+            
+                
+                
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="save-btn">Save Changes</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='/products'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

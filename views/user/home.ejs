@@ -1,30 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop.co - Find Your Style</title>
-    <link rel="stylesheet" href="/home.css">
- <!-- Updated the link to match your structure -->
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">KUPPAYAM.IN</div>
-            <div class="nav-links">
-                <a href="#">Shop</a>
-                <a href="#">On Sale</a>
-                <a href="#">New Arrivals</a>
-                <a href="#">Brands</a>
-            </div>
-            <div class="nav-icons">
-                <a href="#" class="search-icon">🔍</a>
-                <a href="#" class="cart-icon">🛒</a>
-            </div>
-        </nav>
-    </header>
 
+
+<%-include('../../views/partials/user/header')%>
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -38,13 +14,6 @@
         </div>
     </section>
 
-    <!-- Brand Bar -->
-    <div class="brand-bar">
-        <% const brands = ['VERSACE', 'ZARA', 'GUCCI', 'PRADA', 'CALVIN KLEIN'] %>
-        <% brands.forEach(brand => { %>
-            <div class="brand-logo"><%= brand %></div>
-        <% }) %>
-    </div>
 
     <!-- New Arrivals -->
     <section class="product-section">
@@ -147,26 +116,4 @@
         </form>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>SHOP.CO</h3>
-                <p>We make shopping easy and convenient</p>
-            </div>
-            <div class="footer-section">
-                <h3>HELP</h3>
-                <a href="#">FAQ</a>
-                <a href="#">Returns</a>
-                <a href="#">Contact Us</a>
-            </div>
-            <div class="footer-section">
-                <h3>SHOP</h3>
-                <a href="#">New Arrivals</a>
-                <a href="#">Best Sellers</a>
-                <a href="#">Sale</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+   <%-include('../../views/partials/user/footer')%>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #4dabf7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .head {
+            width: 50px;
+            height: 50px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .eyes {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .eye {
+            width: 8px;
+            height: 8px;
+            background: rgb(255, 255, 255);
+            border-radius: 50%;
+            animation: blink 3s infinite;
+        }
+
+        @keyframes blink {
+            0%, 95%, 98% {
+                transform: scaleY(1);
+            }
+            96%, 97% {
+                transform: scaleY(0.1);
+            }
+        }
+        
+
+        body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #ffffff, #e6f7ff);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #333;
+}
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .welcome-text h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4dabf7;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #4dabf7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #76e4f7, #4dd4e1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(to right, #4dd4e1, #4dc0e1);
+            transform: translateY(-2px);
+        }
+
+        .leaves {
+            position: absolute;
+            color: #76e4f7;
+            font-size: 24px;
+        }
+
+        .leaves.top-left {
+            top: 20px;
+            left: 20px;
+            transform: rotate(-45deg);
+        }
+
+        .leaves.top-right {
+            top: 20px;
+            right: 20px;
+            transform: rotate(45deg);
+        }
+
+        .leaves.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            transform: rotate(-135deg);
+        }
+
+        .leaves.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            transform: rotate(135deg);
+        }
+
+        .speech-bubble {
+            position: absolute;
+            background: #4dabf7;
+            padding: 10px 15px;
+            border-radius: 15px;
+            color: white;
+            font-size: 14px;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #4dabf7;
+        }
+
+        .character:hover .speech-bubble {
+            opacity: 1;
+        }
+
+        .error-message {
+            background: #ffe5e5;
+            color: #ff4040;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .character {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <span class="leaves top-left">❋</span>
+        <span class="leaves top-right">❋</span>
+        <span class="leaves bottom-left">❋</span>
+        <span class="leaves bottom-right">❋</span>
+
+        <div class="character">
+            <div class="speech-bubble">Welcome back!</div>
+            <div class="head">
+                <div class="eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+            </div>
+            <div class="body"></div>
+        </div>
+
+        <div class="welcome-text">
+            <h1>Admin Portal</h1>
+            <p>Please enter your credentials to continue</p>
+        </div>
+
+        <% if (message) { %>
+            <div class="error-message" style="display: block;">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <form action="/admin/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="email" 
+                    required 
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="login-button">Login to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

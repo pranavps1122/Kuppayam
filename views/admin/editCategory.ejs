@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Sidebar Styling */
+        nav.sidebar {
+            width: 260px;
+            background-color: #2d3e50;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            font-size: 16px;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d3e50;
+        }
+
+        .logout-btn {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Edit Form */
+        .edit-form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-title {
+            font-size: 24px;
+            color: #2d3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3e50;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2980b9;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #27ae60;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: #2d3e50;
+            margin-left: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-save {
+            background-color: #27ae60;
+            color: #fff;
+        }
+
+        .btn-save:hover {
+            background-color: #219a52;
+        }
+
+        .btn-cancel {
+            background-color: #95a5a6;
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span>Admin</span>
+            </div>
+            <a href="/admin" class="menu-item">
+                <span class="menu-icon">📊</span> Dashboard
+            </a>
+            <a href="/admin/products" class="menu-item">
+                <span class="menu-icon">📦</span> Products
+            </a>
+            <a href="/admin/category" class="menu-item active">
+                <span class="menu-icon">📑</span> Category
+            </a>
+            <a href="/admin/orders" class="menu-item">
+                <span class="menu-icon">🛍️</span> Orders
+            </a>
+            <a href="/admin/coupons" class="menu-item">
+                <span class="menu-icon">🎟️</span> Coupons
+            </a>
+            <a href="/admin/sales-report" class="menu-item">
+                <span class="menu-icon">📈</span> Sales Report
+            </a>
+            <a href="/admin/customers" class="menu-item">
+                <span class="menu-icon">👥</span> Users
+            </a>
+            <a href="/admin/banner" class="menu-item">
+                <span class="menu-icon">🖼️</span> Banner
+            </a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="logo">KUPPAYAM</div>
+                <a href="/admin/logout" class="logout-btn">Logout</a>
+            </header>
+
+            <div class="edit-form-container">
+                <h2 class="form-title">Edit Category</h2>
+                <form action="/admin/editCategory/<%= category._id %>" method="POST">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name</label>
+                        <input
+                            type="text"
+                            name="categoryName"
+                            class="form-control"
+                            value="<%= category.categoryName %>"
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" 
+                                  name="description" 
+                                  class="form-control" 
+                                  value="<%= category.description %>"
+                                  required>
+                                
+                        </textarea>
+                    </div>
+                    
+                    <div class="switch-container">
+                        <label class="switch">
+                            <input type="checkbox" 
+                                   name="isActive" 
+                                   
+                            <span class="slider"></span>
+                        </label>
+                       
+                    </div>
+                    
+
+                    <div class="button-group">
+                    <button type="submit" class="btn btn-save">Save Changes</button>
+                        <a href="/admin/category" class="btn btn-cancel">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <link rel="stylesheet" href="/home.css">
+    <style>
+        /* Add your existing styles here */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            right: 0;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block; /* Show dropdown on hover */
+        }
+
+        .header {
+            position: relative;
+            z-index: 500;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">KUPPAYAM.IN</div>
+            <div class="nav-links">
+                <a href="#">Shop</a>
+                <a href="#">On Sale</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Brands</a>
+            </div>
+            <div class="nav-icons">
+                <% if (user) { %>
+                    <div class="dropdown">
+                        <a href="#" class="sign-in-link"><%= user.name %></a>
+                        <div class="dropdown-content">
+                            <a href="/userProfile">Profile</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/signup" class="login-icon">👤</a>
+                <% } %>
+                <a href="#" class="search-icon">🔍</a>
+                <a href="#" class="cart-icon">🛒</a>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>

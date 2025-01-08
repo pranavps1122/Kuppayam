@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product - Kuppayam</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #22c55e;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --background: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 32px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: var(--background);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .image-upload {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .image-preview {
+            position: relative;
+            padding-top: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--background);
+        }
+
+        .image-preview img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cropper-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 40px;
+        }
+
+        .cropper-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .crop-btns {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .crop-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .crop-save {
+            background: var(--success);
+            color: white;
+            border: none;
+        }
+
+        .crop-cancel {
+            background: none;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1>Add New Product</h1>
+            <p>Fill in the product details below</p>
+        </div>
+
+        <form action="/admin/addProduct" method="POST" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" name="productName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <% category.forEach(category => { %>
+                            <option value="<%= category._id %>"><%= category.categoryName %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="regularPrice">Regular Price</label>
+                    <input type="number" id="regularPrice" name="regularPrice" min="0" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="salePrice">Sale Price</label>
+                    <input type="number" id="salePrice" name="salePrice" min="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="size">Size</label>
+                    <input type="text" id="size" name="size" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="color">Color</label>
+                    <input type="text" id="color" name="color" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" min="0" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="productImages">Product Images</label>
+                    <div class="image-upload" onclick="document.getElementById('productImages').click()">
+                        <input type="file" name="images" multiple accept="productImages/*" required max="3">
+                        
+
+
+
+
+
+                        <p>Click to upload images (Max: 3)</p>
+                    </div>
+                    <div class="image-preview-container" id="imagePreviewContainer"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Add Product</button>
+        </form>
+    </div>
+
+    <div class="cropper-container" id="cropperModal">
+        <div class="cropper-content">
+            <img id="cropperImage" style="max-width: 100%">
+            <div class="crop-btns">
+                <button class="crop-btn crop-cancel" onclick="closeCropper()">Cancel</button>
+                <button class="crop-btn crop-save" onclick="saveCrop()">Save Crop</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        let cropper;
+        let currentImageElement;
+
+        document.getElementById('productImages').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);  // Get an array of the files
+    const container = document.getElementById('imagePreviewContainer');
+    container.innerHTML = '';  // Clear previous previews
+
+    // Check if the number of files exceeds the limit (3)
+    if (files.length > 3) {
+        alert('You can upload a maximum of 3 images.');
+        e.target.value = '';  // Clear the input field
+        return;
+    }
+
+    // Create previews for each selected file
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+            preview.innerHTML = `
+                <img src="${e.target.result}" onclick="openCropper(this)">
+                <button type="button" class="remove-image" onclick="removeImage(this)">&times;</button>
+            `;
+            container.appendChild(preview);  // Append each preview
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+function openCropper(img) {
+    document.getElementById('cropperModal').style.display = 'block';
+    document.getElementById('cropperImage').src = img.src;
+    currentImageElement = img;
+
+    if (cropper) {
+        cropper.destroy();
+    }
+
+    cropper = new Cropper(document.getElementById('cropperImage'), {
+        aspectRatio: 1,
+        viewMode: 2,
+        autoCropArea: 0.8,
+    });
+}
+
+function closeCropper() {
+    document.getElementById('cropperModal').style.display = 'none';
+    if (cropper) {
+        cropper.destroy();
+    }
+}
+
+function saveCrop() {
+    const canvas = cropper.getCroppedCanvas();
+    currentImageElement.src = canvas.toDataURL();
+    closeCropper();
+}
+
+function removeImage(button) {
+    button.closest('.image-preview').remove();
+}
+
+    </script>
+</body>
+</html>

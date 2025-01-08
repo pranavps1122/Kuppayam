@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin panel for managing product categories">
+    <title>Admin - Category Management</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Global Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Sidebar Styling */
+        nav.sidebar {
+            width: 260px;
+            background-color: #2d3e50;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            font-size: 16px;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.3s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px;
+        }
+
+        /* Header Styling */
+        header.header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d3e50;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Action Bar Styling */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: #2d3e50;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #ff9f0e;
+            color: #ffffff;
+            
+        }
+
+        .btn-primary:hover {
+            background-color: #3498db;
+        }
+
+        .btn-edit {
+            background-color: #27ae60;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            opacity: 0.9;
+        }
+        .btn-warning{
+            background-color: red;
+            color: white;
+        }
+
+        .search-box {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            nav.sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            nav.sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+            }
+
+            .main-content {
+                margin: 0;
+                width: 100%;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar" aria-label="Sidebar Navigation">
+            <div class="user-info">
+                <div class="user-avatar" aria-label="Admin">A</div>
+                <span>Admin</span>
+            </div>
+            <a href="/admin" class="menu-item">
+                <span class="menu-icon">📊</span> Dashboard
+            </a>
+            <a href="/admin/products" class="menu-item">
+                <span class="menu-icon">📦</span> Products
+            </a>
+            <a href="/admin/category" class="menu-item active">
+                <span class="menu-icon">📑</span> Category
+            </a>
+            <a href="/admin/orders" class="menu-item">
+                <span class="menu-icon">🛍️</span> Orders
+            </a>
+            <a href="/admin/coupons" class="menu-item">
+                <span class="menu-icon">🎟️</span> Coupons
+            </a>
+            <a href="/admin/sales-report" class="menu-item">
+                <span class="menu-icon">📈</span> Sales Report
+            </a>
+            <a href="/admin/customers" class="menu-item">
+                <span class="menu-icon">👥</span> Users
+            </a>
+            <a href="/admin/banner" class="menu-item">
+                <span class="menu-icon">🖼️</span> Banner
+            </a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="logo">KUPPAYAM</div>
+                <a href="/admin/logout" class="logout-btn">Logout</a>
+            </header>
+
+            <section class="action-bar">
+                <h1 class="page-title">Category Management</h1>
+                <button class="btn btn-primary1 " style="background-color: rgb(33, 180, 180);">
+                    <a href="/admin/addCategory" style="color: #ffffff">Add New Category</a>
+                </button>
+            </section>
+
+            <section>
+                <input type="text" class="search-box" placeholder="Search categories..." aria-label="Search categories">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (cat && cat.length > 0) { %>
+                            <% cat.forEach(cat => { %>
+                                <tr>
+                                    <td><%= cat.categoryName %></td>
+                                    <td><%= cat.description %></td>
+                                    <td>
+                                        <span class="status-badge <%= cat.isActive ? 'status-active' : 'status-inactive' %>">
+                                            <%= cat.isActive ? 'Active' : 'Inactive' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form action="/admin/active" method="POST" style="display: inline-block;">
+                                            <input type="hidden" name="id" value="<%= cat._id %>">
+                                            <button type="submit" class="btn btn-primary">Activate</button>
+                                        </form>
+                                        <form action="/admin/inActive" method="POST" style="display: inline-block;">
+                                            <input type="hidden" name="id" value="<%= cat._id %>">
+                                            <button type="submit" class="btn btn-warning">Deactivate</button>
+                                        </form>
+                                    </td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <button class="btn btn-edit">
+                                            <a href="/admin/editCategory/<%= cat._id %>" style="color: #fff;">Edit</a>
+                                        </button>
+                                        <form action="/admin/deleteCategory" method="POST" style="display: inline-block;">
+                                            <input type="hidden" name="name" value="<%= cat.categoryName %>">
+                                            <button type="submit" class="btn btn-delete">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #c0392b;">No categories found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
