@@ -19,24 +19,24 @@
     <section class="product-section">
         <h2>NEW ARRIVALS</h2>
         <div class="product-grid">
-            <% const newArrivals = [
-                { name: 'T-shirt with Logo', price: 120, sale: 100, image: '/Assets/21.webp' },
-                { name: 'Basic Jeans', price: 240, sale: 220, image: '/Assets/32.webp' },
-                { name: 'Plaid Shirt', price: 180, sale: 160, image: '/Assets/22.webp' },
-                { name: 'Sports T-shirt', price: 150, sale: 130, image: '/Assets/5.webp.webp' }
-            ] %>
-            <% newArrivals.forEach(product => { %>
+        
+            <% products.forEach(product => { %>
+                <a href="/productDetail/<%= product._id %>" style="text-decoration: none; color: black;" >
                 <div class="product-card">
-                    <div class="product-image">
-                        <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.onerror=null;this.src='fallback-image.webp';"> <!-- Added error handling for missing images -->
+                    <div class="product-image" >
+                        <p><%= product.productImage[0]%></p>
+                        
+                     <img src="<%= product.productImage[0]%>" alt="<%= product.productName %>" onerror="this.onerror=null;this.src='https://th.bing.com/th/id/OIP.7cRYFyLoDEDh4sRtM73vvwHaDg?rs=1&pid=ImgDetMain';">
+
                         
                     </div>
-                    <h3><%= product.name %></h3>
+                    <h3><%= product.productName %></h3>
                     <div class="price">
-                        <span class="sale-price">$<%= product.sale %></span>
-                        <span class="original-price">$<%= product.price %></span>
+                        <span class="sale-price">₹<%= product.salePrice %></span>
+                        <span class="original-price">₹<%= product.regularPrice %></span>
                     </div>
                 </div>
+               </a>
             <% }) %>
         </div>
     </section>
@@ -51,17 +51,20 @@
             { name: 'Track Pants', price: 170, sale: 150, image: '/Assets/7.webp' }
         ]; %>
         <% topSelling.forEach(product => { %>
-            <div class="product-card">
+           <a href="/productDetail/<%= product._id %>" style="text-decoration: none; color: black;">
+            <div class="product-card" >
                 <div class="product-image">
                     <!-- Dynamically set the image for each product -->
                     <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.onerror=null;this.src='/assets/fallback-image.webp';">
                 </div>
                 <h3><%= product.name %></h3>
                 <div class="price">
-                    <span class="sale-price">$<%= product.sale %></span>
-                    <span class="original-price">$<%= product.price %></span>
+                    <span class="sale-price">₹<%= product.sale %></span>
+                    <span class="original-price">₹<%= product.price %></span>
                 </div>
+                
             </div>
+        </a>
         <% }) %>
     </div>
 </section>
@@ -115,5 +118,10 @@
             <button type="submit">Subscribe</button>
         </form>
     </section>
+
+
+
+ 
+
 
    <%-include('../../views/partials/user/footer')%>

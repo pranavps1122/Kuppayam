@@ -73,6 +73,13 @@ const addProduct = async (req, res) => {
                 return res.status(400).json(`Category '${products.category}' not found`);
             }
 
+           
+            const imgArray =[]
+            imgArray[0]= `product-images/${req.files[0].filename}`
+            imgArray[1]= `product-images/${req.files[1].filename}`
+            imgArray[2]= `product-images/${req.files[2].filename}`
+          
+
             console.log('Creating product with data:', {
                 productName: products.productName,
                 description: products.description,
@@ -82,7 +89,7 @@ const addProduct = async (req, res) => {
                 quantity: products.quantity,
                 size: products.size,
                 color: products.color,
-                images: images,
+                productImage: imgArray,
             });
 
             const newProduct = new Product({
@@ -96,7 +103,7 @@ const addProduct = async (req, res) => {
                 size: products.size,
                 color: products.color,
                 status: 'Available',
-                images: images,
+                productImage:imgArray
             });
 
             await newProduct.save();
@@ -176,7 +183,7 @@ const DelProduct = async (req,res)=>{
 
  const loadEditProductPage = async (req, res) => {
     const productId = req.params.id;
-   console.log('fasdfasdfas')
+
     
     try {
         // Get the product details

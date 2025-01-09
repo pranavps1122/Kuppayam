@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.productName %> | KUPPAYAM</title>
+
+    <!-- Breadcrumbs Section -->
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto;
+        }
+
+        .header {
+            padding: 15px 40px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 40px;
+        }
+
+        /* Product Layout */
+        .product-grid {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Thumbnail Column */
+        .thumbnail-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thumbnail {
+            width: 100px;
+            height: 120px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        /* Main Image */
+        .main-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+
+        .main-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Zoom Effect */
+        .zoom {
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .zoomed {
+            transform: scale(1.25);
+            cursor: zoom-out;
+        }
+
+        /* Product Info */
+        .product-info {
+            padding: 0 20px;
+        }
+
+        .wishlist-icon {
+            float: right;
+            cursor: pointer;
+        }
+
+        .product-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .price-section {
+            margin: 15px 0;
+        }
+
+        .current-price {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .original-price {
+            color: #666;
+            text-decoration: line-through;
+            margin-left: 10px;
+        }
+
+        /* Color Options */
+        .color-options {
+            margin: 20px 0;
+        }
+
+        .color-dots {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        /* Size Options */
+        .size-options {
+            margin: 20px 0;
+        }
+
+        .size-selector {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .size-button {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+        }
+
+        .size-button.selected {
+            border-color: #000;
+            background: #000;
+            color: white;
+        }
+
+        /* Add to Cart */
+        .add-to-cart {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        /* Tabs */
+        .tabs {
+            border-bottom: 1px solid #ddd;
+            margin: 40px 0 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .tab {
+            padding: 10px 0;
+            cursor: pointer;
+            border: none;
+            background: none;
+            position: relative;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #000;
+        }
+
+        /* Reviews */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .review {
+            margin-bottom: 20px;
+        }
+
+        .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .review-stars {
+            color: #FFD700;
+        }
+
+        .verified-badge {
+            color: #00a65a;
+            font-size: 14px;
+        }
+
+        .review-date {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Related Products */
+        .related-products {
+            margin: 40px 0;
+        }
+
+        .related-products h2 {
+            margin-bottom: 20px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .related-product {
+            text-align: center;
+        }
+
+        .related-product img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: #000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f9f9f9;
+            padding: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-column ul li a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .thumbnail-column {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .reviews-grid,
+            .related-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Breadcrumbs */
+.breadcrumbs {
+    margin: 20px 0;
+    font-size: 14px;
+    color: #555;
+    margin-left: 15px;
+}
+
+.breadcrumbs a {
+    color: #000;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs span {
+    color: #777;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">KUPPAYAM</div>
+        <div class="cart-icons">
+            <span>🛒</span>
+        </div>
+      
+    </header>
+    <div class="breadcrumbs">
+        <a href="/">Home</a> > 
+        <a href="/productDetail/<%= productId %>">Product Detail</a>
+
+       
+        <span><%= product.productName %></span>
+    </div>
+
+    <div class="container">
+        <!-- Product Section -->
+        <div class="product-grid">
+            <!-- Thumbnails -->
+            <div class="thumbnail-column">
+                <% product.productImage.forEach((image, index) => { %>
+                    <img 
+                        src="/<%= image %>" 
+                        alt="<%= product.productName %> view <%= index + 1 %>"
+                        class="thumbnail"
+                        onclick="changeImage(this, '/<%= image %>')"
+                    >
+                <% }); %>
+            </div>
+
+            <!-- Main Image -->
+            <div class="main-image-container">
+                <img 
+                    src="/<%= product.productImage[0] %>" 
+                    alt="<%= product.productName %>"
+                    class="main-image zoom"
+                    id="mainImage"
+                    onmouseover="zoomIn(this)"
+                    onmouseleave="zoomOut(this)"
+                >
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <span class="wishlist-icon">♡</span>
+                <h1 class="product-title"><%= product.productName %></h1>
+                
+                <div class="price-section">
+                    <span class="current-price">₹<%= product.salePrice %></span>
+                    <span class="original-price">₹<%= product.regularPrice %></span>
+                </div>
+
+                <!-- Color Options -->
+                <div class="color-options">
+                    <div>Color</div>
+                    <div class="color-dots">
+                        <div class="color-dot" style="background-color: black" onclick="selectColor(this)"></div>
+                        <div class="color-dot" style="background-color: navy" onclick="selectColor(this)"></div>
+                        <div class="color-dot" style="background-color: gray" onclick="selectColor(this)"></div>
+                    </div>
+                </div>
+
+                <!-- Size Options -->
+                <div class="size-options">
+                    <div>Size</div>
+                    <div class="size-selector">
+                        <% ['S', 'M', 'L', 'XL'].forEach(size => { %>
+                            <button 
+                                class="size-button <%= size === 'M' ? 'selected' : '' %>"
+                                onclick="selectSize(this)"
+                            ><%= size %></button>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <button class="add-to-cart">Add to Cart</button>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active">Rating & Reviews</button>
+                    <button class="tab">Shipping & Returns</button>
+                </div>
+
+                <!-- Reviews Grid -->
+                <div class="reviews-grid">
+                    <% if (product.reviews && product.reviews.length > 0) { %>
+                        <% product.reviews.forEach(review => { %>
+                            <div class="review">
+                                <div class="reviewer">
+                                    <span><%= review.userName %></span>
+                                    <span class="verified-badge">✓ Verified Purchase</span>
+                                </div>
+                                <div class="review-stars">
+                                    <%= '★'.repeat(review.rating) %>
+                                    <%= '☆'.repeat(5-review.rating) %>
+                                </div>
+                                <p><%= review.comment %></p>
+                                <div class="review-date">Posted on <%= review.date %></div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <section class="related-products">
+            <h2>YOU MIGHT ALSO LIKE</h2>
+            <div class="related-grid">
+                <% relatedProducts.forEach(product => { %>
+                    <div class="related-product">
+                        <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                        <h3><%= product.productName %></h3>
+                        <p>₹<%= product.salePrice %></p>
+                    </div>
+                <% }); %>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <div class="newsletter">
+            <h2>STAY UP TO DATE ABOUT OUR LATEST OFFERS</h2>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>COMPANY</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>HELP</h3>
+                    <ul>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>FAQ</h3>
+                    <ul>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>RESOURCES</h3>
+                    <ul>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function changeImage(thumb, src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumbnail').forEach(t => 
+                t.style.border = t === thumb ? '2px solid black' : '1px solid #eee'
+            );
+        }
+
+        function selectColor(dot) {
+            document.querySelectorAll('.color-dot').forEach(d => 
+                d.style.border = d === dot ? '2px solid black' : '1px solid #ddd'
+            );
+        }
+
+        function selectSize(button) {
+            document.querySelectorAll('.size-button').forEach(b => 
+                b.classList.remove('selected')
+            );
+            button.classList.add('selected');
+        }
+
+        function zoomIn(image) {
+            image.classList.add('zoomed');
+        }
+
+        function zoomOut(image) {
+            image.classList.remove('zoomed');
+        }
+    </script>
+</body>
+</html>

@@ -21,15 +21,17 @@ app.use(express.urlencoded({extended:true}))
 // Connect to MongoDB (if using MongoDB for session storage)
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+
 app.use(session({
-    secret: 'your_secret_key', // Change this to a strong secret
+    secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { maxAge: 60000 }  // Session expiration time in milliseconds
 }));
 
-app.use(passport.initialize())
-app.use(passport.session())
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req,res,next)=>{
     res.set('cache-control','no-store')

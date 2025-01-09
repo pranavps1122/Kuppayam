@@ -2,25 +2,65 @@
         const nodemailer = require('nodemailer');
         const env=require('dotenv').config()
         const bcrypt=require('bcrypt')
+        const {Product} = require('../model/productSchema')
 
 
         const loadHomepage = async (req, res) => {
             try {
-                const user = req.session.user; // Get user from session
+                const user = req.session.user;
+                console.log // Get user from session
                 console.log('User from session:', user); // Log user from session
+                const products = await Product.find()
+                console.log('product',products)
                 
                 if (user) {
                     const userData = await User.findOne({ _id: user._id });
+                    
                     console.log('User data:', userData); // Log user data
-                    res.render('home', { user: userData }); // Pass userData to the view
+                    res.render('home',
+                         { user: userData || null,
+                            products:products
+
+                          }); // Pass userData to the view
                 } else {
-                    return res.render('home', { user: null }); // Pass null if no user
+                    return res.render('home', 
+                        { user: null,
+                            products:products
+                         }); // Pass null if no user
                 }
             } catch (error) {
                 console.log('Error While Running Home Page:', error);
                 res.status(500).send("server Error");
             }
         };
+
+            // Add this new function to handle Google auth callback
+    const handleGoogleCallback = async (req, res) => {
+        try {
+            console.log("abcd")
+            req.session.users = { 
+                _id: req.user._id, 
+                name: req.user.name 
+            };
+            console.log(req.session.users)
+            const products = await Product.find()
+            console.log('product',products)
+            
+            res.render('home',
+                { user: req.session.users || null,
+                    products:products
+                  }); 
+        } catch (error) {
+            console.error('Google callback error:', error);
+            res.redirect('/login');
+        }
+    };
+
+    // Add this to your exports
+    module.exports = {
+        // ... existing exports ...
+        handleGoogleCallback
+    };
 
 
         const loadSignup = async (req,res)=>{
@@ -233,6 +273,23 @@
             }
         }
 
+        const LoadproductDetaill = async (req,res)=>{
+            
+            try {
+                 const id = req.params.id
+                 const product = await Product.findById(id)
+                 const relatedProducts=await Product.find()
+
+                
+                res.render('productDetail',{
+                    product,
+                    relatedProducts,
+                    productId:id
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
 
 
         module.exports={
@@ -244,5 +301,7 @@
             verifyOtp,
             login,
             resendOtp,
-            logout
+            logout,
+            LoadproductDetaill,
+            handleGoogleCallback
         }

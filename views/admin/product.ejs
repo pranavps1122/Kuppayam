@@ -165,7 +165,9 @@
     <table class="products-table">
         <thead>
             <tr>
+           
                 <th>Product Name</th>
+                <th>Product Image</th>
                 <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
@@ -179,6 +181,7 @@
                 <% products.forEach(product => { %>
                     <tr>
                         <td><%= product.productName %></td>
+                        <td><img src="/<%= product.productImage[0] %>" style="width: 50px; border: 1px solid black; border-radius: 3px;" alt="<%= product.productName %>"></td>
                         <td><%= product.category ? product.category.categoryName : 'No Category' %></td>
                         
                         <td class="price">₹<%= product.salePrice %></td>
