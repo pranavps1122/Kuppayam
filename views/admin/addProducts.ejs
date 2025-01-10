@@ -90,7 +90,78 @@
             resize: vertical;
         }
 
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+
+
+        .image-upload-container {
+            display: flex;
+            gap: 20px;
+        }
         .image-upload {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .image-preview {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            background-color: #f7f7f7;
+            border-radius: 4px;
+        }
+        .cropper-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .cropper-content {
+            background: white;
+            padding: 20px;
+            max-width: 80%;
+            text-align: center;
+        }
+        .crop-btns {
+            margin-top: 20px;
+        }
+        .crop-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        /* Submit button styling */
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background: #0056b3;
+        }
+
+        /* .image-upload {
             border: 2px dashed var(--border);
             border-radius: 12px;
             padding: 24px;
@@ -139,7 +210,7 @@
             width: 24px;
             height: 24px;
             cursor: pointer;
-        }
+        } */
 
         .submit-btn {
             background: var(--primary);
@@ -273,23 +344,39 @@
                     <textarea id="description" name="description" required></textarea>
                 </div>
 
+          
+            
                 <div class="form-group full-width">
-                    <label for="productImages">Product Images</label>
-                    <div class="image-upload" onclick="document.getElementById('productImages').click()">
-                        <input type="file" name="images" multiple accept="productImages/*" required max="3">
-                        
-
-
-
-
-
-                        <p>Click to upload images (Max: 3)</p>
+                    <label>Product Images</label>
+                    <div class="image-upload-container">
+                        <!-- Image Upload 1 -->
+                        <div class="image-upload" onclick="document.getElementById('productImage1').click()">
+                            <input type="file" id="productImage1" name="images" accept="image/*" required style="display: none;" onchange="previewImage(this, 'imagePreview1')">
+                            <p>Click to upload Image 1</p>
+                            <div class="image-preview" id="imagePreview1"></div>
+                        </div>
+                
+                        <!-- Image Upload 2 -->
+                        <div class="image-upload" onclick="document.getElementById('productImage2').click()">
+                            <input type="file" id="productImage2" name="images" accept="image/*" style="display: none;" onchange="previewImage(this, 'imagePreview2')">
+                            <p>Click to upload Image 2</p>
+                            <div class="image-preview" id="imagePreview2"></div>
+                        </div>
+                
+                        <!-- Image Upload 3 -->
+                        <div class="image-upload" onclick="document.getElementById('productImage3').click()">
+                            <input type="file" id="productImage3" name="images" accept="image/*" style="display: none;" onchange="previewImage(this, 'imagePreview3')">
+                            <p>Click to upload Image 3</p>
+                            <div class="image-preview" id="imagePreview3"></div>
+                        </div>
                     </div>
-                    <div class="image-preview-container" id="imagePreviewContainer"></div>
                 </div>
-            </div>
-
-            <button type="submit" class="submit-btn">Add Product</button>
+                
+                <!-- Submit Button -->
+                <div class="form-group full-width">
+                    <button type="submit" class="submit-btn">Add Product</button>
+                </div>
+                
         </form>
     </div>
 
@@ -303,72 +390,80 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+
     <script>
-        let cropper;
-        let currentImageElement;
-
-        document.getElementById('productImages').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);  // Get an array of the files
-    const container = document.getElementById('imagePreviewContainer');
-    container.innerHTML = '';  // Clear previous previews
-
-    // Check if the number of files exceeds the limit (3)
-    if (files.length > 3) {
-        alert('You can upload a maximum of 3 images.');
-        e.target.value = '';  // Clear the input field
-        return;
+    let cropper;
+    let currentInput;
+    let currentPreviewId;
+    
+    // Function to preview the image and open the crop modal
+    function previewImage(input, previewId) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Set preview image
+                document.getElementById(previewId).style.backgroundImage = `url(${e.target.result})`;
+    
+                // Show cropper modal and pass the previewId to keep track of the target preview
+                openCropper(e.target.result, previewId);
+            };
+            reader.readAsDataURL(file);
+        }
     }
-
-    // Create previews for each selected file
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.createElement('div');
-            preview.className = 'image-preview';
-            preview.innerHTML = `
-                <img src="${e.target.result}" onclick="openCropper(this)">
-                <button type="button" class="remove-image" onclick="removeImage(this)">&times;</button>
-            `;
-            container.appendChild(preview);  // Append each preview
-        };
-        reader.readAsDataURL(file);
-    });
-});
-
-function openCropper(img) {
-    document.getElementById('cropperModal').style.display = 'block';
-    document.getElementById('cropperImage').src = img.src;
-    currentImageElement = img;
-
-    if (cropper) {
+    
+    // Open the cropper modal
+    function openCropper(imageUrl, previewId) {
+        // Set image to cropper
+        const image = document.getElementById('cropperImage');
+        image.src = imageUrl;
+    
+        // Initialize Cropper.js
+        const cropperModal = document.getElementById('cropperModal');
+        cropperModal.style.display = 'flex';
+    
+        cropper = new Cropper(image, {
+            aspectRatio: 1,  // Optional: Lock to square (change if needed)
+            viewMode: 1,
+            autoCropArea: 0.5,
+            responsive: true,
+            cropBoxResizable: true
+        });
+    
+        // Store the current preview id to update the correct preview image after cropping
+        currentPreviewId = previewId;
+    }
+    
+    // Close the cropper modal
+    function closeCropper() {
+        const cropperModal = document.getElementById('cropperModal');
+        cropperModal.style.display = 'none';
         cropper.destroy();
     }
-
-    cropper = new Cropper(document.getElementById('cropperImage'), {
-        aspectRatio: 1,
-        viewMode: 2,
-        autoCropArea: 0.8,
-    });
-}
-
-function closeCropper() {
-    document.getElementById('cropperModal').style.display = 'none';
-    if (cropper) {
-        cropper.destroy();
+    
+    // Save the cropped image
+    function saveCrop() {
+        const canvas = cropper.getCroppedCanvas();
+        const croppedImageUrl = canvas.toDataURL('image/png');
+    
+        // Update the preview image with the cropped image
+        document.getElementById(currentPreviewId).style.backgroundImage = `url(${croppedImageUrl})`;
+    
+        // Optionally, you could upload the cropped image to the server here
+    
+        // Close the cropper modal
+        closeCropper();
     }
-}
-
-function saveCrop() {
-    const canvas = cropper.getCroppedCanvas();
-    currentImageElement.src = canvas.toDataURL();
-    closeCropper();
-}
-
-function removeImage(button) {
-    button.closest('.image-preview').remove();
-}
-
+    
+    // Attach image preview input click to currentInput
+    document.querySelectorAll('.image-upload').forEach((elem, index) => {
+        elem.addEventListener('click', () => {
+            currentInput = document.getElementById(`productImage${index + 1}`);
+        });
+    });
     </script>
+   
 </body>
 </html>

@@ -33,33 +33,24 @@ const upload = multer({
 
 
 router.get('/adminError',adminController.adminError)
-router.get('/blockCustomer',adminController.blockCustomer)
-router.get('/unblockCustomer',adminController.unblockCustomer)
 router.get('/login',adminController.loadLogin)
 router.post('/login',adminController.login)
-router.get('/',adminController.loadDashboard)
+router.get('/',adminAuth,adminController.loadDashboard)
 router.get('/dashboard',adminAuth ,adminController.loadDashboard);
-router.get('/logout',adminController.logout)
-router.get('/customers', customerController.customerInfo);
-router.post('/blockCustomer', adminController.blockCustomer);
-router.post('/unblockCustomer', adminController.unblockCustomer);
-router.get('/category',categoryController.categoryInfo)
-router.get('/addCategory',categoryController.loadAddCategory)
+router.get('/logout',adminAuth,adminController.logout)
+router.get('/customers',adminAuth, customerController.customerInfo);
+router.get('/blockUser',adminAuth,adminController.blockCustomer);
+router.get('/category',adminAuth,categoryController.categoryInfo)
+router.get('/addCategory',adminAuth,categoryController.loadAddCategory)
 router.post('/addcategory',categoryController.addCategory)
-router.get('/deleteCategory',categoryController.deleteCategory)
 router.post('/deleteCategory',categoryController.deleteCategory)
 router.get('/editCategory/:id',categoryController.loadEditCategory)
 router.post('/editCategory/:id',categoryController.EditCategory)
-router.get('/Active',categoryController.Active)
-router.get('/inActive',categoryController.inActive)
 router.post('/Active',categoryController.Active)
 router.post('/inActive',categoryController.inActive)
 router.get('/products',adminAuth,productController.loadProductPage)
-
 router.post('/toggleStatus',productController.toggleProductStatus )
-
 router.get('/addproduct',productController.getProductAddPage)
-
 router.post('/deleteProduct',productController.DelProduct)
 router.get('/editProduct/:id',productController.loadEditProductPage)
 router.post('/addproduct',upload.array('images',3),productController.addProduct)

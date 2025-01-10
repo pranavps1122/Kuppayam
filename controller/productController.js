@@ -51,7 +51,7 @@ const addProduct = async (req, res) => {
 
                     try {
                         await sharp(originalImagePath)
-                            .resize({ width: 450, height: 450 })
+                            .resize({ width: 850, height: 850 })
                             .toFile(resizedImagePath);
                         images.push(resizedImagePath);
                     } catch (err) {
@@ -186,7 +186,7 @@ const DelProduct = async (req,res)=>{
 
     
     try {
-        // Get the product details
+       
         const product = await Product.findById(productId).populate('category');
         // Get all categories
         const categories = await Category.find({ isActive: true });

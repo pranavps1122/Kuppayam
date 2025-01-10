@@ -8,13 +8,14 @@ const connectDB=require('./config/db')
 const userRoute=require('./routes/userRouter')
 const adminRoute=require('./routes/adminRouter')
 const mongoose = require('mongoose')
-const User = require('./model/userSchema')
+
+const nocache = require("nocache");
 
 
 
 connectDB()
 env.config();
-
+app.use(nocache());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
@@ -26,17 +27,14 @@ app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60000 }  // Session expiration time in milliseconds
+    cookie: { maxAge: 60000*600 }  // Session expiration time in milliseconds
 }));
 
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req,res,next)=>{
-    res.set('cache-control','no-store')
-    next()
-})
+
 app.set('view engine','ejs')
 app.set('views', [
     path.join(__dirname, 'views/user'),
@@ -52,7 +50,3 @@ app.listen(process.env.PORT,()=>{
     console.log('server running')
 })
 
-module.exports={
-    app,
- 
-}

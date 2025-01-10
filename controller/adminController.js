@@ -5,9 +5,6 @@ const { session } = require('passport')
 
 
 
-
-
-
 const adminError = async (req,res)=>{
        res.render('adminError')
 }
@@ -23,21 +20,17 @@ const loadLogin = (req,res)=>{
 
 
 const login = async (req,res) =>{
-    
-
     try {
         const {email,password}=req.body
         console.log('Attempting to log in with email:', email); // Log the email being used
         const admin = await User.findOne({email,isAdmin:true})
         console.log('Admin found:', admin)
         if(admin){
-
-            
-
             const passwordMatch =  bcrypt.compare(password,admin.password);
             if(passwordMatch){
                 console.log('Before setting session:', req.session);
-                req.session.admin = { _id: admin._id, name: admin.name };
+                req.session.admin = { _id: admin._id, name: admin.name }
+                req.session.isAdmin = true;
                 console.log('After setting session:', req.session); // Log the admin session
                 return res.redirect('/admin/dashboard')
             }else{
@@ -54,8 +47,6 @@ const login = async (req,res) =>{
 }
 
 
-
-
 const loadDashboard = async (req, res) => {
     if (req.session.admin) {
         try {
@@ -69,6 +60,8 @@ const loadDashboard = async (req, res) => {
         res.redirect('/admin/login'); // Redirect to login if not authenticated
     }
 };
+
+
 
 const logout = async (req,res)=>{
     try {
@@ -103,33 +96,25 @@ const loadCustomers = async (req, res) => {
     }
 };
 
-const blockCustomer = async (req, res) => {
-    try {
-        const { id } = req.body; // Get the user ID from the request body
-        await User.findByIdAndUpdate(id, { isBlocked: true }); // Block the user
-        res.redirect('/admin/customers'); // Redirect back to the customers page
-    } catch (error) {
-        console.log('Error blocking user:', error);
-        res.redirect('/adminError');
-    }
-};
 
-const unblockCustomer = async (req, res) => {
+const blockCustomer = async (req,res) => {
     try {
-        const { id } = req.body; // Get the user ID from the request body
-        await User.findByIdAndUpdate(id, { isBlocked: false }); // Unblock the user
-        res.redirect('/admin/customers'); // Redirect back to the customers page
+        const userId = req.query.userId
+        const user = await User.findById(userId);
+        console.log("user:",user);
+        const newValue = !user.isBlocked;
+        await User.updateOne({_id:userId},{$set:{isBlocked:newValue}});
+        res.redirect("/admin/customers")
     } catch (error) {
-        console.log('Error unblocking user:', error);
-        res.redirect('/adminError');
+        console.log("error occured while blocing an user");
     }
-};
+}
+
 
 
 
 
 module.exports ={
-
     loadLogin,
     login,
     loadDashboard,
@@ -137,7 +122,4 @@ module.exports ={
     logout,
     loadCustomers,
     blockCustomer,
-    unblockCustomer
-
-    
 }

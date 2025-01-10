@@ -38,29 +38,23 @@
     const handleGoogleCallback = async (req, res) => {
         try {
             console.log("abcd")
-            req.session.users = { 
+            req.session.user = { 
                 _id: req.user._id, 
                 name: req.user.name 
             };
-            console.log(req.session.users)
+            console.log("aaaa",req.session.user)
             const products = await Product.find()
             console.log('product',products)
-            
-            res.render('home',
-                { user: req.session.users || null,
-                    products:products
-                  }); 
+            req.session.isAuth=true;
+          res.redirect("/") 
+          
         } catch (error) {
             console.error('Google callback error:', error);
             res.redirect('/login');
         }
     };
 
-    // Add this to your exports
-    module.exports = {
-        // ... existing exports ...
-        handleGoogleCallback
-    };
+
 
 
         const loadSignup = async (req,res)=>{
@@ -226,7 +220,7 @@
                 // Set user session
                 req.session.user = { _id: user._id, name: user.name }; // Store user data in session
                 console.log('User session set:', req.session.user); // Log the session data
-
+                req.session.isAuth=true;
                 // Redirect to home page
                 res.redirect('/');
             } catch (error) {
@@ -277,14 +271,19 @@
             
             try {
                  const id = req.params.id
+                 const user = req.session.user;
                  const product = await Product.findById(id)
-                 const relatedProducts=await Product.find()
-
+                 const relatedProducts = await Product.find({
+                    category: product.category,   
+                    _id: { $ne: id },             
+                }).limit(4);                             
+                
                 
                 res.render('productDetail',{
                     product,
                     relatedProducts,
-                    productId:id
+                    productId:id,
+                    user
                 })
             } catch (error) {
                 console.log(error)

@@ -3,6 +3,7 @@ const router=express.Router()
 const userController=require('../controller/userController')
 const passport = require('passport')
 const adminController = require('../controller/adminController')
+const {ifLogged,adminAuth}=require('../middlewares/auth')
 
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -19,10 +20,10 @@ router.get('/auth/google/callback',
 );
 
 router.get('/pageNotFound',userController.pageNotFound)
-router.get('/',userController.loadHomepage)
-router.get('/signup',userController.loadSignup)
+router.get('/',userController.loadHomepage,)
+router.get('/signup',ifLogged,userController.loadSignup)
 router.post('/signup',userController.signup)
-router.get('/login',userController.loadLogin)
+router.get('/login',ifLogged ,userController.loadLogin)
 router.post('/login',userController.login)
 
 router.post('/verify-otp', userController.verifyOtp);
