@@ -1,0 +1,148 @@
+<%- include('../../views/partials/user/header') %>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+    .edit-address-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-address-container h2 {
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #666;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    .btn-primary {
+        background-color: #2c3e50;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #1a252f;
+    }
+
+    .btn-secondary {
+        background-color: #ddd;
+        color: #333;
+        text-align: center;
+        display: block;
+        margin-top: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #ccc;
+    }
+</style>
+
+<div class="edit-address-container">
+    <h2>Edit Address</h2>
+    <form action="/editaddress/<%= address._id %>" method="POST">
+        <div class="form-group">
+            <label for="street">Street</label>
+            <input
+                type="text"
+                id="street"
+                name="street"
+                class="form-control"
+                value="<%= address.street %>"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input
+                type="text"
+                id="city"
+                name="city"
+                class="form-control"
+                value="<%= address.city %>"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input
+                type="text"
+                id="state"
+                name="state"
+                class="form-control"
+                value="<%= address.state %>"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="postalCode">Postal Code</label>
+            <input
+                type="text"
+                id="postalCode"
+                name="postalCode"
+                class="form-control"
+                value="<%= address.postalCode %>"
+                required
+            >
+        </div>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input
+                type="text"
+                id="country"
+                name="country"
+                class="form-control"
+                value="<%= address.country %>"
+                required
+            >
+        </div>
+        <button type="submit" class="btn btn-primary">Update Address</button>
+        <a href="/address" class="btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<%- include('../../views/partials/user/footer') %>

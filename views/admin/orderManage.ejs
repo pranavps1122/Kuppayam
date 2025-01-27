@@ -1,0 +1,201 @@
+<style>
+    body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    .main-content {
+        margin-left: 255px;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    nav.sidebar {
+        width: 210px;
+        background-color: #2d3e50;
+        color: #fff;
+        position: fixed;
+        height: 100vh;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .menu-item {
+        padding: 10px 15px;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        transition: background-color 0.3s;
+    }
+
+    .menu-item:hover, .menu-item.active {
+        background-color: #2980b9;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    table {
+        width: 100%;
+        background: white;
+        border-collapse: collapse;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th {
+        background-color: #f8f9fa;
+    }
+
+    .btn-update {
+        background-color: #20c997;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .item-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination .btn {
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 0 5px;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .pagination .btn-active {
+        background-color: #007bff;
+        color: #fff;
+        pointer-events: none;
+    }
+</style>
+
+<%- include('../../views/partials/admin/header') %>
+<%- include('../../views/partials/admin/sidebar') %>
+
+<main class="main-content">
+    <div class="page-header">
+        <h2>Order Management</h2>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search orders..." id="searchInput">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ordersBody">
+            <% if (orders.length > 0) { %>
+                <% orders.forEach(order => { %>
+                    <% order.orderedItem.forEach(item => { %>
+                        <tr>
+                            <td><%= item._id %></td>
+                            <td><img class="item-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"></td>
+                            <td><%= item.productId.productName %></td>
+                            <td><%= item.quantity %></td>
+                            <td>₹<%= item.totalProductPrice %></td>
+                            <td><span class="status-badge"><%= item.productStatus %></span></td>
+                            <td>
+                                <form action="/admin/updateOrderStatus" method="POST">
+                                    <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                                    <input type="hidden" name="orderId" value="<%= order._id %>">
+                                    <select name="status">
+                                        <option value="Shipped" <%= item.productStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                        <option value="Delivered" <%= item.productStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                        <option value="Cancelled" <%= item.productStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                    <button type="submit" class="btn-update">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7" style="text-align: center;">No orders found.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>" class="btn">Previous</a>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>" class="btn <%= currentPage === i ? 'btn-active' : '' %>"><%= i %></a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>" class="btn">Next</a>
+        <% } %>
+    </div>
+</main>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+        const searchText = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#ordersBody tr');
+
+        rows.forEach(row => {
+            const orderId = row.cells[0].textContent.toLowerCase();
+            const productName = row.cells[2].textContent.toLowerCase();
+            row.style.display = 
+                orderId.includes(searchText) || productName.includes(searchText)
+                ? '' 
+                : 'none';
+        });
+    });
+</script>

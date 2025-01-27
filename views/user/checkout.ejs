@@ -1,0 +1,327 @@
+<style>
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-wrapper {
+    flex: 1 0 auto;
+    padding: 10px;
+    width: 100%;
+    max-width: 1000px; /* Reduce max width for better scaling */
+}
+
+.checkout-container {
+    width: 100%;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.order-summary, .shipping-details {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cart-item {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.item-details {
+    margin-left: 15px;
+    flex-grow: 1;
+}
+
+.item-details h3 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+}
+
+.price, .quantity, .total {
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.price {
+    color: #333;
+    font-weight: 600;
+}
+
+.quantity, .total {
+    color: #4b5563;
+}
+
+.order-total {
+    margin-top: 15px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.address-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background-color: #ffffff;
+}
+
+.address-card:hover {
+    border-color: #2962ff;
+    background-color: #f0f7ff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.address-card.selected {
+    border-color: #2962ff;
+    background-color: #eef6ff;
+}
+
+.address-radio {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.address-name {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.address-text {
+    color: #4b5563;
+    line-height: 1.4;
+    font-size: 15px;
+}
+
+.add-address-link {
+    font-size: 14px;
+    color: #2962ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.add-address-link:hover {
+    text-decoration: underline;
+    color: #2563eb;
+}
+
+.payment-method h2 {
+    margin-top: 0;
+    font-weight: 500;
+}
+
+.payment-options label {
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.checkout-button {
+    background-color: #2962ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-button:hover {
+    background-color: #1e4bd8;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        padding: 12px;
+    }
+
+    .cart-item {
+        flex-direction: column;
+    }
+
+    .item-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    .item-details {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+
+    .order-total {
+        text-align: center;
+    }
+
+    .checkout-button {
+        width: auto;
+    }
+}
+
+
+</style><%-include('../../views/partials/user/header')%>
+<div class="page-wrapper">
+    <div class="content-wrapper">
+        <div class="checkout-container">
+            <h1>Checkout</h1>
+    
+            <!-- Order Summary Section -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <% cart.item.forEach(item => { %>
+                    <div class="cart-item">
+                        <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.name %>" class="item-image">
+                        <div class="item-details">
+                            <h3><%= item.name %></h3>
+                            <p class="price">₹<%= item.price %></p>
+                            <p class="quantity">Quantity: <%= item.quantity %></p>
+                            <p class="total">Total: ₹<%= item.price * item.quantity %></p>
+                        </div>
+                    </div>
+                <% }); %>
+                <div class="order-total">
+                    <h3>Total: ₹<%= cart.cartTotal %></h3>
+                </div>
+            </div>
+    
+            <!-- Shipping Details Section -->
+            <div class="shipping-details">
+                <h2>Shipping Details</h2>
+                <form class="checkout-form" method="POST" action="/checkout">
+                    <!-- Address Selection -->
+                    <div class="address-cards-container">
+                        <% address.forEach(addr => { %>
+                            <div class="address-card" onclick="selectAddress(this, '<%= addr.id %>')">
+                                <input type="radio" name="addressId" value="<%= addr.id %>" class="address-radio" required>
+                                <div class="address-details">
+                                    <div class="address-name"><%= addr.fullName %></div>
+                                    <div class="address-text">
+                                        <%= addr.street %>,<br>
+                                        <%= addr.city %>, 
+                                        <%= addr.state %>,<br>
+                                        <%= addr.postalCode %> <br>
+                                        <%= addr.country %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+    
+                    <!-- Add New Address Button -->
+                    <div class="add-new-address">
+                        <a href="/address" class="add-address-link">+ Add New Address</a>
+                    </div>
+    
+                    <!-- Payment Method Selection -->
+                    <div class="payment-method">
+                        <h2>Payment Method</h2>
+                        <div class="payment-options">
+                            <label>
+                                <input type="radio" name="paymentMethod" value="cod" required>
+                                Cash on Delivery (COD)
+                            </label>
+                            <label>
+                                <input type="radio" name="paymentMethod" value="online" required>
+                                Online Payment
+                            </label>
+                        </div>
+                    </div>
+    
+                    <!-- Submit Button -->
+                    <div class="checkout-actions">
+                        <button type="submit" class="checkout-button">Place order</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+  
+<%-include('../../views/partials/user/footer')%>
+<script>
+function selectAddress(card, addressId) {
+    // Remove selected class from all cards
+    document.querySelectorAll('.address-card').forEach(c => {
+        c.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked card
+    card.classList.add('selected');
+    
+    // Check the radio button
+    card.querySelector('input[type="radio"]').checked = true;
+    
+    // Hide new address form
+    document.getElementById('newAddressForm').classList.remove('active');
+}
+
+function toggleNewAddressForm() {
+    const form = document.getElementById('newAddressForm');
+    form.classList.toggle('active');
+    
+    // Unselect all address cards
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.classList.remove('selected');
+        card.querySelector('input[type="radio"]').checked = false;
+    });
+}
+</script>

@@ -239,9 +239,7 @@
 
     <div class="login-container">
         <h2>Welcome Back!</h2>
-        <% if (message) { %>
-            <div class="error"><%= message %></div>
-        <% } %>
+        
         <form action="/login" method="POST">
             <div class="form-group">
                 <label for="email">Email</label>
@@ -251,6 +249,7 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
+            <a style="text-decoration: none; margin-left: 180px; margin-bottom: 20px; color: black;" href="/forgotpassword">Forgot password?</a>
             <button type="submit" class="btn">Login</button>
             <p>Or sign up with:</p>
             <a href="/auth/google" class="google-btn" id="google-signin">
@@ -260,8 +259,25 @@
         <p>Don't have an account? <a href="/signup">Sign Up</a></p>
     </div>
   
-   
 
-    
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<% if (message) { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                text: '<%= message %>',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+<% } %>
 </body>
 </html>

@@ -176,10 +176,88 @@
                 grid-template-columns: 1fr;
             }
         }
+          /* Sidebar Styling */
+          nav.sidebar {
+            width: 250px;
+            background-color: #2d3e50;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            font-size: 16px;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.3s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        a{
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
+    <nav class="sidebar" aria-label="Sidebar Navigation">
+        <div class="user-info">
+            <div class="user-avatar" aria-label="Admin">A</div>
+            <span>Admin</span>
+        </div>
+        <a href="/admin" class="menu-item">
+            <span class="menu-icon">📊</span> Dashboard
+        </a>
+        <a href="/admin/products" class="menu-item active">
+            <span class="menu-icon">📦</span> Products
+        </a>
+        <a href="/admin/category" class="menu-item ">
+            <span class="menu-icon">📑</span> Category
+        </a>
+
+        <a href="/admin/customers" class="menu-item">
+            <span class="menu-icon">👥</span> Users
+        </a>
+      
+    </nav>
+    <%-include('../../views/partials/admin/header')%>
+
     <div class="container">
+        
         <header>
             <h1>Edit Product</h1>
             <a href="/admin/products" class="back-btn">
@@ -189,31 +267,7 @@
         </header>
 
         <!-- Product Preview Card -->
-        <div class="product-preview">
-            <div class="preview-header">Current Product Details</div>
-            <div class="preview-content">
-                <div class="preview-item">
-                    <div class="preview-label">Product Name</div>
-                    <div class="preview-value"><%= product.productName %></div>
-                </div>
-                <div class="preview-item">
-                    <div class="preview-label">Category</div>
-                    <%= product.category ? product.category.categoryName : 'No Category' %>
-                </div>
-                <div class="preview-item">
-                    <div class="preview-label">Price</div>
-                    <div class="preview-value">₹<%= product.salePrice %></div>
-                </div>
-                <div class="preview-item">
-                    <div class="preview-label">Stock</div>
-                    <div class="preview-value"><%= product.quantity %></div>
-                </div>
-                <div class="preview-item">
-                    <div class="preview-label">Status</div>
-                    <div class="preview-value"><%= product.status %></div>
-                </div>
-            </div>
-        </div>
+       
 
         <form action="/admin/editProduct/<%= product._id %>" method="POST" class="edit-form">
             <div class="form-group">
@@ -237,25 +291,80 @@
 
             <div class="form-group">
                 <label for="price">Price (₹)</label>
-                <input type="number" id="price" name="salePrice" value="<%= product.salePrice %>" required>
+                <input type="number" id="price" name="Price" value="<%= product.Price %>" required>
+
+                <div class="form-group">
+                    <label for="stock">S</label>
+                    <input 
+                        type="number" 
+                        id="stock" 
+                        name="quantity_s" 
+                        value="<%= product.stock.find(stockItem => stockItem.size === 'S').quantity %>" 
+                        required
+                    >
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="stock">Stock</label>
-                <input type="number" id="stock" name="quantity" value="<%= product.quantity %>" required>
+                <label for="stock">M</label>
+                <input 
+                    type="number" 
+                    id="stock" 
+                    name="quantity_m" 
+                    value="<%= product.stock.find(stockItem => stockItem.size === 'M').quantity %>" 
+                    required
+                >
             </div>
-
-            <div class="form-group">
             
-                
-                
+            <div class="form-group">
+                <label for="stock">L</label>
+                <input 
+                    type="number" 
+                    id="stock" 
+                    name="quantity_l" 
+                    value="<%= product.stock.find(stockItem => stockItem.size === 'L').quantity %>" 
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <label for="stock">XL</label>
+                <input 
+                    type="number" 
+                    id="stock" 
+                    name="quantity_xl" 
+                    value="<%= product.stock.find(stockItem => stockItem.size === 'XL').quantity %>" 
+                    required
+                >
             </div>
 
+            <a href="/admin/updateimage/<%= product._id %>" 
+                style="
+                    display: inline-block; 
+                    background-color: #0080ff; 
+                    color: white; 
+                    font-size: 10px; 
+                    padding: 10px 10px; 
+                    border-radius: 30px; 
+                    text-decoration: none; 
+                    text-align: center; 
+                    font-weight: bold; 
+                    transition: all 0.3s ease; 
+                   
+                " 
+                onmouseover="this.style.backgroundColor='#34495e';" 
+                onmouseout="this.style.backgroundColor='#2c3e50';">
+                Update Image
+             </a>
+             
+             
             <div class="button-group">
                 <button type="submit" class="save-btn">Save Changes</button>
-                <button type="button" class="cancel-btn" onclick="window.location.href='/products'">Cancel</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='/admin/products'">Cancel</button>
             </div>
+           
         </form>
     </div>
+
+    
 </body>
 </html>

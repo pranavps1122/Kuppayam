@@ -13,63 +13,24 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        required:false,
-        unique: false,
-        sparse: true,
-        default: null,  // Default to null if no phone is provided
+        required:false
     },
-    googleId:{
-        type:String,
-        unique:true,
-    },
-  
+    
     password: {
         type: String,
         required: false,
     },
-    isBlocked: {
+    Status: {
         type: Boolean,
-        default: false
+        required:true,
+        default: true
     },
     isAdmin: {
         type: Boolean,
         default: false
     },
-    cart: [{
-        type: Schema.Types.ObjectId,
-        ref: "Cart"
-    }],
-    wallet: {
-        type: Number,
-        default: 0,
-    },
-    wishlist: [{
-        type: Schema.Types.ObjectId,
-        ref: "Wishlist"
-    }],
-    orderHistory: [{
-        type: Schema.Types.ObjectId,
-        ref: "Order"
-    }],
-    createOn: {
-        type: Date,
-        default: Date.now,
-    },
-    searchHistory: [{
-        category: {
-            type: Schema.Types.ObjectId,
-            ref: "Category"
-        },
-        searchOn: {
-            type: Date,
-            default: Date.now
-        }
-    }]
-});
-
-
-
-
+   
+},{timestamps:true});
 
 const User = mongoose.model('User', userSchema);
 

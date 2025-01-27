@@ -8,6 +8,72 @@
 
 
     <style>
+        /* General form styling */
+.size-options {
+    margin: 20px 0;
+}
+
+.size-options div {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Size selector styling */
+.size-selector {
+    display: flex;
+    gap: 10px;
+}
+
+/* Hide the radio buttons */
+.hidden-radio {
+    display: none;
+}
+
+/* Style for size buttons */
+.size-button {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for size buttons */
+.size-button:hover {
+    background-color: #e6e6e6;
+    border-color: #888;
+}
+
+/* Selected size button */
+.size-button.selected {
+    background-color: #007bff;
+    border-color: #0056b3;
+    color: #fff;
+}
+
+/* Add to Cart button styling */
+.add-to-cart {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for Add to Cart button */
+.add-to-cart:hover {
+    background-color: #218838;
+}
+
         
         * {
             margin: 0;
@@ -119,19 +185,19 @@
             margin: 20px 0;
         }
 
-        .color-dots {
+        /* .color-dots {
             display: flex;
             gap: 10px;
             margin-top: 10px;
-        }
-
+        } */
+/* 
         .color-dot {
             width: 24px;
             height: 24px;
             border-radius: 50%;
             border: 1px solid #ddd;
             cursor: pointer;
-        }
+        } */
 
         /* Size Options */
         .size-options {
@@ -517,48 +583,56 @@ body {
                 >
             </div>
 
-            <!-- Product Info -->
+           
             <div class="product-info">
                 <span class="wishlist-icon">♡</span>
                 <h1 class="product-title"><%= product.productName %></h1>
-                
+            
                 <div class="price-section">
-                    <span class="current-price">₹<%= product.salePrice %></span>
-                    <span class="original-price">₹<%= product.regularPrice %></span>
+                    <span class="current-price">₹<%= product.Price %></span>
+                    
+                  
                 </div>
-
-                <!-- Color Options -->
-                <div class="color-options">
-                    <div>Color</div>
-                    <div class="color-dots">
-                        <div class="color-dot" style="background-color: black" onclick="selectColor(this)"></div>
-                        <div class="color-dot" style="background-color: navy" onclick="selectColor(this)"></div>
-                        <div class="color-dot" style="background-color: gray" onclick="selectColor(this)"></div>
-                    </div>
+               
+                <div class="stars">
+                    <span class="star filled">★</span>
+                    <span class="star filled">★</span>
+                    <span class="star filled">★</span>
+                    <span class="star filled">★</span>
+                    <span class="star filled">★</span>
                 </div>
-
-                <!-- Size Options -->
-                <div class="size-options">
+               
+              
+            
+             
+                <form class="size-options" method="POST" action="/cart/<%= product._id %>">
                     <div>Size</div>
                     <div class="size-selector">
                         <% ['S', 'M', 'L', 'XL'].forEach(size => { %>
-                            <button 
-                                class="size-button <%= size === 'M' ? 'selected' : '' %>"
-                                onclick="selectSize(this)"
-                            ><%= size %></button>
+                            <label>
+                                <input 
+                                    type="radio" 
+                                    name="size" 
+                                    value="<%= size %>" 
+                                    <%= size === 'M' ? 'checked' : '' %>
+                                    class="hidden-radio"
+                                />
+                                <span 
+                                    class="size-button <%= size === 'M' ? 'selected' : '' %>" 
+                                    onclick="selectSize(this)"
+                                ><%= size %></span>
+                            </label>
                         <% }); %>
                     </div>
-                </div>
-
-                <button class="add-to-cart">Add to Cart</button>
-
-                <!-- Tabs -->
+                    <button type="submit" class="add-to-cart">Add to Cart</button>
+                </form>
+                
+                
                 <div class="tabs">
                     <button class="tab active">Rating & Reviews</button>
                     <button class="tab">Shipping & Returns</button>
                 </div>
-
-                <!-- Reviews Grid -->
+            
                 <div class="reviews-grid">
                     <% if (product.reviews && product.reviews.length > 0) { %>
                         <% product.reviews.forEach(review => { %>
@@ -578,9 +652,10 @@ body {
                     <% } %>
                 </div>
             </div>
+            
         </div>
 
-        <!-- Related Products -->
+      
         <section class="related-products">
             <h2>YOU MIGHT ALSO LIKE</h2>
             <div class="related-grid">
@@ -588,7 +663,9 @@ body {
                     <div class="related-product">
                         <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
                         <h3><%= product.productName %></h3>
-                        <p>₹<%= product.salePrice %></p>
+                        <p>₹<%= product.salePrice %>
+                       <h3><%= %></h3> 
+                        </p>
                     </div>
                 <% }); %>
             </div>
@@ -597,7 +674,7 @@ body {
         </section>
 
         <div class="reviews-container">
-            <!-- Reviews header with title and controls -->
+          
             <div class="reviews-header">
                 <h2>All Reviews <span class="review-count">(451)</span></h2>
                 <div class="header-controls">
@@ -609,9 +686,9 @@ body {
                 </div>
             </div>
     
-            <!-- Grid container for review cards -->
+            
             <div class="reviews-grid">
-                <!-- First review -->
+         
                 <div class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -635,7 +712,7 @@ body {
                     </div>
                 </div>
     
-                <!-- Second review -->
+                
                 <div class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -659,15 +736,12 @@ body {
                     </div>
                 </div>
     
-                <!-- Additional reviews following the same pattern -->
-                <!-- You can copy and paste the review-card div structure to add more reviews -->
+               
             </div>
     
-            <!-- Load more button -->
             <button class="load-more">Load More Reviews</button>
         </div>
 
-        <!-- Newsletter -->
         <div class="newsletter" style="background-color: #000; color: white;">
             <h2 >STAY UP TO DATE ABOUT OUR LATEST OFFERS</h2>
         </div>
@@ -702,6 +776,9 @@ body {
 
         function zoomOut(image) {
             image.classList.remove('zoomed');
+
+
+            
         }
     </script>
 <%-include('../../views/partials/user/footer')%>

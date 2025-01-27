@@ -1,52 +1,59 @@
 const passport = require('passport');
 const env = require('dotenv').config();
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../model/userSchema'); // Adjust the path as necessary
+const User = require('../model/userSchema'); 
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID, // Your Google Client ID
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Your Google Client Secret
-    callbackURL: 'http://localhost:3000/auth/google/callback', // This should match the callback route in userRouter.js
+    clientID: process.env.GOOGLE_CLIENT_ID, 
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
+    callbackURL: 'http://localhost:3000/auth/google/callback',
    
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        // Check if user already exists in the database
+       
         let user = await User.findOne({ email: profile.emails[0].value,});
         console.log('google', user);
-        if (user) {
-              // Add this line to ensure session data is consistent
-              user.name = profile.displayName; // Update name in case it changed
+
+        if (user) {      
+              user.name = profile.displayName;
+              console.log('username',user.name)
+             
               await user.save();
-              return done(null, user); // User found, return the user
+              console.log('pranav')
+              return done(null, user); 
         }
 
-        // If not, create a new user
+        console.log('nikhil')
+
+
+      
         user = new User({
-            name: profile.displayName,
+            name: profile.displayName, 
             email: profile.emails[0].value,
             googleId: profile.id,
         });
+        
         console.log('userrr', user);
-        await user.save(); // Save the new user to the database
-        return done(null, user); // Return the new user
+        await user.save(); 
+        return done(null, user);
     } catch (error) {
-        return done(error, null); // Handle any errors
+        return done(error, null); 
     }
 }));
 
-// Serialize user to store in session
+
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-// Deserialize user from session
+
 passport.deserializeUser((id, done) => {
     User.findById(id)
         .then(user => {
-            done(null, user); // Return the user object
+            done(null, user); 
         })
         .catch(err => {
-            done(err, null); // Handle any errors
+            done(err, null); 
         });
 });
 

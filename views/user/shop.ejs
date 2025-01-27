@@ -1,0 +1,617 @@
+<style>
+    /* shop.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+}
+
+/* Announcement Bar */
+.announcement-bar {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* Header Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    position: relative;
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.icon-link {
+    color: #333;
+    text-decoration: none;
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* Main Container */
+.shop-container {
+    display: flex;
+    gap: 40px;
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.filters {
+    margin-top: 20px;
+    margin-left: -40px;
+    width: 250px;
+    flex-shrink: 0;
+    border-right: 1px solid #eaeaea;
+    padding-right: 20px;
+    background-color: #f9f9f9; /* Light background for a fresh look */
+    padding-top: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.filter-group {
+    margin-bottom: 30px;
+}
+
+.filter-group h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333; /* Darker text for better contrast */
+    text-transform: uppercase; /* Makes headings stand out */
+    letter-spacing: 1px; /* Adds some space between letters for a modern look */
+}
+
+.filter-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.filter-list li {
+    margin-bottom: 10px;
+}
+
+.filter-list a {
+    display: block;
+    font-size: 16px;
+    color: #666;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-list a:hover,
+.filter-list a.active {
+    color: #fff; /* White text for contrast */
+    font-weight: 700;
+    background-color: #2d3b49; /* Blue background on hover and active */
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease;
+}
+
+/* Size Grid */
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.size-btn {
+    padding: 8px;
+    border: 1px solid #e5e5e5;
+    background: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.size-btn:hover,
+.size-btn.active {
+    border-color: #000;
+    background: #000;
+    color: #fff;
+}
+
+/* Price Filter */
+.price-filter {
+    margin-top: 15px;
+}
+
+.price-slider {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.price-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.price-input {
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #e5e5e5;
+}
+
+/* Products Section */
+.products-section {
+    flex-grow: 1;
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+   
+}
+
+.products-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.sort-select {
+    padding: 8px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    position: relative;
+    padding-top: 60px;
+    
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+
+}
+
+.product-image img {
+    width: 100%;
+    height: 330px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.quick-add {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 12px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.product-card:hover .quick-add {
+    transform: translateY(0);
+}
+
+.product-info {
+    padding: 15px 0;
+}
+
+.product-info h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.price {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.color-options {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #e5e5e5;
+}
+
+.color-count {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.page-btn {
+    padding: 8px 16px;
+    border: 1px solid #e5e5e5;
+    background: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+}
+
+.page-btn.active {
+    background: #000000;
+    color: #fff;
+    border-color: #000;
+}
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.4;
+    text-transform: capitalize;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; /* Adds ellipsis if text overflows */
+    max-width: 200px; /* Limit width to prevent overflow */
+    cursor: pointer;
+}
+
+.product-name:hover {
+    color: #000;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .shop-container {
+        gap: 20px;
+    }
+    
+    .filters {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .shop-container {
+        flex-direction: column;
+    }
+    
+    .filters {
+        width: 100%;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .top-nav {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+}
+.search-bar {
+    position: relative;
+    display: inline-block;
+    margin: 10px; 
+  }
+
+  #searchInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px; 
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination-link {
+    text-decoration: none;
+    color: #333;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination-link:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 400px;
+    width: 100%;
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+    margin-top: -80px;
+    margin-right: 150px;
+    margin-top: -50px;
+}
+
+.search-form input {
+    width: 70%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    
+}
+
+.search-form input:focus {
+    border-color: #007BFF;
+}
+
+.search-form button {
+    background-color: #2d3b49;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #2d3b49;
+}
+
+.search-form button:focus {
+    outline: none;
+}
+
+.search-toggle {
+    background-color: #2d3b49;
+ 
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px auto;
+    display: block;
+    transition: background-color 0.3s ease;
+   margin-right:0%
+}
+
+.search-toggle:hover {
+    background-color: #2d3b49;
+}
+
+.search-toggle:focus {
+    outline: none;
+}
+
+.search-form.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+}
+
+
+</style>
+
+
+
+    <%-include('../../views/partials/user/header')%>
+
+    <main class="shop-container">
+        <!-- Sidebar Filters -->
+        <aside class="filters">
+            <section class="filter-group">
+                <h3>Categories</h3>
+                <ul class="filter-list">
+                    <li><a href="?category=all&sort=<%= selectedSort %>" class="<%= selectedCategory === 'all' ? 'active' : '' %>">All</a></li>
+                    <li><a href="?category=Mens&sort=<%= selectedSort %>" class="<%= selectedCategory === 'Mens' ? 'active' : '' %>">Men</a></li>
+                    <li><a href="?category=Women&sort=<%= selectedSort %>" class="<%= selectedCategory === 'Women' ? 'active' : '' %>">Women</a></li>
+                    <li><a href="?category=Kids&sort=<%= selectedSort %>" class="<%= selectedCategory === 'Kids' ? 'active' : '' %>">Kids</a></li>
+                </ul>
+            </section>
+        </aside>
+    
+        <!-- Products Section -->
+        <section class="products-section">
+            <button class="search-toggle">Search</button>
+                <form method="GET" class="search-form hidden">
+                    <input type="text" name="search" placeholder="Search for products...">
+                    <button type="submit">Go</button>
+                </form>
+            <div class="products-header">
+
+                
+                
+
+                <h1 class="product-bar">
+                    <% if (selectedCategory === 'all') { %>
+                        All Products
+                    <% } else { %>
+                        <%= selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) %> Products
+                    <% } %>
+                </h1>
+                <select class="sort-select" onchange="window.location.href=this.value">
+                    <option value="?category=<%= selectedCategory %>&sort=Az" <%= selectedSort === 'Az' ? 'selected' : '' %>>A to Z</option>
+                    <option value="?category=<%= selectedCategory %>&sort=Za" <%= selectedSort === 'Za' ? 'selected' : '' %>>Z to A</option>
+                    <option value="?category=<%= selectedCategory %>&sort=lowtohigh" <%= selectedSort === 'lowtohigh' ? 'selected' : '' %>>Price: Low to High</option>
+                    <option value="?category=<%= selectedCategory %>&sort=hightolow" <%= selectedSort === 'hightolow' ? 'selected' : '' %>>Price: High to Low</option>
+                </select>
+            </div>
+    
+            <div class="products-grid">
+                <% if (products && products.length > 0) { %>
+                    <% products.forEach(product => { %>
+                        <a href="/productDetail/<%= product._id %>" style="text-decoration: none; color: black;">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>"
+                                        style='<% if (product.quantity <= 0 || product.isActive === false) { %>opacity: 0.5;<% } %>'>
+                                    <button class="quick-add" data-product-id="<%= product._id %>">Quick Add</button>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-name">
+                                        <%= product.productName %>
+                                    </h3>
+                                    <p class="price">₹<%= product.Price %></p>
+                                    <h3>
+                                        <% if (product.quantity <= 0) { %>
+                                            <span style="color: red;">(Out of Stock)</span>
+                                        <% } else if (product.isActive === false) { %>
+                                            <span style="color: red;">( Not Available)</span>
+                                        <% } %>
+                                    </h3>
+                                </div>
+                            </div>
+                        </a>
+                    <% }); %>
+                <% } else { %>
+                    <p>No products available.</p>
+                <% } %>
+            </div>
+    
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>&category=<%= selectedCategory %>&sort=<%= selectedSort %>" class="pagination-link">&laquo; Previous</a>
+                <% } %>
+    
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>&category=<%= selectedCategory %>&sort=<%= selectedSort %>"
+                        class="pagination-link <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+    
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>&category=<%= selectedCategory %>&sort=<%= selectedSort %>" class="pagination-link">Next &raquo;</a>
+                <% } %>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+      
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                
+            });
+        });
+    
+       
+        const priceSlider = document.querySelector('.price-slider');
+        const minInput = document.querySelector('.price-inputs input:first-child');
+        const maxInput = document.querySelector('.price-inputs input:last-child');
+    
+        if (priceSlider && minInput && maxInput) {
+            priceSlider.addEventListener('input', (e) => {
+                maxInput.value = e.target.value;
+            });
+        }
+
+
+             const searchButton = document.querySelector('.search-toggle');
+            const searchForm = document.querySelector('.search-form');
+
+            searchButton.addEventListener('click', () => {
+                searchForm.classList.toggle('visible');
+            });
+
+    </script>
+    
+    <%-include('../../views/partials/user/footer')%>
+    

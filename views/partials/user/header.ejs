@@ -3,71 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website</title>
+    <title>Kuppayam</title>
     <link rel="stylesheet" href="/home.css">
     <style>
-        /* Add your existing styles here */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            right: 0;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            width: 100%;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block; /* Show dropdown on hover */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .header {
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 500;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #000;
+            font-size: 16px;
+          
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #007BFF;
+        }
+
+        .navbar-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-link {
+            display: flex;
+            flex-direction: column; /* Stack icon and text vertically */
+            align-items: center; /* Center the icon and text */
+            text-decoration: none;
+            color: black;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .icon-link:hover {
+            color: #007BFF;
+        }
+
+        .icon {
+            font-size: 17px; /* Icon size */
+            margin-bottom: 2px; /* Space between icon and text */
+        }
+
+        .icon-name {
+            font-size: 14px; /* Adjust text size */
+        }
+
+        .login-button {
+            padding: 5px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #2d3b49;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .login-button:hover {
+            background-color: #2d3b49;
+            transform: scale(1.05); /* Slight zoom effect */
+        }
+
+        .login-button:active {
+            background-color: #2d3b49;
+            transform: scale(1); /* Reset scale */
         }
     </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav-container">
-            <div class="logo">KUPPAYAM.IN</div>
+            <a href="/" style="text-decoration: none;"><div class="logo">KUPPAYAM.IN</div></a>
             <div class="nav-links">
-                <a href="#">Shop</a>
+                <a href="/Shop">Shop</a>
                 <a href="#">On Sale</a>
                 <a href="#">New Arrivals</a>
                 <a href="#">Brands</a>
             </div>
-            <div class="nav-icons">
-                <% if (user) { %>
-                    <div class="dropdown">
-                        <a href="#" class="sign-in-link"><%= user.name %></a>
-                        <div class="dropdown-content">
-                            <a href="/userProfile">Profile</a>
-                            <a href="/logout">Logout</a>
-                        </div>
-                    </div>
+            <div class="navbar-icons">
+                <% if (locals.session.isAuth) { %>
+                    <a href="/profile" class="icon-link" title="Profile">
+                        <div class="icon">&#128100;</div>
+                        <span class="icon-name">Profile</span>
+                    </a>
+                    <a href="/wishlist" class="icon-link" title="Wishlist">
+                        <div class="icon">&#10084;&#65039;</div>
+                        <span class="icon-name">Wishlist</span>
+                    </a>
+                    <a href="/cart" class="icon-link" title="Cart">
+                        <div class="icon">&#128722;</div>
+                        <span class="icon-name">Cart</span>
+                    </a>
                 <% } else { %>
-                    <a href="/login" class="login-icon">👤</a>
+                    <a href="/login" class="login-button" title="Login">
+                        Login
+                    </a>
                 <% } %>
-                <a href="#" class="search-icon">🔍</a>
-                <a href="#" class="cart-icon">🛒</a>
             </div>
         </nav>
     </header>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Address</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        /* Base styles for the form */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.form-control {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+          position: absolute;
+            height: calc(130vh - 38px); /* Subtract header height */
+         
+           margin-top: 70px;
+        }
+
+        .sidebar-profile {
+            text-align: center;
+            padding: 0 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav {
+            margin-top: 2rem;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+.btn:hover {
+    background-color: #34495e;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 1rem;
+    }
+
+    .form-control {
+        font-size: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 1rem;
+    }
+}
+
+    </style>
+
+  
+
+    <aside class="sidebar">
+        <div class="sidebar-profile">
+            <h2><%= user.name %></h2>
+            <p><%= user.email %></p>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-item">Profile Overview</a>
+            <a href="/orderDetails"  class="nav-item" >My Orders</a>
+            <a class="nav-item active"  href="/address" class="nav-item" >Addresses</a>
+            <a href="/logout" class="nav-item" >Logout</a>
+        </nav>
+    </aside>
+    <%- include('../../views/partials/user/header') %>
+    <div class="profile-container">
+        <h1>Add New Address</h1>
+        
+        <!-- Address Form -->
+        <form action="/Address" method="POST" id="add-address-form" class="address-form">
+            <div class="form-group">
+                <label for="street">Street Address</label>
+                <input type="text" id="street" name="street" class="form-control" placeholder="Enter street address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" class="form-control" placeholder="Enter city" required>
+            </div>
+
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" id="state" name="state" class="form-control" placeholder="Enter state" required>
+            </div>
+
+            <div class="form-group">
+                <label for="postalCode">Postal Code</label>
+                <input type="text" id="postalCode" name="postalCode" class="form-control" placeholder="Enter postal code" required>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country" class="form-control" placeholder="Enter country" required>
+            </div>
+
+          
+
+            <button type="submit" class="btn btn-primary">Add Address</button>
+        </form>
+    </div>
+
+    <script src="/script.js"></script>
+
+       <%-include('../../views/partials/user/footer')%>
+

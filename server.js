@@ -8,7 +8,7 @@ const connectDB=require('./config/db')
 const userRoute=require('./routes/userRouter')
 const adminRoute=require('./routes/adminRouter')
 const mongoose = require('mongoose')
-
+const expressLayouts = require('express-ejs-layouts')
 const nocache = require("nocache");
 
 
@@ -19,17 +19,23 @@ app.use(nocache());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-// Connect to MongoDB (if using MongoDB for session storage)
+
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+const PORT = process.env.PORT;
 
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60000*600 }  // Session expiration time in milliseconds
+    cookie: { maxAge: 60000*600 } 
 }));
 
+
+app.use((req,res,next)=>{
+    res.locals.session=req.session
+    next()
+})
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,6 +53,6 @@ app.use('/',userRoute)
 app.use('/admin',adminRoute)
 
 app.listen(process.env.PORT,()=>{
-    console.log('server running')
+    console.log(`server is running at http://localhost:${PORT}`)
 })
 

@@ -1,0 +1,275 @@
+<style>
+    /* Ensure the body and html elements take up the full height */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Flexbox container for sidebar and main content */
+.page-wrapper {
+    display: flex;
+    min-height: 100vh; /* Full viewport height */
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 250px; /* Adjust as needed */
+    background-color: #2c3e50;
+    color: white;
+    padding: 2rem 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+/* Main content area */
+.main-content {
+    margin-left: 250px; /* Same as sidebar width */
+    padding: 20px;
+    flex-grow: 1; /* Allow to take remaining space */
+}
+
+/* Footer styling */
+.footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+    .orders-container {
+        max-width: 1000px;
+        margin-left: 350px;
+        margin-top: 50px;
+        padding: 20px;
+        font-family: 'Poppins', Arial, sans-serif;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    h1 {
+        text-align: center;
+        color: #000;
+        margin-bottom: 25px;
+        font-size: 2em;
+        font-weight: 600;
+    }
+
+    .order-card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 12px;
+        margin-bottom: 15px;
+    }
+
+    .order-id {
+        color: #000;
+        font-weight: 600;
+        font-size: 1.1em;
+    }
+
+    .order-date {
+        color: #333;
+        font-size: 0.9em;
+    }
+
+    .order-items {
+        margin: 15px 0;
+    }
+
+    .item-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .item-table th {
+        background: #f5f5f5;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #000;
+        border-bottom: 2px solid #eee;
+    }
+
+    .item-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    .item-image {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #eee;
+    }
+
+    .item-name {
+        color: #000;
+        font-size: 1em;
+        font-weight: 500;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .item-quantity, .item-size {
+        color: #000;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .item-price, .item-total {
+        color: #000;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    .cancel-btn {
+        background: #0f0d0d;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.85em;
+    }
+
+    .cancel-btn:hover {
+        background: #151a38;
+    }
+
+    .order-total {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 15px;
+        margin-top: 15px;
+        border-top: 1px solid #eee;
+        font-weight: 600;
+        font-size: 1.2em;
+        color: #000;
+    }
+
+    .sidebar {
+        width: 250px;
+        background-color: #2c3e50;
+        color: white;
+        padding: 2rem 0;
+        position: absolute;
+        height: calc(100vh - 10px);
+        margin-top: 70px;
+    }
+
+    .sidebar-profile {
+        text-align: center;
+        padding: 0 1rem 2rem;
+    }
+
+    .sidebar-profile h2, .sidebar-profile p {
+        margin: 0;
+        color: white;
+    }
+
+    .sidebar-nav {
+        margin-top: 2rem;
+    }
+
+    .nav-item {
+        display: block;
+        padding: 1rem 2rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+</style>
+
+<aside class="sidebar">
+    <div class="sidebar-profile">
+        <h2><%= user.name %></h2>
+        <p><%= user.email %></p>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/profile" class="nav-item ">Profile Overview</a>
+        <a href="/orderDetails" class="nav-item active">My Orders</a>
+        <a href="/address" class="nav-item">Addresses</a>
+        <a href="/logout" class="nav-item">Logout</a>
+    </nav>
+</aside>
+
+<%- include('../../views/partials/user/header') %>
+
+<div class="orders-container">
+    <h1>My Orders</h1>
+    <% orders.forEach(function(order) { %>
+        <div class="order-card">
+            <div class="order-header">
+              
+                
+            </div>
+
+            <div class="order-items">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th>OrderId</th>
+                            <th>Order Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="order-id">Order #<%= order.id %></span></td>
+                            <td><span class="order-date"><%= new Date(order.timestamps).toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: true
+                            }) %></span></td>
+                         <td>
+                            <a style="text-decoration: none;" href="/orderstatus/<%= order._id %>" class="cancel-btn">View</a>
+                          </td>
+                          
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="order-total">
+                Total: ₹<%= order.orderAmount %>
+            </div>
+        </div>
+    <% }); %>
+</div>
+
+<%- include('../../views/partials/user/footer') %>

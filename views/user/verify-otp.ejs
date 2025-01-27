@@ -83,16 +83,16 @@
         }
 
         .btn1 {
-            display: inline-block; /* Make the link behave like a button */
+            display: inline-block; 
             background: linear-gradient(to right, #76e4f7, #4dd4e1);
             color: white;
-            font-size: 12px; /* Font size for the link */
+            font-size: 12px; 
             font-weight: bold;
-            padding: 8px 12px; /* Padding for the link */
-            border-radius: 30px; /* Rounded corners */
-            text-decoration: none; /* Remove underline */
-            transition: all 0.3s ease; /* Smooth transition */
-            margin-top: 10px; /* Space above the link */
+            padding: 8px 12px;
+            border-radius: 30px; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            margin-top: 10px; 
         }
 
         .btn1:hover {
@@ -111,15 +111,14 @@
             font-size: 13px;
             color: #333;
         }
+
        
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Verify Your OTP</h2>
-        <% if (message) { %>
-            <div class="error" id="error-message"><%= message %></div>
-        <% } %>
+      
         <div class="timer" id="timer">Time left: <span id="time">60</span> seconds</div>
         <form action="/verify-otp" method="POST">
             <div class="otp-inputs">
@@ -133,55 +132,110 @@
         </form>
         <p>Didn't receive the OTP? <a id="resend-otp" class="btn1">Resend OTP</a></p>
     </div>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
-        let timeLeft = 60; // Set the timer for 60 seconds
+        <% if (locals.message && message.trim() !== '') { %>
+            swal("Error!", "<%= message %>", "error");
+        <% } %>
+        
+        let timeLeft = 60; 
         const timerElement = document.getElementById('time');
-        let countdown; // Declare countdown variable
-
+        let countdown; 
+        
         const startTimer = () => {
-            clearInterval(countdown); // Clear any existing timer
-            timeLeft = 60; // Reset time left
-            timerElement.innerText = timeLeft; // Update the displayed time
-
+            clearInterval(countdown); 
+            timeLeft = 60; 
+            timerElement.innerText = timeLeft;
+        
             countdown = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     timerElement.innerText = "Time's up!";
-                    // Optionally disable the OTP inputs or submit the form
                 } else {
+                    timeLeft -= 1;
                     timerElement.innerText = timeLeft;
                 }
-                timeLeft -= 1;
             }, 1000);
         };
-
-        // Start the timer when the page loads
+        
+        // Start timer on page load
         startTimer();
+        
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const inputs = document.querySelectorAll('input[name^="otp"]');
+            
+            try {
+                const response = await fetch('/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        otp1: inputs[0].value,
+                        otp2: inputs[1].value,
+                        otp3: inputs[2].value,
+                        otp4: inputs[3].value,
+                        otp5: inputs[4].value
+                    })
+                });
+        
+                const data = await response.json();
+                console.log('Received data:', data);
 
-        // Check for error message and show SweetAlert if it exists
-        <% if (message) { %>
-            swal("Error!", "<%= message %>", "error");
-        <% } %>
+                if (data.success && data.redirectUrl === '/newpassword') {
+                    console.log('Entered success block for OTP verification');
+                    swal("Success!", "OTP Verified Successfully!", "success")
+                        .then(() => {
+                            console.log("Swal resolved. Redirecting to new password page...");
+                            window.location.href = '/newpassword';
+                        })
+                        .catch((error) => {
+                            console.error("Swal error:", error);
+                        });
+                } else {
+                    console.error("OTP Verification Failed:", data);
+                    swal("Error!", "OTP Verification Failed!", "error")
+                }
 
-        // Resend OTP functionality
+        
+                if (!data.success) {
+              
+                    clearInterval(countdown);
+                    timerElement.innerText = "Timer Stopped";
+                    
+                
+                    swal("Error!", data.message || "Invalid OTP", "error");
+                } else {
+                
+                    swal("Success!", "OTP Verified Successfully!", "success")
+                        .then(() => {
+                            window.location.href = '/login';
+                        });
+                }
+            } catch (error) {
+                swal("Error!", "Something went wrong. Please try again.", "error");
+            }
+        });
+        
         document.getElementById('resend-otp').addEventListener('click', async () => {
             const response = await fetch('/resend-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email: '<%= userData.email %>' }) // Pass the user's email if needed
+                body: JSON.stringify({ email: '<%= userData.email %>' }) 
             });
-
+        
             const data = await response.json();
             if (data.success) {
                 swal("Success!", "OTP has been resent to your email.", "success");
-                startTimer(); // Restart the timer
+                startTimer(); 
             } else {
                 swal("Error!", "Failed to resend OTP. Please try again.", "error");
             }
         });
-    </script>
+        </script>
 </body>
 </html>

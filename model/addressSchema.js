@@ -1,55 +1,57 @@
-const mongoose=require('mongoose')
-const { type } = require('node:os')
-const { boolean } = require('webidl-conversions')
-const { search } = require('../server')
-const {Schema} = mongoose
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-
-
-const addressSchema= new Schema({
-    userID:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:true
+const addressSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Assuming you have a User model
+        required: true
     },
-    address:[{
-        addressType:{
-            type:String,
-            required:true,
+    street: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    state: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    postalCode: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    country: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    isPrimary: {
+        type: Boolean,
+        default: false // Mark one address as primary
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
 
-        },
-        name:{
-            type:String,
-            required:true,
-        },
-        city:{
-            type:String,
-            required:true
+// Optionally, you can create a pre-save hook to update the `updatedAt` field
+addressSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
 
-        },
-        landmark:{
-            type:String,
-            required:true
-        },
-        state:{
-            type:String,
-            required:true
-        },
-        pincode:{
-            type:Number,
-            required:true
-        },
-        phone:{
-            type:String,
-            required:true
-        }
-
-    }]
-})
-
-
-const Address=mongoose.model('Address',addressSchema)
-
-module.exports={
-    Address
-}
+// Export Address model
+const Address = mongoose.model('Address', addressSchema);
+module.exports = Address;

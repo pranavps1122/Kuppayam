@@ -332,31 +332,32 @@
         <form id="signform" action="/signup" method="POST">
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" >
                 <div id="error1" class="error-message"></div>
             </div>
        
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" placeholder="Enter your email" >
                 <div id="error2" class="error-message"></div>
             </div>
     
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
-                <div id="error3" class="error-message"></div>
+               
             </div>
   
             <div class="form-group">
+               
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                <div id="error4" class="error-message"></div>
+                <input type="password" id="password" name="password" placeholder="Enter your password" >
+                
             </div>
 
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password" required>
+                <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password" >
                 <div id="error5" class="error-message"></div>
             </div>
             <button type="submit" class="btn">Sign Up</button>
@@ -367,7 +368,116 @@
     </div>
 </body>
 </html>
-
+// <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Form validation logic (same as before)
+
+document.addEventListener('DOMContentLoaded', function() {
+    const signForm = document.getElementById('signform');
+    
+    signForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const cPassword=document.getElementById('confirm-password').value.trim()
+        
+        
+        if (name.length < 3) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Name',
+                text: 'Name must be at least 3 characters long',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        
+        if (!isValidEmail(email)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Email',
+                text: 'Please enter a valid email address',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        
+        if (phone && !isValidPhone(phone)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Phone',
+                text: 'Please enter a valid phone number',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        
+        if (password.length < 6) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Weak Password',
+                text: 'Password must be at least 6 characters long',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        if (password!==cPassword) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Not matching',
+                text: 'Password are not matching',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            return;
+        }
+        
+     
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Form submitted successfully',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        }).then(() => {
+            signForm.submit();
+        });
+    });
+    
+    // Helper functions for validation
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    function isValidPhone(phone) {
+        const phoneRegex = /^\d{10}$/;  // Assumes 10-digit phone number
+        return phoneRegex.test(phone.replace(/[- )(]/g, '')); // Remove common phone number formatting
+    }
+});
+
 </script>

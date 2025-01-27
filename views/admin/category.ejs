@@ -93,14 +93,7 @@
             padding: 30px;
         }
 
-        /* Header Styling */
-        header.header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #ecf0f1;
-        }
+        
 
         .logo {
             font-size: 24px;
@@ -283,29 +276,20 @@
             <a href="/admin/category" class="menu-item active">
                 <span class="menu-icon">📑</span> Category
             </a>
-            <a href="/admin/orders" class="menu-item">
-                <span class="menu-icon">🛍️</span> Orders
-            </a>
-            <a href="/admin/coupons" class="menu-item">
-                <span class="menu-icon">🎟️</span> Coupons
-            </a>
-            <a href="/admin/sales-report" class="menu-item">
-                <span class="menu-icon">📈</span> Sales Report
-            </a>
+    
             <a href="/admin/customers" class="menu-item">
                 <span class="menu-icon">👥</span> Users
             </a>
-            <a href="/admin/banner" class="menu-item">
-                <span class="menu-icon">🖼️</span> Banner
+
+            <a href="/admin/ordermanagement" class="menu-item ">
+                <span class="menu-icon">🛒</span> Orders
             </a>
+          
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
-                <div class="logo">KUPPAYAM</div>
-                <a href="/admin/logout" class="logout-btn">Logout</a>
-            </header>
+          
 
             <section class="action-bar">
                 <h1 class="page-title">Category Management</h1>
@@ -339,13 +323,11 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <form action="/admin/active" method="POST" style="display: inline-block;">
+                                        <form action="/admin/togglestatus" method="POST">
                                             <input type="hidden" name="id" value="<%= cat._id %>">
-                                            <button type="submit" class="btn btn-primary">Activate</button>
-                                        </form>
-                                        <form action="/admin/inActive" method="POST" style="display: inline-block;">
-                                            <input type="hidden" name="id" value="<%= cat._id %>">
-                                            <button type="submit" class="btn btn-warning">Deactivate</button>
+                                            <button type="submit" class="btn <%= cat.isActive ? 'btn-warning' : 'btn-primary' %>">
+                                                <%= cat.isActive ? 'Deactivate' : 'Activate' %>
+                                            </button>
                                         </form>
                                     </td>
                                     <td style="display: flex; gap: 10px;">

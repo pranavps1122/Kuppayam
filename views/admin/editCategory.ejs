@@ -269,21 +269,10 @@
             <a href="/admin/category" class="menu-item active">
                 <span class="menu-icon">📑</span> Category
             </a>
-            <a href="/admin/orders" class="menu-item">
-                <span class="menu-icon">🛍️</span> Orders
-            </a>
-            <a href="/admin/coupons" class="menu-item">
-                <span class="menu-icon">🎟️</span> Coupons
-            </a>
-            <a href="/admin/sales-report" class="menu-item">
-                <span class="menu-icon">📈</span> Sales Report
-            </a>
             <a href="/admin/customers" class="menu-item">
                 <span class="menu-icon">👥</span> Users
             </a>
-            <a href="/admin/banner" class="menu-item">
-                <span class="menu-icon">🖼️</span> Banner
-            </a>
+    
         </nav>
 
         <!-- Main Content -->
@@ -300,10 +289,11 @@
                         <label for="categoryName">Category Name</label>
                         <input
                             type="text"
+                            id="catname"
                             name="categoryName"
                             class="form-control"
                             value="<%= category.categoryName %>"
-                            required>
+                            >
                     </div>
                     
                     <div class="form-group">
@@ -311,30 +301,53 @@
                         <textarea id="description" 
                                   name="description" 
                                   class="form-control" 
-                                  value="<%= category.description %>"
-                                  required>
+                                  >
+                                  <%= category.description %>
                                 
                         </textarea>
                     </div>
                     
-                    <div class="switch-container">
-                        <label class="switch">
-                            <input type="checkbox" 
-                                   name="isActive" 
-                                   
-                            <span class="slider"></span>
-                        </label>
-                       
-                    </div>
+                
                     
 
                     <div class="button-group">
                     <button type="submit" class="btn btn-save">Save Changes</button>
-                        <a href="/admin/category" class="btn btn-cancel">Cancel</a>
+                        <a href="/admin/category" class="btn btn-cancel" style="text-decoration: none;">Cancel</a>
                     </div>
                 </form>
             </div>
         </main>
     </div>
+
+   
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+
+
+
+</script>
+
+<% if (message) { %>
+    <script>
+
+      
+
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                text: '<%= message %>',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+<% } %>
+
 </body>
 </html>

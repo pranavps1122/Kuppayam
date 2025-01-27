@@ -73,7 +73,7 @@
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 16px 20px;
+            padding: 20px 15px;
             font-size: 16px;
             color: #ecf0f1;
             text-decoration: none;
@@ -206,17 +206,18 @@
         
 
     </style>
+   
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <div class="user-info">
                 <% if (user) { %>
-                    <div class="user-avatar"><%= user.name.charAt(0) %></div> <!-- Display the first initial -->
-                    <div><%= user.name %></div> <!-- Display the admin's name -->
+                    <div class="user-avatar"><%= user.name.charAt(0) %></div> 
+                    <div><%= user.name %></div>
                 <% } else { %>
-                    <div class="user-avatar">A</div> <!-- Default avatar if user is not defined -->
-                    <div>Guest</div> <!-- Default name if user is not defined -->
+                    <div class="user-avatar">A</div> =
+                    <div>Guest</div> 
                 <% } %>
             </div>
             <a href="/admin" class="menu-item active">
@@ -231,35 +232,22 @@
                 <span class="menu-icon">📑</span>
                 Category
             </a>
-            <a href="/admin/orders" class="menu-item">
-                <span class="menu-icon">🛍️</span>
-                Orders
-            </a>
-            <a href="/admin/coupons" class="menu-item">
-                <span class="menu-icon">🎟️</span>
-                Coupons
-            </a>
-            <a href="/admin/sales-report" class="menu-item">
-                <span class="menu-icon">📈</span>
-                Sales Report
-            </a>
+          
             <a href="/admin/customers" class="menu-item" >
                 <span class="menu-icon">👥</span>
                 Users
             </a>
-            <a href="/admin/banner" class="menu-item">
-                <span class="menu-icon">🖼️</span>
-                Banner
+
+            <a href="/admin/ordermanagement" class="menu-item" >
+                <span class="menu-icon">🛒</span>
+                Orders
             </a>
+            
+            
         </div>
 
         <div class="main-content">
-            <div class="header">
-                <div class="logo">KUPPAYAM</div>
-                <a href="/admin/logout" class="logout-btn">
-                    <span>Logout</span>
-                </a>
-            </div>
+          
 
          
         </div>

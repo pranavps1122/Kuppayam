@@ -1,0 +1,27 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 250px;
+    right: 0;
+    background: #ffffff;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    transition: left 0.3s;
+}
+
+.footer-content {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+body.sidebar-collapsed .footer {
+    left: 70px;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        left: 0;
+        padding: 10px;
+    }
+}

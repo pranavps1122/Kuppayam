@@ -90,28 +90,18 @@
             resize: vertical;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: #333;
-        }
-
-
         .image-upload-container {
             display: flex;
             gap: 20px;
         }
+
         .image-upload {
             border: 2px dashed #ccc;
             padding: 20px;
             text-align: center;
             cursor: pointer;
         }
+
         .image-preview {
             width: 100%;
             height: 100px;
@@ -119,141 +109,36 @@
             background-color: #f7f7f7;
             border-radius: 4px;
         }
-        .cropper-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-        }
-        .cropper-content {
-            background: white;
-            padding: 20px;
-            max-width: 80%;
-            text-align: center;
-        }
-        .crop-btns {
-            margin-top: 20px;
-        }
-        .crop-btn {
-            padding: 10px 20px;
-            margin: 5px;
-            cursor: pointer;
-        }
-
-        /* Submit button styling */
-        .submit-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        .submit-btn:hover {
-            background: #0056b3;
-        }
-
-        /* .image-upload {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .image-upload:hover {
-            border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .image-preview-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .image-preview {
-            position: relative;
-            padding-top: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            background: var(--background);
-        }
-
-        .image-preview img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .remove-image {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-        } */
-
-        .submit-btn {
-            background: var(--primary);
-            color: white;
-            padding: 14px 28px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-
-        .submit-btn:hover {
-            background: #1d4ed8;
-        }
 
         .cropper-container {
-            display: none;
-            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+         
             z-index: 1000;
-            padding: 40px;
+            margin-top: -500px;
+            margin-left: 50px;
+            
         }
 
         .cropper-content {
-            background: white;
+           
             padding: 24px;
             border-radius: 12px;
-            max-width: 800px;
+            max-width: 300px;
+            margin-left: 100px;
             margin: 0 auto;
+           
         }
 
         .crop-btns {
-            margin-top: 16px;
+        
+            margin-top: -16px;
             display: flex;
             gap: 12px;
             justify-content: flex-end;
+            margin-top: 120px;
         }
 
         .crop-btn {
@@ -272,8 +157,89 @@
         .crop-cancel {
             background: none;
             border: 1px solid var(--border);
+            
         }
 
+        /* Submit button styling */
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        nav.sidebar {
+            width: 250px;
+            background-color: #2d3e50;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            font-size: 16px;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.3s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px;
+        }
+
+        a{
+            text-decoration: none;
+        }
         @media (max-width: 640px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -288,25 +254,84 @@
                 margin: 20px;
             }
         }
+        .size-quantity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+    }
+
+    .size-quantity {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .size-quantity input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        background: var(--background);
+    }
+
+    .size-quantity input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .size-quantity label {
+        margin-bottom: 4px;
+        font-weight: 500;
+        color: #4b5563;
+    }
+
     </style>
+        <%-include('../../views/partials/admin/header')%>
 </head>
+
 <body>
+    
+    <nav class="sidebar" aria-label="Sidebar Navigation">
+        <div class="user-info">
+            <div class="user-avatar" aria-label="Admin">A</div>
+            <span>Admin</span>
+        </div>
+        <a href="/admin" class="menu-item">
+            <span class="menu-icon">📊</span> Dashboard
+        </a>
+        <a href="/admin/products" class="menu-item active">
+            <span class="menu-icon">📦</span> Products
+        </a>
+        <a href="/admin/category" class="menu-item">
+            <span class="menu-icon">📑</span> Category
+        </a>
+
+        <a href="/admin/customers" class="menu-item">
+            <span class="menu-icon">👥</span> Users
+        </a>
+    </nav>
+
+  
     <div class="container">
+    
         <div class="form-header">
+            <h1 style="color: red; font-size: 600px;"><% message %></h1>
             <h1>Add New Product</h1>
             <p>Fill in the product details below</p>
         </div>
-
+        
         <form action="/admin/addProduct" method="POST" enctype="multipart/form-data">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="productName">Product Name</label>
-                    <input type="text" id="productName" name="productName" required>
+                    <input type="text" id="productName" name="productName">
                 </div>
 
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <select id="category" name="category" required>
+                    <select id="category" name="category">
                         <option value="">Select Category</option>
                         <% category.forEach(category => { %>
                             <option value="<%= category._id %>"><%= category.categoryName %></option>
@@ -315,37 +340,38 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="regularPrice">Regular Price</label>
-                    <input type="number" id="regularPrice" name="regularPrice" min="0" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="salePrice">Sale Price</label>
-                    <input type="number" id="salePrice" name="salePrice" min="0" step="0.01">
-                </div>
-
-                <div class="form-group">
-                    <label for="size">Size</label>
-                    <input type="text" id="size" name="size" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="color">Color</label>
-                    <input type="text" id="color" name="color" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="quantity" min="0" required>
+                    <label for="salePrice">Price</label>
+                    <input type="number" id="Price" name="Price" min="0" step="0.01">
                 </div>
 
                 <div class="form-group full-width">
+                    <label for="sizes">Sizes & Stock</label>
+                    <div class="size-quantity-grid">
+                        <div class="size-quantity">
+                            <label for="size-s">Size S</label>
+                            <input type="number" id="size-s" name="size_s" min="0" placeholder="Qty for S">
+                        </div>
+                        <div class="size-quantity">
+                            <label for="size-m">Size M</label>
+                            <input type="number" id="size-m" name="size_m" min="0" placeholder="Qty for M">
+                        </div>
+                        <div class="size-quantity">
+                            <label for="size-l">Size L</label>
+                            <input type="number" id="size-l" name="size_l" min="0" placeholder="Qty for L">
+                        </div>
+                        <div class="size-quantity">
+                            <label for="size-xl">Size XL</label>
+                            <input type="number" id="size-xl" name="size_xl" min="0" placeholder="Qty for XL">
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="form-group full-width">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" required></textarea>
+                    <textarea id="description" name="description"></textarea>
                 </div>
 
-          
-            
                 <div class="form-group full-width">
                     <label>Product Images</label>
                     <div class="image-upload-container">
@@ -376,7 +402,7 @@
                 <div class="form-group full-width">
                     <button type="submit" class="submit-btn">Add Product</button>
                 </div>
-                
+            </div>
         </form>
     </div>
 
@@ -390,80 +416,87 @@
         </div>
     </div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
-
+  
     <script>
-    let cropper;
-    let currentInput;
-    let currentPreviewId;
+
     
-    // Function to preview the image and open the crop modal
-    function previewImage(input, previewId) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                // Set preview image
-                document.getElementById(previewId).style.backgroundImage = `url(${e.target.result})`;
-    
-                // Show cropper modal and pass the previewId to keep track of the target preview
-                openCropper(e.target.result, previewId);
-            };
-            reader.readAsDataURL(file);
+
+        
+        let cropper;
+        let currentInput;
+        let currentPreviewId;
+
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(previewId).style.backgroundImage = `url(${e.target.result})`;
+                    openCropper(e.target.result, previewId);
+                };
+                reader.readAsDataURL(file);
+            }
         }
-    }
-    
-    // Open the cropper modal
-    function openCropper(imageUrl, previewId) {
-        // Set image to cropper
-        const image = document.getElementById('cropperImage');
-        image.src = imageUrl;
-    
-        // Initialize Cropper.js
-        const cropperModal = document.getElementById('cropperModal');
-        cropperModal.style.display = 'flex';
-    
-        cropper = new Cropper(image, {
-            aspectRatio: 1,  // Optional: Lock to square (change if needed)
-            viewMode: 1,
-            autoCropArea: 0.5,
-            responsive: true,
-            cropBoxResizable: true
+
+        function openCropper(imageUrl, previewId) {
+            const image = document.getElementById('cropperImage');
+            image.src = imageUrl;
+
+            const cropperModal = document.getElementById('cropperModal');
+            cropperModal.style.display = 'flex';
+
+            if (cropper) cropper.destroy();
+
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 0.5,
+                responsive: true,
+                cropBoxResizable: true
+            });
+
+            currentPreviewId = previewId;
+        }
+
+        function closeCropper() {
+            const cropperModal = document.getElementById('cropperModal');
+            cropperModal.style.display = 'none';
+            if (cropper) cropper.destroy();
+            cropper = null;
+        }
+
+        function saveCrop() {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas();
+                const croppedImageUrl = canvas.toDataURL('image/png');
+
+                document.getElementById(currentPreviewId).style.backgroundImage = `url(${croppedImageUrl})`;
+                closeCropper();
+            }
+        }
+
+        document.querySelectorAll('.image-upload').forEach((elem, index) => {
+            elem.addEventListener('click', () => {
+                currentInput = document.getElementById(`productImage${index + 1}`);
+            });
         });
-    
-        // Store the current preview id to update the correct preview image after cropping
-        currentPreviewId = previewId;
-    }
-    
-    // Close the cropper modal
-    function closeCropper() {
-        const cropperModal = document.getElementById('cropperModal');
-        cropperModal.style.display = 'none';
-        cropper.destroy();
-    }
-    
-    // Save the cropped image
-    function saveCrop() {
-        const canvas = cropper.getCroppedCanvas();
-        const croppedImageUrl = canvas.toDataURL('image/png');
-    
-        // Update the preview image with the cropped image
-        document.getElementById(currentPreviewId).style.backgroundImage = `url(${croppedImageUrl})`;
-    
-        // Optionally, you could upload the cropped image to the server here
-    
-        // Close the cropper modal
-        closeCropper();
-    }
-    
-    // Attach image preview input click to currentInput
-    document.querySelectorAll('.image-upload').forEach((elem, index) => {
-        elem.addEventListener('click', () => {
-            currentInput = document.getElementById(`productImage${index + 1}`);
+
+                <% if (message) { %>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Error',
+                text: '<%= message %>',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
-    });
+
+        <% } %>
+
+
     </script>
-   
 </body>
 </html>

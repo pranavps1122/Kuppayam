@@ -1,4 +1,3 @@
-const { kStringMaxLength } = require('buffer');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -13,37 +12,33 @@ const productSchema = new Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category', // Ensuring it references the Category model
+        ref: 'Category', 
         required: true
     },
-    regularPrice: {
+    Price: {
         type: Number,
         required: true
     },
-    salePrice: {
-        type: Number,
-        required: true
+    stock: [
+        {
+            quantity: {
+                type: Number,
+                required:true
+            },
+            size: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+
+
+    totalStock:{
+     type:Number,
+     required:true
     },
-    productOffer: {
-        type: Number,
-        default: 0
-    },
-    quantity: {
-        type: Number, // Changed default to a number
-        default: 0 // Default value changed to 0 for quantity
-    },
-    color: {
-        type: String,
-        required:true
-       
-    },
-    size: {
-        type: String,
-        required:true
-        
-    },
-    productImage: {
-        type: [String], // Array of strings
+      productImage: {
+        type: [String], 
         required: true
     },
     isActive: {
@@ -52,13 +47,12 @@ const productSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['Available', 'Out of stock', 'Discontinued'], // Corrected spelling of "Discontinued"
-       
+        enum: ['Available', 'Out of stock', 'Discontinued'], 
         default: 'Available'
     }
 }, { timestamps: true });
 
-const Product = mongoose.model('Product', productSchema); // Corrected to mongoose.model
+const Product = mongoose.model('Product', productSchema); 
 
 module.exports = {
     Product

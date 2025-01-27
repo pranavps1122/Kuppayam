@@ -249,12 +249,6 @@
             <p>Please enter your credentials to continue</p>
         </div>
 
-        <% if (message) { %>
-            <div class="error-message" style="display: block;">
-                <%= message %>
-            </div>
-        <% } %>
-
         <form action="/admin/login" method="POST">
             <div class="form-group">
                 <label for="username">Username or Email</label>
@@ -283,5 +277,24 @@
             <button type="submit" class="login-button">Login to Dashboard</button>
         </form>
     </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<% if (message) { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                text: '<%= message %>',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+<% } %>
 </body>
 </html>

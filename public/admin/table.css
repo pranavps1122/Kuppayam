@@ -1,0 +1,48 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+th {
+    background-color: #f5f7fa;
+    font-weight: 600;
+    color: #2d3e50;
+}
+
+td {
+    font-size: 14px;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.status-active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-inactive {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.btn-warning {
+    background-color: red;
+    color: white;
+}
