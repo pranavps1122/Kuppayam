@@ -61,6 +61,7 @@ const loadOrderManagement = async (req,res)=>{
 
     try {
         const orders = await Order.find().populate('orderedItem.productId')
+        
         .skip(skip)
         .limit(limit);
         res.render('orderManage',{
@@ -68,6 +69,7 @@ const loadOrderManagement = async (req,res)=>{
             currentPage: page,
             totalPages
         })
+        console.log('orders',orders)
     } catch (error) {
         console.log('error while rendering ordermanagemnt',error)
     }

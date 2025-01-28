@@ -217,7 +217,9 @@ h2 {
 }
 
 
-</style><%-include('../../views/partials/user/header')%>
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<%-include('../../views/partials/user/header')%>
 <div class="page-wrapper">
     <div class="content-wrapper">
         <div class="checkout-container">
@@ -278,6 +280,7 @@ h2 {
                                 <input type="radio" name="paymentMethod" value="cod" required>
                                 Cash on Delivery (COD)
                             </label>
+                            
                             <label>
                                 <input type="radio" name="paymentMethod" value="online" required>
                                 Online Payment
@@ -299,18 +302,14 @@ h2 {
 <%-include('../../views/partials/user/footer')%>
 <script>
 function selectAddress(card, addressId) {
-    // Remove selected class from all cards
     document.querySelectorAll('.address-card').forEach(c => {
         c.classList.remove('selected');
     });
     
-    // Add selected class to clicked card
     card.classList.add('selected');
     
-    // Check the radio button
     card.querySelector('input[type="radio"]').checked = true;
     
-    // Hide new address form
     document.getElementById('newAddressForm').classList.remove('active');
 }
 
@@ -318,10 +317,88 @@ function toggleNewAddressForm() {
     const form = document.getElementById('newAddressForm');
     form.classList.toggle('active');
     
-    // Unselect all address cards
     document.querySelectorAll('.address-card').forEach(card => {
         card.classList.remove('selected');
         card.querySelector('input[type="radio"]').checked = false;
     });
 }
+
+function initializeRazorpay(orderId, amount) {
+    const options = {
+        key: '<%= process.env.key_id %>',
+        amount: amount * 100,
+        currency: 'INR',
+        name: 'Kuppayam',
+        description: 'Purchase Payment',
+        order_id: orderId,
+        handler: function(response) {
+            // Handle successful payment
+            fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    addressId: document.querySelector('input[name="addressId"]:checked').value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/ordersuccess';
+                } else {
+                    alert('Payment verification failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Payment verification failed');
+            });
+        },
+        prefill: {
+            name: '<%= user?.name %>',
+            email: '<%= user?.email %>',
+        },
+        theme: {
+            color: '#2962ff'
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+}
+
+document.querySelector('.checkout-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const addressId = document.querySelector('input[name="addressId"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+    if (paymentMethod === 'online') {
+        try {
+            const response = await fetch('/initiate-razorpay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ addressId })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                initializeRazorpay(data.order.id, data.order.amount);
+            } else {
+                alert('Failed to initiate payment');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to initiate payment');
+        }
+    } else {
+        this.submit();
+    }
+});
 </script>

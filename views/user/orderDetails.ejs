@@ -177,7 +177,7 @@ html, body {
         color: white;
         padding: 2rem 0;
         position: absolute;
-        height: calc(100vh - 10px);
+        height: 450px;
         margin-top: 70px;
     }
 
@@ -209,6 +209,35 @@ html, body {
         background-color: rgba(255, 255, 255, 0.1);
         color: white;
     }
+    .pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.page-link {
+  text-decoration: none;
+  color: #000000; /* Primary color */
+  font-size: 16px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.page-link:hover {
+  background-color: #000000;
+  color: white;
+}
+
+.page-link.active {
+  background-color: #000000;
+  color: white;
+  font-weight: bold;
+  pointer-events: none; /* Disable clicking on the active page */
+}
+
 </style>
 
 <aside class="sidebar">
@@ -263,7 +292,9 @@ html, body {
                         </tr>
                     </tbody>
                 </table>
+                
             </div>
+
 
             <div class="order-total">
                 Total: ₹<%= order.orderAmount %>
@@ -271,5 +302,20 @@ html, body {
         </div>
     <% }); %>
 </div>
+
+<div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>&limit=5" class="page-link">Previous</a>
+    <% } %>
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %>&limit=5" class="page-link <%= currentPage === i ? 'active' : '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+    <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>&limit=5" class="page-link">Next</a>
+    <% } %>
+  </div>
+  
 
 <%- include('../../views/partials/user/footer') %>

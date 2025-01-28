@@ -4,7 +4,14 @@ const Cart=require('../../model/cartSchema')
 const Address = require('../../model/addressSchema')
 const Order =require('../../model/orderSchema');
 const { query } = require('express');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
+// Initialize Razorpay
+const razorpay = new Razorpay({
+    key_id: process.env.key_id,
+    key_secret: process.env.key_secret
+});
 
 const fetchProducts = async (sortCriteria, categoryFilter,searchTerm,skip,limit) => {
     let query = {};
@@ -91,28 +98,30 @@ const loadShop = async (req, res) => {
     }
 };
 
-const loadCheckout = async (req,res)=>{
+const loadCheckout = async (req, res) => {
     try {
-        const userId = req.session.userId
-       
-        const cart = await Cart.findOne({userId:userId}).populate('item.productId')
+        const userId = req.session.userId;
+        const user = req.session.user; // Get user from session
+        
+        const cart = await Cart.findOne({ userId: userId }).populate('item.productId');
         const address = await Address.find({ userId: userId });
- 
 
-        console.log('cart for checkout',cart)
-        console.log('address',address)
+        console.log('cart for checkout', cart);
+        console.log('address', address);
 
-  
-    
-       res.render('checkout',{
-        cart,
-        address,
-       })
+        res.render('checkout', {
+            cart,
+            address,
+            user, // Pass user object to the template
+            key_id: process.env.key_id // Pass Razorpay key_id
+        });
     } catch (error) {
-        console.log('error while loading checkout page',error)
+        console.error('Error loading checkout:', error);
+        res.status(500).send('Internal Server Error');
     }
-   }
-    const placeOrder = async (req, res) => {
+};
+
+const placeOrder = async (req, res) => {
     try {
         const { addressId, paymentMethod } = req.body;
         const userId = req.session.userId;
@@ -197,8 +206,9 @@ const loadCheckout = async (req,res)=>{
 
 const orderSuccess = async (req,res)=>{
     try {
+        const order = await Order.find()
         res.render('orderSuccess',{
-            
+            order
         })
     } catch (error) {
         
@@ -280,12 +290,92 @@ const cancelorder = async (req, res) => {
     }
 };
 
+// Update the initiateRazorpay function
+const initiateRazorpay = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const cart = await Cart.findOne({ userId: userId });
+        
+        if (!cart) {
+            return res.status(404).json({ error: 'Cart not found' });
+        }
 
+        const options = {
+            amount: cart.cartTotal * 100,
+            currency: 'INR',
+            receipt: 'order_' + Date.now(),
+        };
+
+        // Create Razorpay order
+        const order = await razorpay.orders.create(options);
+
+        res.json({ 
+            success: true, 
+            order: {
+                id: order.id,
+                amount: cart.cartTotal
+            }
+        });
+
+    } catch (error) {
+        console.error('Razorpay order creation failed:', error);
+        res.status(500).json({ error: 'Payment initiation failed' });
+    }
+};
+
+// Add this function to verify payment
+const verifyPayment = async (req, res) => {
+    try {
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+        
+        // Verify the payment signature
+        const generated_signature = crypto
+            .createHmac('sha256', process.env.key_secret)
+            .update(razorpay_order_id + '|' + razorpay_payment_id)
+            .digest('hex');
+
+        if (generated_signature === razorpay_signature) {
+            // Payment successful, process the order
+            const userId = req.session.userId;
+            const cart = await Cart.findOne({ userId: userId });
+            const address = await Address.findById(req.body.addressId);
+
+            // Create order similar to COD flow
+            const order = new Order({
+                userId: userId,
+                cartId: cart._id,
+                orderedItem: cart.item.map(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    size: item.size,
+                    productPrice: item.price,
+                    totalProductPrice: item.price * item.quantity,
+                })),
+                deliveryAddress: address,
+                orderAmount: cart.cartTotal,
+                paymentMethod: 'Online Payment',
+                paymentId: razorpay_payment_id
+            });
+
+            await order.save();
+            await cart.deleteOne({ userId: userId });
+
+            res.json({ success: true });
+        } else {
+            res.status(400).json({ error: 'Payment verification failed' });
+        }
+    } catch (error) {
+        console.error('Payment verification failed:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 module.exports = {
     loadShop,
     loadCheckout,
     placeOrder,
     orderSuccess,
-    cancelorder
+    cancelorder,
+    initiateRazorpay,
+    verifyPayment
 };

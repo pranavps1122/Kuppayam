@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wallet - Kuppayam.in</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .wallet-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .wallet-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .wallet-icon {
+            width: 32px;
+            height: 32px;
+            color: #3182ce;
+        }
+
+        .balance-container {
+            background-color: #ebf8ff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3182ce;
+        }
+
+        .transactions-container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+        }
+
+        .transactions-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .transaction-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .refund-icon {
+            background-color: #c6f6d5;
+            color: #38a169;
+        }
+
+        .transaction-details h3 {
+            font-size: 16px;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .order-id {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .transaction-amount {
+            text-align: right;
+        }
+
+        .amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .status-completed {
+            background-color: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .status-pending {
+            background-color: #fefcbf;
+            color: #975a16;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
+            }
+
+            .wallet-card,
+            .transactions-container {
+                padding: 16px;
+            }
+
+            .balance-amount {
+                font-size: 24px;
+            }
+
+            .transaction-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .transaction-amount {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/user/header') %>
+
+    <div class="container">
+        <!-- Wallet Balance Card -->
+        <div class="wallet-card">
+            <div class="wallet-header">
+                <h2 class="wallet-title">My Wallet</h2>
+                <svg class="wallet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4h2v5h-2z"></path>
+                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5h-2v1H5V5"></path>
+                </svg>
+            </div>
+            <div class="balance-container">
+                <p class="balance-label">Available Balance</p>
+                <p class="balance-amount">₹<%= walletBalance.toFixed(2) %></p>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="transactions-container">
+            <h3 class="transactions-title">Recent Transactions</h3>
+            
+            <% transactions.forEach(function(transaction) { %>
+                <div class="transaction-item">
+                    <div class="transaction-header">
+                        <div class="transaction-info">
+                            <div class="transaction-icon refund-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 14L4 9l5-5"></path>
+                                    <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+                                </svg>
+                            </div>
+                            <div class="transaction-details">
+                                <h3><%= transaction.description %></h3>
+                                <p class="order-id">Order ID: <%= transaction.orderId %></p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount">
+                            <p class="amount">₹<%= transaction.amount.toFixed(2) %></p>
+                            <p class="transaction-date"><%= transaction.date %></p>
+                        </div>
+                    </div>
+                    <span class="status-badge <%= transaction.status === 'completed' ? 'status-completed' : 'status-pending' %>">
+                        <%= transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) %>
+                    </span>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <%- include('../partials/user/footer') %>
+</body>
+</html>

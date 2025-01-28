@@ -81,7 +81,18 @@ router.post('/forgotpassword',userController.forgotPassword)
 router.get('/cancelorder/:orderid/:productid',logged,shopController.cancelorder)
 
 
+router.get('/wishlist',profileController.loadWishlist)
 
+router.post('/wishlist/:id',profileController.wishlist)
+
+router.get('/removeWishlist/:id',profileController.removeWishlist)
+router.get('/addtocart/:id',profileController.fromWishlist)
+router.post('/addtocart/:id',profileController.fromWishlist)
+
+router.post('/initiate-razorpay', shopController.initiateRazorpay);
+router.post('/verify-payment', shopController.verifyPayment);
+
+router.get('/wallet', profileController.loadWallet);
 
 
 module.exports=router

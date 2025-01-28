@@ -155,11 +155,61 @@
             color: #fff;
             padding: 20px;
             position: fixed;
-            top: 0;
-            bottom: 0;
+            height: 100vh;
             left: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            top: 0;
+            overflow-y: auto;
         }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: background-color 0.3s;
+        }
+
+        
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+
+        .menu-icon {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #2980b9;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+      
 
         .user-info {
             display: flex;
@@ -197,41 +247,90 @@
         a{
             text-decoration: none;
         }
+
+        .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background-color: #2d3e50;
+        color: white;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        margin-left: 300px;
+    }
+
+    .logout-btn-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .logout-btn {
+        padding: 10px 20px;
+        background-color: #e74c3c;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+    }
+
+
     </style>
+
+<header class="header">
+    <div class="logo">
+        Kuppayam 
+    </div>
+    <div class="logout-btn-container">
+        <a href="/admin/logout" class="logout-btn">
+            Logout
+        </a>
+    </div>
+</header>
 </head>
 <body>
 
-    <nav class="sidebar" aria-label="Sidebar Navigation">
+    <nav class="sidebar">
         <div class="user-info">
-            <div class="user-avatar" aria-label="Admin">A</div>
+            <div class="user-avatar">A</div>
             <span>Admin</span>
         </div>
-        <a href="/admin" class="menu-item">
+        <a href="/admin/dashboard" class="menu-item">
             <span class="menu-icon">📊</span> Dashboard
         </a>
         <a href="/admin/products" class="menu-item active">
             <span class="menu-icon">📦</span> Products
         </a>
-        <a href="/admin/category" class="menu-item ">
+        <a href="/admin/category" class="menu-item">
             <span class="menu-icon">📑</span> Category
         </a>
-
+     
+       
         <a href="/admin/customers" class="menu-item">
             <span class="menu-icon">👥</span> Users
         </a>
-      
-    </nav>
 
-    <%-include('../../views/partials/admin/header')%>
+        <a href="/admin/ordermanagement" class="menu-item ">
+            <span class="menu-icon">🛒</span> Orders
+        </a>
+       
+    </nav>
+ 
+   
     <div class="container">
         
-        <div class="header">
-            
-
-            <h1>Kuppayam Admin Panel</h1>
-            <span>Add a New Category</span>
-        </div>
-
+        
         <form action="/admin/addCategory" method="POST">
             <div class="form-group">
                 <label for="categoryName">Category Name</label>

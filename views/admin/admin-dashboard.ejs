@@ -3,255 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Users</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Admin - Order Management</title>
     <style>
-        /* Reset some basic styling */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* General page styles */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f6f9;
             color: #333;
             display: flex;
             min-height: 100vh;
-            font-size: 16px;
         }
 
-        /* Container for the sidebar and main content */
         .container {
             display: flex;
             width: 100%;
         }
 
-        /* Sidebar styling */
         .sidebar {
-            width: 260px;
+            width: 250px;
             background-color: #2d3e50;
             color: #fff;
-            padding: 20px 20px 40px;
+            padding: 20px;
             position: fixed;
-            top: 0;
-            bottom: 0;
+            height: 100vh;
             left: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            top: 0;
         }
 
-        .sidebar .user-info {
-            margin-bottom: 30px;
+        .menu-item {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 20px;
+            padding: 20px 15px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #2980b9;
+        }
+
+        .menu-icon {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
         }
 
         .user-avatar {
             width: 50px;
             height: 50px;
             background-color: #2980b9;
-            color: white;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50%;
-            margin-right: 20px;
+            margin-right: 15px;
             font-size: 20px;
             font-weight: bold;
         }
 
-        .sidebar div {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        /* Menu items */
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 20px 15px;
-            font-size: 16px;
-            color: #ecf0f1;
-            text-decoration: none;
-            margin-bottom: 18px;
-            border-radius: 6px;
-            transition: background-color 0.3s, transform 0.3s ease;
-        }
-
-        .menu-item:hover {
-            background-color: #34495e;
-            color: #fff;
-            transform: translateX(6px);
-        }
-
-        .menu-item.active {
-            background-color: #2980b9;
-        }
-
-        /* Icon styling */
-        .menu-icon {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-
-        /* Main content area */
         .main-content {
-            margin-left: 260px;
-            width: calc(100% - 260px);
+            margin-left: 250px;
+            width: calc(105% - 260px);
             padding: 30px 40px;
             background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 0;
+            padding: 0;
+            margin-left: 250px;
+         
         }
 
-        /* Header styles */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 20px;
+            padding: 20px;
             border-bottom: 2px solid #ecf0f1;
             margin-bottom: 40px;
+            background-color: #2d3e50;
+           
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            color: #2d3e50;
+            color: #ffffff;
+            margin-left: 60px;
         }
 
         .logout-btn {
-            display: flex;
-            align-items: center;
             padding: 10px 15px;
             background-color: #e74c3c;
             color: #fff;
             border-radius: 4px;
             text-decoration: none;
             font-size: 16px;
-            transition: background-color 0.3s ease;
         }
 
         .logout-btn:hover {
             background-color: #c0392b;
         }
-
-        /* Table styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 40px;
-        }
-
-        th, td {
-            padding: 14px 20px;
-            text-align: left;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        th {
-            background-color: #f5f7fa;
-            font-size: 16px;
-            color: #2d3e50;
-        }
-
-        td {
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        tr:hover {
-            background-color: #ecf0f1;
-        }
-
-        /* Button styles */
-        .btn {
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s, transform 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        /* Search Bar */
-        .search-bar {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .search-input {
-            padding: 10px;
-            font-size: 14px;
-            width: 300px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-
-        .search-input:focus {
-            border-color: #2980b9;
-        }
-        
-
     </style>
-   
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
+        <nav class="sidebar">
             <div class="user-info">
-                <% if (user) { %>
-                    <div class="user-avatar"><%= user.name.charAt(0) %></div> 
-                    <div><%= user.name %></div>
-                <% } else { %>
-                    <div class="user-avatar">A</div> =
-                    <div>Guest</div> 
-                <% } %>
+                <div class="user-avatar">A</div>
+                <span>Admin</span>
             </div>
-            <a href="/admin" class="menu-item active">
-                <span class="menu-icon">📊</span>
-                Dashboard
+            <a href="/admin/dashboard" class="menu-item active">
+                <span class="menu-icon">📊</span> Dashboard
             </a>
             <a href="/admin/products" class="menu-item">
-                <span class="menu-icon">📦</span>
-                Products
+                <span class="menu-icon">📦</span> Products
             </a>
             <a href="/admin/category" class="menu-item">
-                <span class="menu-icon">📑</span>
-                Category
+                <span class="menu-icon">📑</span> Category
             </a>
-          
-            <a href="/admin/customers" class="menu-item" >
-                <span class="menu-icon">👥</span>
-                Users
+            <a href="/admin/customers" class="menu-item">
+                <span class="menu-icon">👥</span> Users
             </a>
-
-            <a href="/admin/ordermanagement" class="menu-item" >
-                <span class="menu-icon">🛒</span>
-                Orders
+            <a href="/admin/ordermanagement" class="menu-item">
+                <span class="menu-icon">🛒</span> Orders
             </a>
-            
-            
-        </div>
-
-        <div class="main-content">
-          
-
-         
-        </div>
+        </nav>
+        <main class="main-content">
+            <div class="header">
+                <div class="logo">Kuppayam</div>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+            <!-- Order management content goes here -->
+        </main>
     </div>
-
 </body>
 </html>

@@ -543,6 +543,27 @@ body {
             border-radius: 8px;
         }
 
+        .wishlist-icon{
+           
+    
+       font-size: 19px;
+       margin-left: -50px;
+       
+        }
+        #wishlist {
+       
+        color: black;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    /* Active state (when clicked, button turns red) */
+    #wishlist.active {
+        background-color: red;
+        color: white;
+    }
     </style>
 
     <%-include('../../views/partials/user/header')%>
@@ -585,7 +606,7 @@ body {
 
            
             <div class="product-info">
-                <span class="wishlist-icon">♡</span>
+              
                 <h1 class="product-title"><%= product.productName %></h1>
             
                 <div class="price-section">
@@ -616,6 +637,7 @@ body {
                                     value="<%= size %>" 
                                     <%= size === 'M' ? 'checked' : '' %>
                                     class="hidden-radio"
+                                    id="<%= size %>"
                                 />
                                 <span 
                                     class="size-button <%= size === 'M' ? 'selected' : '' %>" 
@@ -624,9 +646,18 @@ body {
                             </label>
                         <% }); %>
                     </div>
+                
                     <button type="submit" class="add-to-cart">Add to Cart</button>
                 </form>
                 
+                <form method="POST" action="/wishlist/<%= product._id %>" style="display: inline;">
+                    <!-- Hidden field to pass the selected size -->
+                    <input type="hidden" id="wishlist-size" name="size" value="M">
+                    
+                    <button style="background-color: black; color: white; width: 120px; height: 30px;" type="submit" class="add-to-wishlist">
+                        <%= product.isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' %>
+                    </button>
+                </form>
                 
                 <div class="tabs">
                     <button class="tab active">Rating & Reviews</button>
@@ -764,11 +795,21 @@ body {
         }
 
         function selectSize(button) {
-            document.querySelectorAll('.size-button').forEach(b => 
-                b.classList.remove('selected')
-            );
-            button.classList.add('selected');
-        }
+    // Remove 'selected' class from all size buttons
+    document.querySelectorAll('.size-button').forEach(b => 
+        b.classList.remove('selected')
+    );
+    
+    // Add 'selected' class to the clicked button
+    button.classList.add('selected');
+
+    // Get the size value from the button text (S, M, L, XL)
+    var selectedSize = button.innerText;
+
+    // Set the value of the hidden input field for the wishlist (or cart) form
+    document.getElementById('wishlist-size').value = selectedSize;
+}
+
 
         function zoomIn(image) {
             image.classList.add('zoomed');
@@ -780,5 +821,7 @@ body {
 
             
         }
+      
+            
     </script>
 <%-include('../../views/partials/user/footer')%>
