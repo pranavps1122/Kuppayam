@@ -8,6 +8,7 @@
         const { log } = require('console');
 
         const loadProductPage = async (req, res) => {
+     
             const page = parseInt(req.query.page) || 1; 
             const limit = 5; 
             const skip = (page - 1) * limit;
@@ -20,13 +21,16 @@
                 .skip(skip)
                 .limit(limit);
         
-            res.render('product', {
-                path: '/admin/products',
-                title: 'Products',
-                products,
-                currentPage: page,
-                totalPages,
-            });
+                res.render('product', {
+                    path: '/admin/products',
+                    title: 'Products',
+                    products,
+                    currentPage: page,
+                    totalPages,
+                    admin: req.session.admin, // Ensure admin data is passed correctly
+                    active: 'products'        // Fix syntax error
+                });
+                
         };
         
         const getProductAddPage = async (req, res) => {

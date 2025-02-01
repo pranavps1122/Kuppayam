@@ -1,12 +1,12 @@
- <!-- Footer -->
- <footer class="footer">
+<!-- Footer -->
+<footer class="footer">
     <div class="footer-content">
         <div class="footer-section">
-            <h3 style="color: white;">KUPPAYAM.IN</h3>
-            <p style="color: white;">We make shopping easy and convenient</p>
+            <h3>KUPPAYAM.IN</h3>
+            <p>We make shopping easy and convenient</p>
         </div>
         <div class="footer-section">
-            <h3 style="color: white;">HELP</h3>
+            <h3>HELP</h3>
             <a href="#">FAQ</a>
             <a href="#">Returns</a>
             <a href="#">Contact Us</a>
@@ -19,5 +19,72 @@
         </div>
     </div>
 </footer>
+
+<style>
+    .footer {
+        background-color: #242222;
+        color: white;
+        text-align: left;
+        padding: 20px 0; /* Add padding for better spacing */
+        z-index: 1000; /* Ensure it stays above other content */
+        margin-top: 20px; /* Add margin to separate from content */
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px; /* Add horizontal padding */
+    }
+
+    .footer-section {
+        flex: 1;
+        min-width: 200px;
+        margin: 10px;
+    }
+
+    .footer-section h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .footer-section p {
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #d1d1d1;
+    }
+
+    .footer-section a {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin: 5px 0;
+        transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+        color: #20c997; /* Change color on hover */
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    .main-content {
+        margin-left: 255px;
+        padding: 90px;
+        min-height: calc(100vh - 100px); /* Adjust this value based on footer height */
+        background-color: #f8f9fa;
+        margin-bottom: 60px; /* Add margin to prevent overlap with footer */
+    }
+</style>
+
 </body>
 </html>

@@ -1,0 +1,189 @@
+<nav class="sidebar">
+    <div class="user-info">
+        <div class="user-avatar">👤</div>
+        <div class="user-name">Admin</div>
+    </div>
+    <a href="/admin/dashboard" class="menu-item <%= active === 'dashboard' ? 'active' : '' %>">
+        <span class="menu-icon">📊</span> Dashboard
+    </a>
+    <a href="/admin/products" class="menu-item <%= active === 'products' ? 'active' : '' %>">
+        <span class="menu-icon">📦</span> Products
+    </a>
+    <a href="/admin/category" class="menu-item <%= active === 'category' ? 'active' : '' %>">
+        <span class="menu-icon">📑</span> Category
+    </a>
+    <a href="/admin/customers" class="menu-item <%= active === 'users' ? 'active' : '' %>">
+        <span class="menu-icon">👥</span> Users
+    </a>
+    <a href="/admin/ordermanagement" class="menu-item <%= active === 'orders' ? 'active' : '' %>">
+        <span class="menu-icon">🛒</span> Orders
+    </a>
+    <a href="/admin/couponManagement" class="menu-item <%= active === 'coupons' ? 'active' : '' %>">
+        <span class="menu-icon"><i class="fas fa-ticket-alt"></i></span> Coupons
+    </a>
+    <a href="/admin/offerManagement" class="menu-item <%= active === 'offers' ? 'active' : '' %>">
+        <span class="menu-icon"><i class="fas fa-tags"></i></span> Offers
+    </a>
+    
+</nav>
+
+<style>
+    :root {
+        --sidebar-width: 240px;
+        --header-height: 70px;
+        --accent-color: #4f46e5;
+        --hover-color: #000000;
+    }
+
+    .page-container {
+        display: flex;
+        padding-top: var(--header-height);
+    }
+    .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: black;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .menu-item.active {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+
+    .sidebar {
+        margin-top: 35px;
+       width: 190px;
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        background: white;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        z-index: 40;
+        border-radius: 10px;
+        height: 70vh;
+        margin-left: 20px;
+    }
+
+    .sidebar-content {
+        padding: 1.75rem;
+    }
+
+    .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 4rem;
+        width: calc(100% - var(--sidebar-width));
+    }
+
+    .sidebar-profile {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .sidebar-profile h2 {
+        font-size: 1.15rem;
+        margin: 0;
+    }
+
+    .sidebar-profile p {
+        color: #666;
+        font-size: 0.95rem;
+        margin-top: 0.4rem;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.9rem 1.1rem;
+        color: #333;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.2s;
+        font-size: 1rem;
+    }
+
+    .nav-item i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-color);
+    }
+
+    .nav-item.active {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            top: 0;
+            width: 100%;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 1rem;
+            width: 100%;
+        }
+    }
+    .sidebar ul li.active {
+    background-color: #007bff;
+    color: white;
+}
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove any duplicate sidebars
+        const sidebars = document.querySelectorAll('.sidebar');
+        if (sidebars.length > 1) {
+            for (let i = 1; i < sidebars.length; i++) {
+                sidebars[i].remove();
+            }
+        }
+
+        // Prevent any scrolling on the sidebar
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+        sidebar.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    });
+</script>

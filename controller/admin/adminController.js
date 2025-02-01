@@ -38,8 +38,9 @@
 
     const loadDashboard = async (req, res) => {
         if (req.session.admin) {
+            const admin=req.session.admin
             try {
-                res.render('admin-dashboard', { user: req.session.admin });
+                res.render('admin-dashboard', { admin,active:'dashboard'});
             } catch (error) {
                 res.redirect('/pageNotFound');
             }

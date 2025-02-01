@@ -22,151 +22,172 @@
   .order-info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #f2f2f2;
     padding-bottom: 10px;
     margin-bottom: 20px;
+    border-bottom: 2px solid #f2f2f2;
   }
 
-  .order-info h1 {
-    font-size: 24px;
-    margin: 0;
+  .order-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
   }
 
-  .order-status {
-    font-weight: bold;
-    color: #4CAF50;
-    font-size: 18px;
+  .detail-box {
+    padding: 10px;
+  }
+
+  .detail-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .detail-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
   }
 
   .product-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
   }
 
   .product-table th,
   .product-table td {
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    font-size: 14px;
   }
 
   .product-table th {
     background-color: #f9f9f9;
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 600;
   }
 
   .product-image {
-    max-width: 80px;
-    max-height: 80px;
+    max-width: 60px;
+    max-height: 60px;
     object-fit: contain;
-    margin: 0 auto;
-    display: block;
   }
 
-  .total-price {
-    font-size: 20px;
-    font-weight: bold;
+  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .cancel-btn:hover {
+    opacity: 0.9;
+  }
+
+  .total-section {
     text-align: right;
     margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
   }
-
-  footer {
-    text-align: center;
-    background-color: #333;
-    color: #fff;
-    padding: 15px 0;
-    margin-top: 20px;
-  }
-  .cancel-btn {
-  background-color: #f44336; /* Red */
-  color: white;
- padding: 8px 0px;
-  border: none;
-  cursor: pointer;
-  width: 80%;
-  opacity: 0.9;
-  border-radius: 5px;
-  font-size: 12px;
-  text-align: center;
-  display: inline-block;
-  text-decoration: none;
-}
-
-.cancel-btn:hover {
-  opacity: 1;
-}
-
 </style>
-</head>
-<body>
-  <div class="container">
-    <div class="order-info">
-      <h1>Order #<%= order.id %></h1>
-     
-    </div>
 
-    <table class="product-table">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Size</th>
-          <th>Price</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% order.orderedItem.forEach(item => { %>
-          <tr>
-            <td><img class="product-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"></td>
-            <td><%= item.productId.productName %></td>
-            <td><%= item.quantity %></td>
-            <td><%= item.size %></td>
-            <td>₹<%= item.productPrice.toFixed(2) %></td>
-            <td>₹<%= (item.quantity * item.productPrice).toFixed(2) %></td>
-           
-            <td><%= item.productStatus %></td>
-            <td>
-                <% if (item.productStatus === 'pending') { %>
-                 <a href="/cancelorder/<%= order.id %>/<%= item.productId._id %>"> <button class="cancel-btn">Cancel</button></a>
-                <% } %>
-              </td>
-              
-          </tr>
-         
-        <% }); %>
-      </tbody>
-    </table>
-
- 
+<div class="container">
+  <div class="order-info">
+    <h1>Order #<%= order._id %></h1>
   </div>
-  <footer>
-    <%- include('../../views/partials/user/footer') %>
-  </footer>
-</body>
 
+  <div class="order-details">
+    <div class="detail-box">
+      <h3>Shipping Address</h3>
+      <% if (order && order.deliveryAddress && order.deliveryAddress.length > 0) { %>
+        <% const address = order.deliveryAddress[0] %>
+        <p><%= address.street || 'N/A' %></p>
+        <p><%= address.city || 'N/A' %>, <%= address.state || 'N/A' %></p>
+        <p><%= address.postalCode || 'N/A' %></p>
+        <p><%= address.country || 'N/A' %></p>
+      <% } else { %>
+        <p>Address not available</p>
+      <% } %>
+    </div>
+    <div class="detail-box">
+      <h3>Payment Details</h3>
+      <p>Method: <%= order.paymentMethod || 'N/A' %></p>
+      <p>Total Amount: ₹<%= order.orderAmount ? order.orderAmount.toFixed(2) : '0.00' %></p>
+    </div>
+  </div>
+
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Size</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% order.orderedItem.forEach(item => { %>
+        <tr>
+          <td><img class="product-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"></td>
+          <td><%= item.productId.productName %></td>
+          <td><%= item.quantity %></td>
+          <td><%= item.size %></td>
+          <td>₹<%= item.productPrice.toFixed(2) %></td>
+          <td>₹<%= (item.quantity * item.productPrice).toFixed(2) %></td>
+          <td><%= item.productStatus %></td>
+          <td>
+            <%= console.log('Product Status:', item.productStatus) %>
+            <% if (item.productStatus === 'pending' || item.productStatus === 'Shipped') { %>
+              <form action="/cancelorder/<%= order._id %>/<%= item.productId._id %>" method="POST" style="display: inline;">
+                <button type="submit" class="cancel-btn">Cancel</button>
+              </form>
+            <% } else if (item.productStatus === 'Delivered') { %>
+              <form action="/returnorder/<%= order._id %>/<%= item.productId._id %>" method="POST" style="display: inline;">
+                <input type="hidden" name="orderId" value="<%= order._id %>">
+                <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                <button type="submit" class="return-btn" style="background-color: #4f46e5; color: white; padding: 4px 3px; border: solid; border-radius: 4px;">Return</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <div class="total-section">
+    <p><strong>Total Amount: ₹<%= order.orderAmount.toFixed(2) %></strong></p>
+  </div>
+</div>
+
+<%- include('../../views/partials/user/footer') %>
 
 <% if (message) { %>
   <script>
-
-    
-
-      document.addEventListener('DOMContentLoaded', function() {
-          Swal.fire({
-              text: '<%= message %>',
-              icon: 'error',
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true
-          });
+    document.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        text: '<%= message %>',
+        icon: 'error',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
       });
+    });
   </script>
 <% } %>

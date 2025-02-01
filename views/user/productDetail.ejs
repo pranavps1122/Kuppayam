@@ -564,6 +564,45 @@ body {
         background-color: red;
         color: white;
     }
+
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 8px 35px 8px 10px; /* Increased right padding for clear button */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 5px;
+        z-index: 10;
+        display: none; /* Hidden by default */
+    }
+
+    .clear-search:hover {
+        color: #333;
+    }
+
+    /* Show clear button when search has content */
+    .search-input:not(:placeholder-shown) ~ .clear-search {
+        display: block;
+    }
     </style>
 
     <%-include('../../views/partials/user/header')%>
@@ -610,10 +649,14 @@ body {
                 <h1 class="product-title"><%= product.productName %></h1>
             
                 <div class="price-section">
-                    <span class="current-price">₹<%= product.Price %></span>
-                    
-                  
+                    <span class="current-price">₹<%= product.finalPrice || product.Price %></span>
+                
+                    <% if (product.discount) { %>
+                        <span class="original-price" style="text-decoration: line-through; color: #999;">₹<%= product.Price %></span>
+                        <span class="discount-percent" style="color: #e74c3c; margin-left: 10px;">(<%= product.discount %>% OFF)</span>
+                    <% } %>
                 </div>
+                
                
                 <div class="stars">
                     <span class="star filled">★</span>
@@ -823,5 +866,31 @@ body {
         }
       
             
+    </script>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearSearch');
+
+        // Show/hide clear button based on input content
+        searchInput.addEventListener('input', function() {
+            clearButton.style.display = this.value ? 'block' : 'none';
+        });
+
+        // Clear search function
+        function clearSearch() {
+            searchInput.value = '';
+            clearButton.style.display = 'none';
+            searchInput.focus();
+            // If you need to trigger search on clear
+            if (searchInput.form) {
+                searchInput.form.submit();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            clearButton.style.display = searchInput.value ? 'block' : 'none';
+        });
     </script>
 <%-include('../../views/partials/user/footer')%>

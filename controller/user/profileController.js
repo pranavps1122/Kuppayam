@@ -2,10 +2,13 @@ const User =require('../../model/userSchema')
 const Address=require('../../model/addressSchema')
 const bcrypt=require('bcrypt')
 const Order = require('../../model/orderSchema')
-const { Product } = require('../../model/productSchema')
-const Wishlist = require('../../model/wishlist')
+const {Product} =require('../../model/productSchema')
+
+
+const Wishlist = require('../../model/wishlistSchema')
 const mongoose = require('mongoose');
 const Cart=require('../../model/cartSchema')
+const Wallet = require('../../model/walletSchema')
 
 
 const loadprofile = async (req,res) => {
@@ -63,7 +66,7 @@ const loadresetpassword = async (req,res) => {
     const user=await User.findOne({email:req.session.email})
 
     try {
-        res.render('resetpassword',{user})
+        res.render('resetpassword',{user,message:n})
     } catch (error) {
         
     }
@@ -83,7 +86,9 @@ const resetpassword = async (req,res)=>{
        res.redirect('/resetpassword')
   
     }else if(confirmPassword!==newPassword){
-        res.redirect('/resetpassword')
+        res.render('resetpassword',{
+            message:'Password are not matching'
+        })
         
     }else{
         const passwordMatch= await bcrypt.compare(currentpassword,user.password)
@@ -104,23 +109,22 @@ const resetpassword = async (req,res)=>{
 }
 const orderDetails = async (req, res) => {
     try {
+        const userId = req.session.userId;
         const user = await User.findOne({ email: req.session.email });
 
         const page = parseInt(req.query.page) || 1; 
         const limit = parseInt(req.query.limit) || 5; 
         const skip = (page - 1) * limit;
 
-        const totalOrders = await Order.countDocuments();
+        const totalOrders = await Order.countDocuments({ userId: userId });
 
-
-        const orders = await Order.find()
+        const orders = await Order.find({ userId: userId })
             .populate('orderedItem.productId')
             .skip(skip)
             .limit(limit);
 
         const totalPages = Math.ceil(totalOrders / limit);
 
-  
         res.render('orderDetails', {
             orders,
             user,
@@ -136,92 +140,157 @@ const orderDetails = async (req, res) => {
 
 const loadorderStatus = async (req, res) => {
     try {
-      const productId = req.params.id;
-      const userId = req.session.userId;
-  
-      const order = await Order.findById(productId)
-        .populate('orderedItem.productId');
-  
-      res.render('orderStatus', {
-        user: userId,
-        order,
-        message:null
-      });
-    } catch (error) {
-      console.error('Error rendering orderStatus page:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  };
+        const orderId = req.params.id;
+        const userId = req.session.userId;
 
-  
-  const loadWishlist = async (req, res) => {
-    const userId = req.session.userId; 
+        console.log('Attempting to find order with ID:', orderId);
+        
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            console.log('Invalid order ID format:', orderId);
+            return res.redirect('/orderDetails?error=Invalid order ID');
+        }
 
-    try {
- 
-        const user = await User.findById(userId); 
-        console.log('User:', user);
+        const order = await Order.findById(orderId);
+        
+        if (!order) {
+            console.log('Order not found:', orderId);
+            return res.redirect('/orderDetails?error=Order not found');
+        }
 
-      
-        const wishlistItems = await Wishlist.findOne({ userId: userId }).populate('items.productId');
-        console.log('Wishlist Items:', wishlistItems);
+        const populatedOrder = await Order.findById(orderId)
+            .populate({
+                path: 'orderedItem.productId',
+                model: 'Product',
+                select: 'productName productImage price'
+            });
 
-     
-        res.render('wishlist', {
-            user: user,
-            wishlistItems: wishlistItems ? wishlistItems.items : [] ,
-            message:null
+        console.log('Populated Order:', JSON.stringify(populatedOrder, null, 2));
+
+        if (!populatedOrder) {
+            console.log('Failed to populate order data');
+            return res.redirect('/orderDetails?error=Failed to load order details');
+        }
+
+        res.render('orderStatus', {
+            user: userId,
+            order: populatedOrder,
+            message: req.query.error || null
         });
+
     } catch (error) {
-        console.error('Error loading wishlist:', error);
-        res.status(500).send('An error occurred while loading your wishlist.');
+        console.error('Detailed error in loadorderStatus:', {
+            error: error.message,
+            stack: error.stack,
+            orderId: req.params.id,
+            userId: req.session.userId
+        });
+        
+        // Log the full error for debugging
+        console.log('Full error:', error);
+        
+        return res.render('orderStatus', {
+            user: userId,
+            order: null,
+            message: 'Error loading order details'
+        });
     }
 };
 
-  const wishlist = async (req, res) => {
-      const { size } = req.body; 
-      const productId = req.params.id;  
-      const userId = req.session.userId; 
-  
-      try {
+// Load Wishlist Function
+// Load Wishlist Function// Load Wishlist Function
+const loadWishlist = async (req, res) => {
+    try {
+        const userId = req.session.userId;
 
-          const product = await Product.findById(productId);
-  
-          if (!product) {
-              return res.status(404).send('Product not found');
-          }
-  
-         
-          let wishlist = await Wishlist.findOne({ userId });
-  
-          if (!wishlist) {
-              wishlist = new Wishlist({ userId, items: [] });
-          }
-  
+        // Find the wishlist for the user and populate the productId
+        const wishlist = await Wishlist.findOne({ userId: userId })
+            .populate('items.productId', null, null, { strictPopulate: false });
 
-          const existingItem = wishlist.items.find(item => item.productId.toString() === productId);
-  
-          if (existingItem) {
-              return res.status(400).send('Product is already in the wishlist');
-          }
-  
-          wishlist.items.push({
-              productId: product._id,
-              addedAt: new Date(),
-              selectedSize: size 
-          });
-  
-     
-          await wishlist.save();
-  
-          
-          res.redirect('/wishlist');
-      } catch (error) {
-          console.error('Error adding product to wishlist:', error);
-          res.status(500).send('Server error');
-      }
-  };
+        if (!wishlist) {
+            return res.status(404).render('wishlist', { message: 'Wishlist not found', wishlistItems: [] });
+        }
 
+        // Log the wishlist to see its structure
+        console.log('Loaded Wishlist:', JSON.stringify(wishlist, null, 2));
+
+        // Render the wishlist page with the items
+        res.render('wishlist', { wishlistItems: wishlist.items, message: null });
+    } catch (error) {
+        console.error('Error loading wishlist page:', error);
+        res.status(500).render('wishlist', { message: 'An error occurred while loading your wishlist', wishlistItems: [] });
+    }
+};
+const wishlist = async (req, res) => {
+    try {
+        const { size } = req.body;
+        const productId = req.params.id;
+        const userId = req.session.userId;
+
+        // Check if product exists
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).send('Product not found');
+        }
+
+        // Find or create wishlist
+        let userWishlist = await Wishlist.findOne({ userId });
+
+        // If no wishlist exists, create a new one
+        if (!userWishlist) {
+            userWishlist = new Wishlist({
+                userId: userId,
+                items: [], // Initialize items as an empty array
+                wallet: {
+                    balance: 0,  // Default balance
+                    userId: userId  // Ensure userId is included
+                }
+            });
+        }
+
+        // Ensure that items array is initialized
+        if (!userWishlist.items) {
+            userWishlist.items = []; // Initialize it if undefined
+        }
+
+        // Check if item already exists in the wishlist
+        let existingItem = false;
+        if (userWishlist.items.length > 0) {
+            existingItem = userWishlist.items.some(item => {
+                return item.productId && 
+                       item.productId.equals(productId) && 
+                       item.selectedSize === size;
+            });
+        }
+
+        // If item exists, return to wishlist page with message
+        if (existingItem) {
+            const populatedWishlist = await Wishlist.findOne({ userId })
+                                                  .populate('items.productId');
+            return res.render('wishlist', {
+                message: 'Product with selected size already in wishlist',
+                wishlistItems: populatedWishlist ? populatedWishlist.items : [],
+                user: req.user
+            });
+        }
+
+        // Add new item to wishlist
+        userWishlist.items.push({
+            productId: productId,
+            selectedSize: size,
+            addedAt: new Date()
+        });
+
+        // Save the updated wishlist
+        await userWishlist.save();
+
+        // Redirect to wishlist page
+        res.redirect('/wishlist');
+
+    } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        res.status(500).send('Error adding to wishlist');
+    }
+};
 
 
         const removeWishlist = async (req, res) => {
@@ -362,15 +431,127 @@ const loadorderStatus = async (req, res) => {
             }
         };
         
-
-        const loadWallet = async (req,res)=>{
-          
+        const loadWallet = async (req, res) => {
             try {
-                res.render('wallet')
-            } catch (error) {
+                const userId = req.session.userId;
+                if (!userId) {
+                    return res.redirect('/login');
+                }
+        
+                // Find the user
+                const user = await User.findById(userId);
                 
+                // Find the user's wallet (if exists)
+                let wallet = await Wallet.findOne({ userId });
+        
+                // If no wallet exists, initialize with default values
+                const walletBalance = wallet ? wallet.balance : 0;
+
+                // Pagination logic
+                const page = parseInt(req.query.page) || 1; // Current page
+                const limit = parseInt(req.query.limit) || 5; // Number of transactions per page
+                const skip = (page - 1) * limit; // Calculate how many transactions to skip
+
+                // Fetch transactions for the current page
+                const transactions = wallet ? wallet.transactions.slice().reverse().slice(skip, skip + limit) : []; // Get transactions for the current page
+
+                // Count total transactions for pagination
+                const totalTransactions = wallet ? wallet.transactions.length : 0; // Count total transactions
+                const totalPages = Math.ceil(totalTransactions / limit); // Calculate total pages
+
+                res.render('wallet', {
+                    user,
+                    walletBalance,
+                    transactions,
+                    currentPage: page,
+                    totalPages,
+                    message: null // Optional: You can pass any message here, such as success or error messages
+                });
+            } catch (error) {
+                console.error('Error while rendering wallet:', error);
+                res.status(500).send('Internal server error');
             }
+        };
+        
+        const createWallet = async (req, res) => {
+            try {
+                const userId = req.session.userId;
+                if (!userId) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'User not authenticated'
+                    });
+                }
+        
+                // Check if the wallet already exists
+                let wallet = await Wallet.findOne({ userId });
+                if (wallet) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Wallet already exists'
+                    });
+                }
+        
+                // Create new wallet
+                wallet = new Wallet({
+                    userId,
+                    balance: 0,  // Initialize balance to 0 or a default amount
+                    transactions: []  // Initialize with an empty array for transactions
+                });
+        
+                // Save the wallet to the database
+                await wallet.save();
+        
+                // Respond with success message
+                res.status(200).json({
+                    success: true,
+                    message: 'Wallet created successfully'
+                });
+            } catch (error) {
+                console.error('Error creating wallet:', error);
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error'
+                });
+            }
+        };
+        
+const addToWishlist = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { productId, selectedSize } = req.body;
+
+        // Check if the product exists
+        const productExists = await Product.findById(productId);
+        if (!productExists) {
+            return res.status(404).json({ message: 'Product not found' });
         }
+
+        // Find or create a wishlist for the user
+        let wishlist = await Wishlist.findOne({ userId: userId });
+        if (!wishlist) {
+            wishlist = new Wishlist({ userId: userId, items: [] });
+        }
+
+        // Check if the product is already in the wishlist
+        const productInWishlist = wishlist.items.find(item => 
+            item.productId.toString() === productId && item.selectedSize === selectedSize
+        );
+
+        if (productInWishlist) {
+            return res.status(400).json({ message: 'Product already in wishlist' });
+        }
+
+        // Add the product to the wishlist
+        wishlist.items.push({ productId: productId, selectedSize: selectedSize });
+        await wishlist.save();
+
+        res.status(200).json({ message: 'Product added to wishlist', wishlist });
+    } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 module.exports={
     loadprofile,
@@ -384,5 +565,7 @@ module.exports={
     wishlist,
     removeWishlist,
     fromWishlist,
-    loadWallet
+    loadWallet,
+    createWallet,
+    addToWishlist
 }

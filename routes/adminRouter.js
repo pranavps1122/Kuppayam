@@ -66,4 +66,25 @@ router.get('/ordermanagement',customerController.loadOrderManagement)
 router.post('/updateOrderStatus',customerController.updateOrderStatus)
 
 
+router.post('/updateOrderStatus', customerController.updateOrderStatus);
+
+router.get('/orderDetails/:orderId',  customerController.loadOrderDetails);
+
+
+router.post('/updateProductStatus', customerController.updateProductStatus);
+
+router.post('/approve-return/:orderid/:productid', customerController.returnApprove);
+router.post('/decline-return/:orderid/:productid', customerController.returnDecline);
+
+router.get('/couponManagement',customerController.LoadCouponManagement)
+router.post('/addCoupons',customerController.addCoupon)
+
+router.get('/deleteCoupon/:id',customerController.deleteCoupon)
+
+router.get('/offerManagement',customerController.LoadOfferManagement)
+
+router.post('/addOffer',customerController.addOffer)
+
+
+
 module.exports=router

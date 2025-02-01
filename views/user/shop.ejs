@@ -486,6 +486,21 @@ body {
     visibility: visible;
     transition: opacity 0.3s ease;
 }
+.original-price {
+    text-decoration: line-through;
+    color: #ff0000;
+    margin-right: 10px;
+}
+
+.discount-price {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+.discount-percentage {
+    color: rgb(255, 0, 0);
+    font-size: 1em;
+}
 
 
 </style>
@@ -549,7 +564,17 @@ body {
                                     <h3 class="product-name">
                                         <%= product.productName %>
                                     </h3>
-                                    <p class="price">₹<%= product.Price %></p>
+            
+                                    <% if (product.discountAmount > 0) { %>
+                                        <p class="price">
+                                            <span class="original-price">₹<%= product.Price %></span>
+                                            <span class="discount-price">₹<%= product.finalPrice %></span>
+                                        </p>
+                                        <p class="discount-percentage"><%= product.discountPercentage%>% off</p>
+                                    <% } else { %>
+                                        <p class="price">₹<%= product.Price %></p>
+                                    <% } %>
+            
                                     <h3>
                                         <% if (product.quantity <= 0) { %>
                                             <span style="color: red;">(Out of Stock)</span>
@@ -565,6 +590,7 @@ body {
                     <p>No products available.</p>
                 <% } %>
             </div>
+            
     
             <div class="pagination">
                 <% if (currentPage > 1) { %>

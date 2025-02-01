@@ -1,8 +1,8 @@
 <style>
 body {
-    font-family: 'Poppins', Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa; /* Light background for the entire page */
+    color: #333; /* Default text color */
     margin: 0;
     padding: 0;
 }
@@ -31,10 +31,10 @@ body {
 }
 
 h1 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
+    font-size: 28px; /* Larger font size for the main heading */
+    color: #2d3748; /* Darker color for headings */
+    text-align: center; /* Center align the heading */
+    margin-bottom: 20px; /* Space below the heading */
 }
 
 h2 {
@@ -99,8 +99,8 @@ h2 {
 .order-total {
     margin-top: 15px;
     text-align: right;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 20px; /* Font size for order total */
+    font-weight: bold; /* Bold text for order total */
     color: #333;
 }
 
@@ -170,22 +170,21 @@ h2 {
 }
 
 .checkout-button {
-    background-color: #2962ff;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    justify-content: center;
-    width: 100%;
-    transition: background-color 0.3s ease;
+    background-color: #4f46e5; /* Button background color */
+    color: white; /* Button text color */
+    padding: 12px; /* Padding inside the button */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Full width button */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
 }
 
 .checkout-button:hover {
-    background-color: #1e4bd8;
+    background-color: #3b3f8c; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
 
 @media (max-width: 768px) {
@@ -213,9 +212,75 @@ h2 {
 
     .checkout-button {
         width: auto;
+        font-size: 14px; /* Smaller font size for buttons on mobile */
     }
 }
 
+.coupon-container {
+    background-color: #e6f7ff; /* Light background for the coupon section */
+    border: 1px solid #cbd5e1; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding around the content */
+    margin-top: 20px; /* Space above the coupon section */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    
+    
+}
+
+.coupon-input {
+    display: flex; /* Flexbox for alignment */
+    gap: 100px; /* Space between input and button */
+    width: 100px;
+}
+
+#couponCode {
+    flex: 1; /* Take up remaining space */
+   
+    margin-left: 200px;
+
+    border-radius: 4px; /* Rounded corners */
+    font-size: 18px; /* Font size */
+    transition: border-color 0.3s; /* Smooth transition for border color */
+    font-size: 14px;
+    width: 300px;
+    padding: 8px 108px;
+    border: none;
+
+}
+
+#couponCode:focus {
+    border-color: #4f46e5; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+#applyCouponButton {
+    background-color: #4f46e5; /* Button background color */
+    color: white; /* Button text color */
+    padding: 10px 20px; /* Padding inside the button */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+}
+
+#applyCouponButton:hover {
+    background-color: #3b3f8c; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+#couponMessage {
+    margin-top: 10px; /* Space above the message */
+    font-weight: bold; /* Bold text */
+    color: red; /* Color for error messages */
+}
+.removeCoupon{
+    background-color: red;
+    color: white;
+    padding: 8px 10px;
+    border: none;
+
+}
 
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -239,8 +304,28 @@ h2 {
                         </div>
                     </div>
                 <% }); %>
+                <div class="coupon-container">
+                    <h2>Apply Coupon</h2>
+                    <form action="/applyCoupon" method="POST" class="coupon-form" id="couponForm">
+                        <div class="coupon-input">
+                            <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" required />
+                            <button type="submit" id="applyCouponButton" class="checkout-button">Apply</button>
+                        </div>
+                        <input type="hidden" id="appliedCouponHidden" name="appliedCoupon" />
+                    </form>
+                </div>
+                
+                <div class="place-order">
+                    <h2>Place Order</h2>
+                    <p>Coupon Applied: <span id="appliedCoupon" style="font-weight: bold; color: green;"></span></p>
+                
+                    <form action="/removeCoupon" method="POST" id="removeCouponForm" style="display: none;">
+                        <button type="submit" id="removeCouponButton" class="removeCoupon">Remove Coupon</button>
+                    </form>
+                </div>
+                
                 <div class="order-total">
-                    <h3>Total: ₹<%= cart.cartTotal %></h3>
+                    <h3>Total: ₹<span id="totalAmount"><%= cart.cartTotal %></span></h3>
                 </div>
             </div>
     
@@ -300,6 +385,7 @@ h2 {
 </div>
   
 <%-include('../../views/partials/user/footer')%>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function selectAddress(card, addressId) {
     document.querySelectorAll('.address-card').forEach(c => {
@@ -401,4 +487,40 @@ document.querySelector('.checkout-form').addEventListener('submit', async functi
         this.submit();
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+        const storedCoupon = sessionStorage.getItem("appliedCoupon");
+        if (storedCoupon) {
+            document.getElementById("appliedCoupon").textContent = storedCoupon;
+            document.getElementById("removeCouponForm").style.display = "block";
+        }
+    });
+
+    document.getElementById("couponForm").addEventListener("submit", function () {
+        const couponCode = document.getElementById("couponCode").value.trim();
+        if (couponCode) {
+            sessionStorage.setItem("appliedCoupon", couponCode);
+            document.getElementById("appliedCouponHidden").value = couponCode; // Store in hidden input
+        }
+    });
+
+    document.getElementById("removeCouponForm").addEventListener("submit", function () {
+        sessionStorage.removeItem("appliedCoupon"); // Remove from session storage
+    });
+
+<% if (message) { %>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                text: '<%= message %>',
+                icon: '<%= messageType === "success" ? "success" : "error" %>', // Set icon based on messageType
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+   
+<% } %>
+
 </script>

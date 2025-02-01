@@ -8,6 +8,7 @@ const profileController=require('../controller/user/profileController')
 const addressController = require('../controller/user/addressController')
 const cartController=require('../controller/user/cartController')
 const shopController = require('../controller/user/shopController')
+const customerController = require('../controller/admin/customerController')
 
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -77,8 +78,9 @@ router.get('/orderstatus/:id',logged,profileController.loadorderStatus)
 router.get('/forgotpassword',userController.loadForgotPassword)
 router.post('/forgotpassword',userController.forgotPassword)
 
+router.post('/cancelorder/:orderid/:productid', logged,shopController.cancelOrder)
+router.post('/returnorder/:orderid/:productid', logged, shopController.returnOrder)
 
-router.get('/cancelorder/:orderid/:productid',logged,shopController.cancelorder)
 
 
 router.get('/wishlist',profileController.loadWishlist)
@@ -92,7 +94,12 @@ router.post('/addtocart/:id',profileController.fromWishlist)
 router.post('/initiate-razorpay', shopController.initiateRazorpay);
 router.post('/verify-payment', shopController.verifyPayment);
 
-router.get('/wallet', profileController.loadWallet);
+
+router.get('/wallet', logged, profileController.loadWallet);
+router.post('/create-wallet', logged, profileController.createWallet);
+
+router.post('/applyCoupon',shopController.applyCoupon)
+router.post('/removeCoupon',shopController.removeCoupon)
 
 
 module.exports=router

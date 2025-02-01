@@ -10,6 +10,7 @@ body {
     color: #333;
     display: flex;
     min-height: 100vh;
+    margin: 0;
 }
 
 a {
@@ -17,10 +18,26 @@ a {
     color: inherit;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #1f1f1f;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
 .main-content {
-    margin-left: 260px;
-    width: calc(100% - 260px);
-    padding: 30px;
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    min-height: calc(100vh - 50px);
+    background-color: #f8f9fa;
+    overflow-y: auto;
 }
 
 .btn {

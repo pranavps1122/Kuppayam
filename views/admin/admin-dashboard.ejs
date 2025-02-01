@@ -3,150 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Order Management</title>
+    <title>Admin Dashboard - Kuppayam</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/sidebar.css">
+    <link rel="stylesheet" href="/styles/admin.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .container {
-            display: flex;
-            width: 100%;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #2d3e50;
-            color: #fff;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 20px 15px;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background-color: #2980b9;
-        }
-
-        .menu-icon {
-            margin-right: 12px;
-            font-size: 18px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: #2980b9;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            width: calc(105% - 260px);
-            padding: 30px 40px;
-            background-color: #fff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            margin-left: 250px;
-         
+            background-color: #f8f9fa;
+            overflow: scroll;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 2px solid #ecf0f1;
-            margin-bottom: 40px;
-            background-color: #2d3e50;
-           
+            padding: 15px 30px;
+            background-color: #1f1f1f;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-left: 60px;
-        }
-
         .logout-btn {
-            padding: 10px 15px;
+            padding: 10px 20px;
             background-color: #e74c3c;
-            color: #fff;
-            border-radius: 4px;
+            color: white;
             text-decoration: none;
+            border-radius: 4px;
             font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-right: 40px;
         }
-
         .logout-btn:hover {
             background-color: #c0392b;
+        }
+        .content-card{
+            width: 1150px;
+        }
+        .footer{
+            width: 1520px;
+        }
+        .main-container {
+            max-width: 1200px; /* Standardized width */
+            margin: 0 auto; /* Centering */
+            padding: 20px; /* Consistent padding */
+            background: white; /* Background for uniformity */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .btn-primary {
+            background-color: #3498db; /* Standard primary button color */
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #e9ecef; /* Standard secondary button color */
+            color: #2d3436;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="sidebar">
-            <div class="user-info">
-                <div class="user-avatar">A</div>
-                <span>Admin</span>
-            </div>
-            <a href="/admin/dashboard" class="menu-item active">
-                <span class="menu-icon">📊</span> Dashboard
-            </a>
-            <a href="/admin/products" class="menu-item">
-                <span class="menu-icon">📦</span> Products
-            </a>
-            <a href="/admin/category" class="menu-item">
-                <span class="menu-icon">📑</span> Category
-            </a>
-            <a href="/admin/customers" class="menu-item">
-                <span class="menu-icon">👥</span> Users
-            </a>
-            <a href="/admin/ordermanagement" class="menu-item">
-                <span class="menu-icon">🛒</span> Orders
-            </a>
-        </nav>
-        <main class="main-content">
-            <div class="header">
-                <div class="logo">Kuppayam</div>
-                <a href="#" class="logout-btn">Logout</a>
-            </div>
-            <!-- Order management content goes here -->
-        </main>
-    </div>
+    <header class="header">
+        <div class="logo">Admin Dashboard</div>
+        <a href="/admin/logout" class="logout-btn">Logout</a>
+    </header>
+    <%- include('./partials/sidebar', { admin, active: 'dashboard' }) %>
+
+
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Admin Dashboard</h2>
+        </div>
+
+        <div class="dashboard-content">
+            <h3>Welcome to the Admin Dashboard</h3>
+            <p>Here you can manage all aspects of the application.</p>
+            <!-- Additional dashboard content can go here -->
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <%- include('../partials/user/footer') %>
+        </div>
+    </footer>
+    <script>
+        // Any additional JavaScript for the dashboard can go here
+    </script>
 </body>
 </html>

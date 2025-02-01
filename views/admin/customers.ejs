@@ -3,280 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Users</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Customer Management - Kuppayam</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/admin.css">
+    <link rel="stylesheet" href="/styles/sidebar.css">
     <style>
-        /* Reset styling */
-        * {
+         body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f8f9fa;
+            overflow:scroll;
+            width: 1000px;
+           
         }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-            flex-direction: column;
-        }
-
-        .container {
-            display: flex;
-            width: 100%;
-        }
-
-        /* Sidebar styling */
-        nav.sidebar {
-    width: 250px;
-    background-color: #2d3e50;
-    color: #fff;
-    padding: 20px;
-    position: fixed;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    overflow-y: auto;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    padding: 20px 15px;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    transition: background-color 0.3s;
-}
-
-.menu-item:hover, .menu-item.active {
-    background-color: #2980b9;
-}
-
-.menu-icon {
-    margin-right: 12px;
-    font-size: 18px;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 50px;
-}
-
-.user-avatar {
-    width: 50px;
-    height: 50px;
-    background-color: #2980b9;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    margin-right: 15px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            padding: 20px;
-            width: calc(100% - 260px);
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .main-content h2 {
+        .logo {
             font-size: 24px;
-            margin-bottom: 20px;
-            color: #2c3e50;
+            font-weight: bold;
         }
 
-        .search-bar {
+      
+
+        .page-header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+            
         }
 
-        .search-input {
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            width: 250px;
-            margin-right: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: #fff;
+        
+        .add-btn {
+            background-color: #20c997;
+            color: white;
             border: none;
+            padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
         }
 
-        .btn:hover {
-            background-color: #2980b9;
+        .search-bar input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
+            background: white;
+            border-radius: 8px;
             border-collapse: collapse;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-top: 20px;
         }
 
         th, td {
-            padding: 14px 20px;
+            padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid #dee2e6;
         }
 
         th {
-            background-color: #f5f7fa;
-            color: #2d3e50;
+            background-color: #f8f9fa;
+            font-weight: 500;
         }
 
-        tr:hover {
-            background-color: #f9f9f9;
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 4px;
         }
 
-        .pagination {
+        .btn-edit {
+            background-color: #20c997;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-deactivate {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        img {
+            width: 50px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+                .pagination {
             display: flex;
             justify-content: center;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        .pagination a {
-            margin: 0 5px;
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .pagination .btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             text-decoration: none;
             color: #333;
-            transition: background-color 0.3s ease;
         }
 
-        .pagination a.active {
-            background-color: #3498db;
+        .pagination .btn-active {
+            background-color: #007bff;
             color: #fff;
-            border-color: #3498db;
-        }
-
-        .pagination a:hover {
-            background-color: #ecf0f1;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .main-content {
-                margin-left: 210px;
-                padding: 15px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .search-bar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .search-input {
-                width: 100%;
-                margin-bottom: 10px;
-            }
+            pointer-events: none;
         }
         .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-        background-color: #2d3e50;
-        color: white;
-    }
-
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: white;
-        margin-left: 300px;
-    }
-
-    .logout-btn-container {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .logout-btn {
-        padding: 10px 20px;
-        background-color: #e74c3c;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background-color 0.3s, transform 0.3s ease;
-    }
-
-    .logout-btn:hover {
-        background-color: #c0392b;
-        transform: translateY(-2px);
-    }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #1f1f1f;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 40px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .main-content{
+            margin-top: 10px;
+            
+            
+        }
+        .content-card{
+            width: 1150px;
+        }
+        .footer{
+            width: 1520px;
+        }
+        .main-container {
+            max-width: 1200px; /* Standardized width */
+            margin: 0 auto; /* Centering */
+            padding: 20px; /* Consistent padding */
+            background: white; /* Background for uniformity */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .btn-primary {
+            background-color: #3498db; /* Standard primary button color */
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #e9ecef; /* Standard secondary button color */
+            color: #2d3436;
+        }
     </style>
- <header class="header">
-    <div class="logo">
-        Kuppayam 
-    </div>
-    <div class="logout-btn-container">
-        <a href="/admin/logout" class="logout-btn">
-            Logout
-        </a>
-    </div>
-</header>
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <%- include('../partials/admin/sidebar') %>
-            
-        </div>
+    <header class="header">
+        <div class="logo">Admin Dashboard</div>
+        <a href="/admin/logout" class="logout-btn">Logout</a>
+    </header>
+    
+    <%- include('./partials/sidebar') %>
 
-        <div class="main-content">
-            <h2>Users List</h2>
-
-            <div class="search-bar">
-                <form action="/admin/customers" method="GET">
-                    <input type="text" class="search-input" name="search" placeholder="Search users..." value="<%= search %>">
-                    <button type="submit" class="btn">Search</button>
-                </form>
+    <main class="main-content">
+        <div class="content-card">
+            <div class="table-header">
+                <h2 class="table-title">Users List</h2>
+                <div class="search-bar">
+                    <form action="/admin/customers" method="GET">
+                        <input type="text" class="search-input" name="search" placeholder="Search users..." value="<%= search %>">
+                        <button type="submit" class="btn">Search</button>
+                    </form>
+                </div>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -288,20 +219,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% users.forEach(user => { %>
+                    <% if (Array.isArray(users) && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user._id %></td>
+                                <td><%= user.name %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.Status ? 'Active' : 'Unblock' %></td>
+                                <td>
+                                    <button class="btn" onclick="userinfo('<%= user._id %>', '<%= user.Status ? 'Block' : 'Unblock' %>')">
+                                        <%= user.Status ? 'Block' : 'Unblock' %>
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
                         <tr>
-                            <td><%= user._id %></td>
-                            <td><%= user.name %></td>
-                            <td><%= user.email %></td>
-                            <td><%= user.Status ? 'Active' : 'Unblock' %></td>
-                            <td>
-                                <button class="btn" onclick="userinfo('<%= user._id %>', '<%= user.Status ? 'Block' : 'Unblock' %>')">
-                                    <%= user.Status ? 'Block' : 'Unblock' %>
-                                </button>
-                                
-                            </td>
+                            <td colspan="5" style="text-align: center;">No users found.</td>
                         </tr>
-                    <% }); %>
+                    <% } %>
                 </tbody>
             </table>
 
@@ -309,18 +245,20 @@
                 <% if (currentPage > 1) { %>
                     <a href="/admin/customers?page=<%= currentPage - 1 %>&search=<%= search %>">Previous</a>
                 <% } %>
-
                 <% for (let i = 1; i <= totalPages; i++) { %>
                     <a href="/admin/customers?page=<%= i %>&search=<%= search %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
                 <% } %>
-
                 <% if (currentPage < totalPages) { %>
                     <a href="/admin/customers?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
                 <% } %>
             </div>
         </div>
-    </div>
-
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <%- include('../partials/user/footer') %>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function userinfo(userId, action) {

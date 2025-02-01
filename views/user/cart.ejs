@@ -229,13 +229,16 @@ body {
                         <div class="item-details">
                             <% if (item.productId) { %>
                                 <h3><%= item.productId.productName %></h3>
-                                <p class="price">₹<%= item.productId.Price %></p>
+                                <p class="total">Price: ₹<%= item.price * item.quantity %></p>
                             <% } else { %>
                                 <h3>Unknown Product</h3>
                             <% } %>
                             <p class="quantity">Quantity: <%= item.quantity %></p>
                             <p class="quantity">Size: <%= item.size %></p>
-                            <p class="total">Total: ₹<%= item.productId ? item.productId.Price * item.quantity : 'N/A' %></p>
+                            
+                           
+                            <p class="total">Total: ₹<%= item.price * item.quantity %></p>
+                            
                             
                         </div>
                         <div class="item-actions">
@@ -262,7 +265,7 @@ body {
                                     <button 
                                         type="submit" 
                                         class="quantity-btn increase" 
-                                        <%= item.quantity >= 10 ? 'disabled' : '' %>>
+                                        <%= item.quantity >= 5 ? 'disabled' : '' %>>
                                         <span>+</span>
                                     </button>
                                 </form>

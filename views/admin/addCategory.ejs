@@ -4,114 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuppayam Admin - Add Category</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/sidebar.css">
+    <link rel="stylesheet" href="/styles/admin.css">
     <style>
-        * {
+   
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f8f9fa;
+            overflow: scroll;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fc;
-            color: #333;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            background: linear-gradient(135deg, #ffffff, #f3f6fa);
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
+        /* Header Styles */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
+            padding: 15px 30px;
+            background-color: #1f1f1f;
+            color: white;
+            position: fixed;
+            width: 97%;
+            height: 64px;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .header h1 {
-            font-size: 28px;
+        .logo {
+            font-size: 24px;
             font-weight: bold;
-            color: #2980b9;
         }
 
-        .header span {
-            font-size: 16px;
-            color: #7f8c8d;
+        .logout-btn {
+            padding: 8px 20px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+     
+     
+
+        /* Form Container */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-size: 16px;
-            color: #34495e;
-            font-weight: 600;
+            font-size: 15px;
+            color: #2d3436;
+            font-weight: 500;
         }
 
         input[type="text"],
         textarea {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ccd1d9;
+            border: 1px solid #dfe6e9;
             border-radius: 6px;
             font-size: 14px;
-            color: #495057;
-            background-color: #fdfdfd;
+            color: #2d3436;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            outline: none;
         }
 
         textarea {
             height: 120px;
             resize: vertical;
-        }
-
-        input:focus,
-        textarea:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-            outline: none;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .radio-option input {
-            width: 18px;
-            height: 18px;
+            line-height: 1.5;
         }
 
         .button-group {
             display: flex;
             gap: 15px;
-            margin-top: 25px;
+            margin-top: 30px;
         }
 
         .btn {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 500;
             border-radius: 6px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -125,239 +145,141 @@
         }
 
         .btn-secondary {
-            background-color: #f3f6fa;
-            color: #34495e;
-            border: 1px solid #ccd1d9;
+            background-color: #e9ecef;
+            color: #2d3436;
         }
 
         .btn-secondary:hover {
-            background-color: #ecf0f1;
+            background-color: #dee2e6;
+            transform: translateY(-2px);
         }
 
+        /* Footer Styles */
         .footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 14px;
-            color: #7f8c8d;
+            background: #1f1f1f;
+            color: white;
+            padding: 90px 30px;
+            width: 108%;
+            margin-left: -100px;
+
+           
+
         }
 
-        .footer a {
-            color: #3498db;
-            text-decoration: none;
+        .footer-content {
+            max-width: 1300px;
+            margin: 10 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
 
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        nav.sidebar {
-            width: 250px;
-            background-color: #2d3e50;
-            color: #fff;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            overflow-y: auto;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 20px 15px;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            transition: background-color 0.3s;
-        }
-
-        
-        .menu-item:hover, .menu-item.active {
-            background-color: #2980b9;
-        }
-
-
-        .menu-icon {
-            margin-right: 12px;
+        .footer-section h3 {
+            margin-bottom: 20px;
             font-size: 18px;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px;
+        .footer-section ul {
+            list-style: none;
         }
 
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: #2980b9;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-size: 20px;
-            font-weight: bold;
+        .footer-section ul li {
+            margin-bottom: 10px;
         }
 
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-      
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: #2980b9;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 14px;
-            font-size: 16px;
-            color: #ecf0f1;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            transition: background-color 0.3s, transform 0.3s ease;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background-color: #2980b9;
-        }
-        a{
+        .footer-section ul li a {
+            color: #ffffff;
             text-decoration: none;
+            transition: color 0.2s;
         }
 
-        .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-        background-color: #2d3e50;
-        color: white;
-    }
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
 
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: white;
-        margin-left: 300px;
-    }
-
-    .logout-btn-container {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .logout-btn {
-        padding: 10px 20px;
-        background-color: #e74c3c;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background-color 0.3s, transform 0.3s ease;
-    }
-
-    .logout-btn:hover {
-        background-color: #c0392b;
-        transform: translateY(-2px);
-    }
-
-
+        /* Toast Notification Styles */
+        .swal2-toast {
+            background: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            border-radius: 8px;
+        }
+    
+        .main-container {
+            max-width: 1200px; /* Standardized width */
+            margin: 0 auto; /* Centering */
+            padding: 20px; /* Consistent padding */
+            background: white; /* Background for uniformity */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .btn-primary {
+            background-color: #3498db; /* Standard primary button color */
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #e9ecef; /* Standard secondary button color */
+            color: #2d3436;
+        }
     </style>
-
-<header class="header">
-    <div class="logo">
-        Kuppayam 
-    </div>
-    <div class="logout-btn-container">
-        <a href="/admin/logout" class="logout-btn">
-            Logout
-        </a>
-    </div>
-</header>
+        <%- include('./partials/sidebar') %>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="user-info">
-            <div class="user-avatar">A</div>
-            <span>Admin</span>
-        </div>
-        <a href="/admin/dashboard" class="menu-item">
-            <span class="menu-icon">📊</span> Dashboard
-        </a>
-        <a href="/admin/products" class="menu-item active">
-            <span class="menu-icon">📦</span> Products
-        </a>
-        <a href="/admin/category" class="menu-item">
-            <span class="menu-icon">📑</span> Category
-        </a>
-     
-       
-        <a href="/admin/customers" class="menu-item">
-            <span class="menu-icon">👥</span> Users
-        </a>
-
-        <a href="/admin/ordermanagement" class="menu-item ">
-            <span class="menu-icon">🛒</span> Orders
-        </a>
-       
-    </nav>
+    <!-- Header -->
  
-   
-    <div class="container">
-        
-        
-        <form action="/admin/addCategory" method="POST">
-            <div class="form-group">
-                <label for="categoryName">Category Name</label>
-                <input type="text" id="categoryName" name="categoryName" placeholder="Enter category name" required>
-            </div>
+    <header class="header">
+        <div class="logo">Admin Dashboard</div>
+        <a href="/admin/logout" class="logout-btn">Logout</a>
+    </header>
+    <div class="page-container">
+      
 
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" placeholder="Enter category description" required></textarea>
-            </div>
+        <main class="main-content">
+            <div class="form-container">
+                <h1 class="page-title">Add New Category</h1>
+                
+                <form action="/admin/addCategory" method="POST">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name</label>
+                        <input 
+                            type="text" 
+                            id="categoryName" 
+                            name="categoryName" 
+                            placeholder="Enter category name"
+                            required
+                        >
+                    </div>
 
-    
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Add Category</button>
-                <a href="/admin/category" class="btn btn-secondary">Cancel</a>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            placeholder="Enter category description"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                        <a href="/admin/category" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </main>
     </div>
 
-    <div class="footer">
-        © 2025 <a href="#">Kuppayam</a>. All Rights Reserved.
-    </div>
+    <%- include('../partials/user/footer') %>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-<% if (message) { %>
+    
+    <% if (message) { %>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -367,10 +289,13 @@
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'swal2-toast'
+                }
             });
         });
     </script>
-<% } %>
+    <% } %>
 </body>
 </html>

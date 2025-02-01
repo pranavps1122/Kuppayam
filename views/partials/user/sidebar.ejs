@@ -1,0 +1,28 @@
+<div class="sidebar">
+    <div class="sidebar-content">
+        <div class="sidebar-profile">
+            <div class="profile-avatar">
+                <%= user.name.charAt(0).toUpperCase() %>
+            </div>
+            <h2><%= user.name %></h2>
+            <p><%= user.email %></p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/profile" class="nav-item <%= active === 'profile' ? 'active' : '' %>">
+                <i class="fas fa-user"></i> Profile 
+            </a>
+            <a href="/orderDetails" class="nav-item <%= active === 'orders' ? 'active' : '' %>">
+                <i class="fas fa-shopping-bag"></i> My Orders
+            </a>
+            <a href="/address" class="nav-item <%= active === 'address' ? 'active' : '' %>">
+                <i class="fas fa-map-marker-alt"></i> Addresses
+            </a>
+            <a href="/wallet" class="nav-item <%= active === 'wallet' ? 'active' : '' %>">
+                <i class="fas fa-wallet"></i> Wallet
+            </a>
+            <a href="/logout" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+</div> 

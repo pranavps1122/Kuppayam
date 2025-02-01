@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
+    <title>Kuppayam - Sign Up</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -13,471 +14,327 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #141e30, #243b55); /* Dark gradient */
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            background: linear-gradient(135deg, #f6f6f6 0%, #ffffff 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            text-align: center;
-        }
-
-        /* Background animation */
-        .background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        .gradient {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent);
-            animation: gradientMove 10s infinite linear;
-        }
-
-        @keyframes gradientMove {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .particle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            animation: moveParticle 5s infinite linear;
-        }
-
-        .particle:nth-child(1) {
-            top: 10%;
-            left: 20%;
-            animation-duration: 6s;
-        }
-
-        .particle:nth-child(2) {
-            top: 30%;
-            left: 70%;
-            animation-duration: 8s;
-        }
-
-        .particle:nth-child(3) {
-            top: 60%;
-            left: 40%;
-            animation-duration: 10s;
-        }
-
-        .particle:nth-child(4) {
-            top: 80%;
-            left: 10%;
-            animation-duration: 12s;
-        }
-
-        .particle:nth-child(5) {
-            top: 50%;
-            left: 80%;
-            animation-duration: 7s;
-        }
-
-        @keyframes moveParticle {
-            0% {
-                transform: translateY(0px) scale(1);
-            }
-            50% {
-                transform: translateY(-50px) scale(1.5);
-            }
-            100% {
-                transform: translateY(0px) scale(1);
-            }
+            padding: 20px;
         }
 
         .signup-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px; /* More rounded corners */
-            padding: 25px 30px;
-            width: 90%;
-            max-width: 320px; /* Smaller width */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            animation: popIn 0.5s ease-out;
-        }
-
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .signup-container h2 {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .signup-container form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .signup-container form .form-group {
-            margin-bottom: 15px;
-        }
-
-        .signup-container form label {
-            font-size: 13px;
-            color: #666;
-            display: block;
-            margin-bottom: 6px;
-            text-align: left;
-        }
-
-        .signup-container form input {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            padding: 12px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f4f4f4;
-            transition: all 0.3s ease;
+            max-width: 420px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
 
-        .signup-container form input:focus {
-            border-color: #4dabf7;
-            box-shadow: 0 0 5px rgba(77, 171, 247, 0.8);
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-logo h1 {
+            font-size: 28px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .brand-tagline {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #f8f8f8;
+        }
+
+        .form-group input:focus {
+            border-color: #333;
+            background: white;
             outline: none;
         }
 
-        .signup-container form .btn {
-            background: linear-gradient(to right, #76e4f7, #4dd4e1);
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 12px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .signup-container form .btn:hover {
-            background: linear-gradient(to right, #4dd4e1, #3a94d1);
-            transform: translateY(-2px);
-        }
-
-        .signup-container p {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #333;
-        }
-
-        .signup-container p a {
-            color: #4dabf7;
-            font-weight: bold;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .signup-container p a:hover {
-            color: #3a94d1;
-        }
-
-        /* Google sign-in button */
-        .google-btn {
-            background-color: #4285F4;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 10px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .google-btn:hover {
-            background-color: #357AE8;
-            transform: translateY(-2px);
-        }
-
         .error-message {
-            color: red;
+            color: #dc3545;
             font-size: 12px;
             margin-top: 5px;
-            text-align: left;
+            display: none;
         }
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #141e30, #243b55); /* Dark gradient */
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #000;
             color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            margin: 24px 0;
             text-align: center;
+            position: relative;
         }
 
-        .signup-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px; /* More rounded corners */
-            padding: 25px 30px;
-            width: 90%;
-            max-width: 320px; /* Smaller width */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            animation: popIn 0.5s ease-out;
+        .divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #eee;
         }
 
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .divider::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #eee;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            color: #666;
+            font-size: 14px;
         }
 
         .google-btn {
-            background-color: #4285F4;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
             text-decoration: none;
-            width: 100%; /* Full width button */
-            margin-top: 15px;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-top: 10px;
         }
 
         .google-btn:hover {
-            background-color: #357AE8;
-            transform: translateY(-2px);
+            border-color: #ddd;
+            background: #f8f8f8;
         }
 
-        .google-btn .google-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+        .login-link {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
         }
 
-        .google-btn span {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
-            text-align: left;
-        }
-
-        .signup-container p {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #333;
-        }
-
-        .signup-container p a {
-            color: #4dabf7;
-            font-weight: bold;
+        .login-link a {
+            color: #000;
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-weight: 600;
         }
 
-        .signup-container p a:hover {
-            color: #3a94d1;
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="background">
-        <div class="gradient"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-
     <div class="signup-container">
-        <h2>Create an Account</h2>
+        <div class="brand-logo">
+            <h1>Kuppayam</h1>
+            <div class="brand-tagline">Join Our Fashion Community</div>
+        </div>
 
         <form id="signform" action="/signup" method="POST">
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Enter your full name" >
+                <input type="text" id="name" name="name" placeholder="Enter your full name">
                 <div id="error1" class="error-message"></div>
             </div>
-       
+
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" >
+                <input type="email" id="email" name="email" placeholder="Enter your email">
                 <div id="error2" class="error-message"></div>
             </div>
-    
+
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
-               
+                <div id="error3" class="error-message"></div>
             </div>
-  
+
             <div class="form-group">
-               
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" >
-                
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+                <div id="error4" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password" >
+                <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password">
                 <div id="error5" class="error-message"></div>
             </div>
-            <button type="submit" class="btn">Sign Up</button>
-            <p>Or sign up with:</p>
-            <a href="/auth/google" class="google-btn" id="google-signin">Sign in with Google</a>
+
+            <button type="submit" class="btn">Create Account</button>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <a href="/auth/google" class="google-btn" id="google-signin">
+                <span>Continue with Google</span>
+            </a>
         </form>
-        <p>Already have an account? <a href="login">Login here</a></p>
+
+        <div class="login-link">
+            Already have an account? <a href="/login">Sign In</a>
+        </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const signForm = document.getElementById('signform');
+        
+        signForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const cPassword = document.getElementById('confirm-password').value.trim();
+            
+            if (name.length < 3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Name',
+                    text: 'Name must be at least 3 characters long',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Email',
+                    text: 'Please enter a valid email address',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+            
+            if (phone && !isValidPhone(phone)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Phone',
+                    text: 'Please enter a valid 10-digit phone number',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+            
+            if (password.length < 6) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Weak Password',
+                    text: 'Password must be at least 6 characters long',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+
+            if (password !== cPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Password Mismatch',
+                    text: 'Passwords do not match',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Account created successfully',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            }).then(() => {
+                signForm.submit();
+            });
+        });
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function isValidPhone(phone) {
+            const phoneRegex = /^\d{10}$/;
+            return phoneRegex.test(phone.replace(/[- )(]/g, ''));
+        }
+    });
+    </script>
 </body>
 </html>
-// <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    const signForm = document.getElementById('signform');
-    
-    signForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const cPassword=document.getElementById('confirm-password').value.trim()
-        
-        
-        if (name.length < 3) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Name',
-                text: 'Name must be at least 3 characters long',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            return;
-        }
-        
-        if (!isValidEmail(email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid email address',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            return;
-        }
-        
-        if (phone && !isValidPhone(phone)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Phone',
-                text: 'Please enter a valid phone number',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            return;
-        }
-        
-        if (password.length < 6) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Weak Password',
-                text: 'Password must be at least 6 characters long',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            return;
-        }
-        if (password!==cPassword) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Not matching',
-                text: 'Password are not matching',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            return;
-        }
-        
-     
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Form submitted successfully',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
-        }).then(() => {
-            signForm.submit();
-        });
-    });
-    
-    // Helper functions for validation
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-    
-    function isValidPhone(phone) {
-        const phoneRegex = /^\d{10}$/;  // Assumes 10-digit phone number
-        return phoneRegex.test(phone.replace(/[- )(]/g, '')); // Remove common phone number formatting
-    }
-});
-
-</script>

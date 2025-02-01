@@ -5,73 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Management - Kuppayam</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/sidebar.css">
+    <link rel="stylesheet" href="/styles/admin.css">
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa;
+            overflow: scroll;
         }
 
         .main-content {
             margin-left: 255px;
             padding: 20px;
-            min-height: 100vh;
+            min-height: calc(100vh - 100px);
             background-color: #f8f9fa;
+            margin-bottom: 60px;
         }
 
-        nav.sidebar {
-            width: 210px;
-            background-color: #2d3e50;
-            color: #fff;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            overflow-y: auto;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 20px 15px;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            transition: background-color 0.3s;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background-color: #2980b9;
-        }
-
-        .menu-icon {
-            margin-right: 12px;
-            font-size: 18px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: #2980b9;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
+      
         .logo {
             font-size: 24px;
             font-weight: bold;
@@ -94,7 +47,7 @@
         }
 
         table {
-            width: 100%;
+            width: 1150px;
             background: white;
             border-radius: 8px;
             border-collapse: collapse;
@@ -158,21 +111,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            background-color: #2d3e50;
+            background-color: #1f1f1f;
             color: white;
-            box-sizing: border-box;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            margin-left: 300px;
-        }
-
-        .logout-btn-container {
-            display: flex;
-            justify-content: flex-end;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
         .logout-btn {
@@ -183,12 +127,12 @@
             border-radius: 4px;
             font-size: 16px;
             font-weight: bold;
-            transition: background-color 0.3s, transform 0.3s ease;
+            margin-right: 40px;
+            transition: background-color 0.3s;
         }
 
         .logout-btn:hover {
             background-color: #c0392b;
-            transform: translateY(-2px);
         }
 
         .pagination {
@@ -215,7 +159,8 @@
         }
 
         .btn-primary {
-            color: rgb(17, 175, 67);
+            background-color: #3498db;
+            color: white;
         }
 
         .btn-primary:hover {
@@ -230,28 +175,75 @@
             pointer-events: none;
         }
 
+        .order-details {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .product-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .product-detail img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .view-btn{
+            background-color: black;
+            text-decoration: none;
+            padding: 3px 9px;
+            font-size: 13px;
+            color: white;
+            border-radius: 2px;
+            box-shadow: inset;
+        }
+        .footer {
+            background-color: #2d3e50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            
+            margin-top: auto; /* Pushes footer to bottom */
+        }
+
+        .footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #2d3436;
+        }
+
     </style>
 </head>
 
 <body>
     <header class="header">
-        <div class="logo">Kuppayam</div>
-        <div class="logout-btn-container">
-            <a href="/admin/logout" class="logout-btn">Logout</a>
-        </div>
+        <div class="logo">Admin Dashboard</div>
+        <a href="/admin/logout" class="logout-btn">Logout</a>
     </header>
-
-    <nav class="sidebar" aria-label="Sidebar Navigation">
-        <div class="user-info">
-            <div class="user-avatar" aria-label="Admin">A</div>
-            <span>Admin</span>
-        </div>
-        <a href="/admin" class="menu-item"><span class="menu-icon">📊</span> Dashboard</a>
-        <a href="/admin/products" class="menu-item"><span class="menu-icon">📦</span> Products</a>
-        <a href="/admin/category" class="menu-item"><span class="menu-icon">📑</span> Category</a>
-        <a href="/admin/customers" class="menu-item"><span class="menu-icon">👥</span> Users</a>
-        <a href="/admin/ordermanagement" class="menu-item active"><span class="menu-icon">🛒</span> Orders</a>
-    </nav>
+    <%- include('./partials/sidebar') %>
 
     <main class="main-content">
         <div class="page-header">
@@ -266,49 +258,60 @@
             <thead>
                 <tr>
                     <th>Order ID</th>
-                    <th>Image</th>
+                    <th>Details</th>
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Total Price</th>
                     <th>Status</th>
                     <th>Address</th>
                     <th>Payment Method</th>
-                    <th>Actions</th>
+               
                 </tr>
             </thead>
             <tbody id="ordersBody">
                 <% if (orders.length > 0) { %>
                     <% orders.forEach(order => { %>
-                        <% order.orderedItem.forEach(item => { %>
-                            <tr>
-                                <td><%= item._id %></td>
-                                <td><img class="item-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"></td>
-                                <td><%= item.productId.productName %></td>
-                                <td><%= item.quantity %></td>
-                                <td>₹<%= item.totalProductPrice %></td>
-                                <td><span class="status-badge"><%= item.productStatus %></span></td>
-                                <td>
-                                    <%= order.deliveryAddress.length > 0 
-                                        ? `${order.deliveryAddress[0].street}, ${order.deliveryAddress[0].city}, ${order.deliveryAddress[0].country}` 
-                                        : 'Address not available' %>
-                                </td>
-                                <td><%= order.paymentMethod %></td>
-                                <td>
-                                    <form action="/admin/updateOrderStatus" method="POST" style="display: inline;">
-                                        <input type="hidden" name="productId" value="<%= item.productId._id %>">
-                                        <input type="hidden" name="orderId" value="<%= order._id %>">
-                                        <select name="status" class="btn-update">
-                                            <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
-                                            <option value="Shipped" <%= item.productStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                            <option value="Delivered" <%= item.productStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                            <option value="Cancelled" <%= item.productStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                        </select>
-                                        <button type="submit" class="btnupdate btn-update">Update</button>
-                                    </form>
-                                </td>
-                                
-                            </tr>
-                        <% }); %>
+                        <tr>
+                            <td><%= order._id %></td>
+                            <td>
+                                <a href="/admin/orderDetails/<%= order._id %>" class="view-btn">View</a>
+                            </td>
+                            <td>
+                                <div id="details-<%= order._id %>" class="order-details" style="display: none;">
+                                    <% order.orderedItem.forEach(item => { %>
+                                        <div class="product-detail">
+                                            <img class="item-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+                                            <div>
+                                                <strong><%= item.productId.productName %></strong><br>
+                                                Quantity: <%= item.quantity %><br>
+                                                Price: ₹<%= item.totalProductPrice.toFixed(2) %><br>
+                                                Status: <span class="status-badge"><%= item.productStatus %></span>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </td>
+                            <td>
+                                <% let totalQuantity = 0; %>
+                                <% order.orderedItem.forEach(item => { totalQuantity += item.quantity; }); %>
+                                <%= totalQuantity %>
+                            </td>
+                            <td>
+                                <% let totalPrice = 0; %>
+                                <% order.orderedItem.forEach(item => { totalPrice += item.totalProductPrice; }); %>
+                                ₹<%= totalPrice.toFixed(2) %>
+                            </td>
+                            <td>
+                                <span class="status-badge"><%= order.orderedItem[0].productStatus %></span>
+                            </td>
+                            <td>
+                                <%= order.deliveryAddress.length > 0 
+                                    ? `${order.deliveryAddress[0].street}, ${order.deliveryAddress[0].city}, ${order.deliveryAddress[0].country}` 
+                                    : 'Address not available' %>
+                            </td>
+                            <td><%= order.paymentMethod %></td>
+                        
+                        </tr>
                     <% }); %>
                 <% } else { %>
                     <tr>
@@ -319,11 +322,33 @@
         </table>
 
         <div class="pagination">
-            <a href="#" class="btn2">Previous</a>
-            <a href="#" class="btn2 btn-active">1</a>
-            <a href="#" class="btn2">2</a>
-            <a href="#" class="btn2">Next</a>
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>" class="btn btn-primary">Previous</a>
+            <% } %>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>" class="btn <%= currentPage === i ? 'btn-active' : '' %>"><%= i %></a>
+            <% } %>
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>" class="btn btn-primary">Next</a>
+            <% } %>
         </div>
     </main>
+
+    <footer class="footer">
+        <div class="container">
+            <%- include('../partials/user/footer') %>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDetails(orderId) {
+            const details = document.getElementById(`details-${orderId}`);
+            if (details.style.display === "none") {
+                details.style.display = "block";
+            } else {
+                details.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

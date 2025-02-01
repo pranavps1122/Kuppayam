@@ -2,7 +2,7 @@
         const User=require('../../model/userSchema')
         const Cart=require('../../model/cartSchema')
         const Address=require('../../model/addressSchema')
-
+        const Offer =require('../../model/offerSchema')
 
         const loadCart = async (req, res) => {
             try {
@@ -38,7 +38,17 @@
                 const userId = req.session.userId;
                 console.log('product size:', size);
                 const product = await Product.findOne({ _id: id, "stock.size": size });
-            
+                const offerProduct = await Offer.findOne({ productId: id});
+
+                
+              
+                let discountedPrice = product.Price;
+
+                
+                if (offerProduct && offerProduct.discount) {
+                    const discountAmount = Math.round(product.Price * offerProduct.discount / 100);
+                    discountedPrice = product.Price - discountAmount;
+                }
 
                 console.log('fetched products', product);
                 console.log('done');
@@ -57,15 +67,15 @@
                     cart = new Cart({ userId: req.session.userId, item: [], cartTotal: 0 });
                     console.log('cart', cart);
                 }
-
                 const newItem = {
                     productId: id,
                     quantity: 1,
                     size: size,
-                    price: product.Price,
+                    price: discountedPrice,   // Use discounted price here
                     stock: selectedStock.quantity,
-                    total: product.Price
+                    total: discountedPrice * 1,  // Total price based on quantity
                 };
+        
 
                 const Caart = await Cart.findOne({ userId }).populate('item.productId');
                 const itemExists = cart.item.some((item) => item.productId == id && item.size == size);

@@ -1,321 +1,137 @@
+<%- include('../partials/user/header') %>
+<%- include('../partials/user/sidebar-styles') %>
+
 <style>
-    /* Ensure the body and html elements take up the full height */
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-/* Flexbox container for sidebar and main content */
-.page-wrapper {
-    display: flex;
-    min-height: 100vh; /* Full viewport height */
-}
-
-/* Sidebar styling */
-.sidebar {
-    width: 250px; /* Adjust as needed */
-    background-color: #2c3e50;
-    color: white;
-    padding: 2rem 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-}
-
-/* Main content area */
-.main-content {
-    margin-left: 250px; /* Same as sidebar width */
-    padding: 20px;
-    flex-grow: 1; /* Allow to take remaining space */
-}
-
-/* Footer styling */
-.footer {
-    background-color: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
     .orders-container {
-        max-width: 1000px;
-        margin-left: 350px;
-        margin-top: 50px;
-        padding: 20px;
-        font-family: 'Poppins', Arial, sans-serif;
-        background: #ffffff;
+        background: white;
+        padding: 1.5rem;
         border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    }
-
-    h1 {
-        text-align: center;
-        color: #000;
-        margin-bottom: 25px;
-        font-size: 2em;
-        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .order-card {
-        background: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        margin-bottom: 20px;
-        padding: 20px;
-    }
-
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 12px;
-        margin-bottom: 15px;
-    }
-
-    .order-id {
-        color: #000;
-        font-weight: 600;
-        font-size: 1.1em;
-    }
-
-    .order-date {
-        color: #333;
-        font-size: 0.9em;
-    }
-
-    .order-items {
-        margin: 15px 0;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
 
     .item-table {
         width: 100%;
         border-collapse: collapse;
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+
+    .item-table th,
+    .item-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
     }
 
     .item-table th {
-        background: #f5f5f5;
-        padding: 12px;
-        text-align: left;
-        font-weight: 600;
-        color: #000;
-        border-bottom: 2px solid #eee;
-    }
-
-    .item-table td {
-        padding: 15px 12px;
-        border-bottom: 1px solid #eee;
-        vertical-align: middle;
-    }
-
-    .item-image {
-        width: 70px;
-        height: 70px;
-        object-fit: cover;
-        border-radius: 6px;
-        border: 1px solid #eee;
-    }
-
-    .item-name {
-        color: #000;
-        font-size: 1em;
+        background-color: #f8fafc;
         font-weight: 500;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .item-quantity, .item-size {
-        color: #000;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-weight: 500;
-        text-align: center;
-        display: inline-block;
-    }
-
-    .item-price, .item-total {
-        color: #000;
-        font-weight: 500;
-        text-align: right;
-    }
-
-    .cancel-btn {
-        background: #0f0d0d;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.85em;
-    }
-
-    .cancel-btn:hover {
-        background: #151a38;
+        color: #444;
     }
 
     .order-total {
-        display: flex;
-        justify-content: flex-end;
-        padding-top: 15px;
-        margin-top: 15px;
-        border-top: 1px solid #eee;
-        font-weight: 600;
-        font-size: 1.2em;
-        color: #000;
+        text-align: right;
+        font-weight: 500;
+        color: #333;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
     }
 
-    .sidebar {
-        width: 250px;
-        background-color: #2c3e50;
+    .cancel-btn {
+        background-color: #4f46e5;
         color: white;
-        padding: 2rem 0;
-        position: absolute;
-        height: 450px;
-        margin-top: 70px;
-    }
-
-    .sidebar-profile {
-        text-align: center;
-        padding: 0 1rem 2rem;
-    }
-
-    .sidebar-profile h2, .sidebar-profile p {
-        margin: 0;
-        color: white;
-    }
-
-    .sidebar-nav {
-        margin-top: 2rem;
-    }
-
-    .nav-item {
-        display: block;
-        padding: 1rem 2rem;
-        color: rgba(255, 255, 255, 0.8);
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
         text-decoration: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
     }
 
-    .nav-item:hover,
-    .nav-item.active {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-    }
     .pagination {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  gap: 10px;
-}
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
 
-.page-link {
-  text-decoration: none;
-  color: #000000; /* Primary color */
-  font-size: 16px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
+    .page-link {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        color: #444;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
 
-.page-link:hover {
-  background-color: #000000;
-  color: white;
-}
-
-.page-link.active {
-  background-color: #000000;
-  color: white;
-  font-weight: bold;
-  pointer-events: none; /* Disable clicking on the active page */
-}
-
+    .page-link.active {
+        background-color: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+    }
 </style>
 
-<aside class="sidebar">
-    <div class="sidebar-profile">
-        <h2><%= user.name %></h2>
-        <p><%= user.email %></p>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="/profile" class="nav-item ">Profile Overview</a>
-        <a href="/orderDetails" class="nav-item active">My Orders</a>
-        <a href="/address" class="nav-item">Addresses</a>
-        <a href="/logout" class="nav-item">Logout</a>
-    </nav>
-</aside>
+<div class="page-container">
+    <%- include('../partials/user/sidebar', { user: user, active: 'orders' }) %>
+    
+    <main class="main-content">
+        <div class="orders-container">
+            <h1>My Orders</h1>
+            <% if (orders && orders.length > 0) { %>
+                <% orders.forEach(function(order) { %>
+                    <div class="order-card">
+                        <table class="item-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#<%= order._id %></td>
+                                    <td><%= new Date(order.timestamps).toLocaleDateString() %></td>
+                                    <td>
+                                        <a href="/orderstatus/<%= order._id %>" class="cancel-btn">View</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="order-total">
+                            Total: ₹<%= order.orderAmount.toFixed(2) %>
+                        </div>
+                    </div>
+                <% }); %>
 
-<%- include('../../views/partials/user/header') %>
-
-<div class="orders-container">
-    <h1>My Orders</h1>
-    <% orders.forEach(function(order) { %>
-        <div class="order-card">
-            <div class="order-header">
-              
-                
-            </div>
-
-            <div class="order-items">
-                <table class="item-table">
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Order Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="order-id">Order #<%= order.id %></span></td>
-                            <td><span class="order-date"><%= new Date(order.timestamps).toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit',
-                                hour12: true
-                            }) %></span></td>
-                         <td>
-                            <a style="text-decoration: none;" href="/orderstatus/<%= order._id %>" class="cancel-btn">View</a>
-                          </td>
-                          
-                        </tr>
-                    </tbody>
-                </table>
-                
-            </div>
-
-
-            <div class="order-total">
-                Total: ₹<%= order.orderAmount %>
-            </div>
+                <% if (totalPages > 1) { %>
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=<%= currentPage - 1 %>" class="page-link">← Previous</a>
+                        <% } %>
+                        
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="?page=<%= i %>" 
+                               class="page-link <%= currentPage === i ? 'active' : '' %>">
+                                <%= i %>
+                            </a>
+                        <% } %>
+                        
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>" class="page-link">Next →</a>
+                        <% } %>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <p>No orders found.</p>
+            <% } %>
         </div>
-    <% }); %>
+    </main>
 </div>
 
-<div class="pagination">
-    <% if (currentPage > 1) { %>
-      <a href="?page=<%= currentPage - 1 %>&limit=5" class="page-link">Previous</a>
-    <% } %>
-    <% for (let i = 1; i <= totalPages; i++) { %>
-      <a href="?page=<%= i %>&limit=5" class="page-link <%= currentPage === i ? 'active' : '' %>">
-        <%= i %>
-      </a>
-    <% } %>
-    <% if (currentPage < totalPages) { %>
-      <a href="?page=<%= currentPage + 1 %>&limit=5" class="page-link">Next</a>
-    <% } %>
-  </div>
-  
-
-<%- include('../../views/partials/user/footer') %>
+<%- include('../partials/user/footer') %>

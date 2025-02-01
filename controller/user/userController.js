@@ -4,11 +4,14 @@
         const bcrypt=require('bcrypt')
         const {Product} = require('../../model/productSchema');
         const { block } = require('sharp');
+        const Offer = require('../../model/offerSchema')
 
 
         const loadHomepage = async (req, res) => {
             try {
-                const products = await Product.find({}).limit(8)            
+              
+                const products = await Product.find({}).limit(8)    
+                      
 
                
                 res.render("home", {
@@ -209,6 +212,10 @@
                 if (!user) {
                     return res.render('login', { message: 'Invalid email or password' });
                 }
+
+                if (!user.password) {
+                    return res.render('login', { message: 'Please login with google' });
+                }
         
                 if (!user.Status) {
                     return res.render('login', { message: 'Your account has been suspended. Please contact support.' });
@@ -275,16 +282,48 @@
             
             try {
                  const id = req.params.id
+                 console.log('product id',id)
                  const user = req.session.user;
                  const product = await Product.findById(id)
+               
+                 const offerProduct= await Offer.findOne({productId:id})
                  const relatedProducts = await Product.find({
                     category: product.category,   
                     _id: { $ne: id },             
                 }).limit(4);                             
                 
+
+                if(!offerProduct){
+                    return res.render('productDetail',{
+                        product,
+                        relatedProducts,
+                        productId:id,
+                        user
+
+                    })
+                }
+              
+               
+
+                 const discountAmount= Math.round(product.Price*offerProduct.discount/100)
+
+                 const finalRate= product.Price-discountAmount;
+     
+                 console.log('finalrate of product',product.Price)
+
+                 const discountedProduct = {
+                    ...product.toObject(),
+                    finalPrice: finalRate,
+                    discount: offerProduct.discount
+                };
+        
+
+                
+                 
+                
                 
                 res.render('productDetail',{
-                    product,
+                    product:discountedProduct||product,
                     relatedProducts,
                     productId:id,
                     user

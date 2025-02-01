@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/styles/sidebar.css">
+    <link rel="stylesheet" href="/styles/admin.css">
     <style>
         /* Common styles */
         * {
@@ -178,17 +180,17 @@
         }
           /* Sidebar Styling */
           nav.sidebar {
-            width: 250px;
+            width: 270px;
+            margin-top: 100px;
             background-color: #2d3e50;
-            color: #fff;
-            padding: 20px;
+            color: #000000;
+            padding: 30px;
             position: fixed;
-            top: 0;
-            bottom: 0;
+            height: 65vh;
             left: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            top: 0;
+            overflow-y: auto;
         }
-
         .user-info {
             display: flex;
             align-items: center;
@@ -199,7 +201,7 @@
             width: 50px;
             height: 50px;
             background-color: #2980b9;
-            color: #fff;
+            color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -214,7 +216,7 @@
             align-items: center;
             padding: 14px;
             font-size: 16px;
-            color: #ecf0f1;
+            color: #000000;
             margin-bottom: 15px;
             border-radius: 6px;
             transition: background-color 0.3s, transform 0.3s ease;
@@ -231,30 +233,79 @@
         a{
             text-decoration: none;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #1f1f1f;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 40px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #20c997;
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <nav class="sidebar" aria-label="Sidebar Navigation">
-        <div class="user-info">
-            <div class="user-avatar" aria-label="Admin">A</div>
-            <span>Admin</span>
-        </div>
-        <a href="/admin" class="menu-item">
-            <span class="menu-icon">📊</span> Dashboard
-        </a>
-        <a href="/admin/products" class="menu-item active">
-            <span class="menu-icon">📦</span> Products
-        </a>
-        <a href="/admin/category" class="menu-item ">
-            <span class="menu-icon">📑</span> Category
-        </a>
-
-        <a href="/admin/customers" class="menu-item">
-            <span class="menu-icon">👥</span> Users
-        </a>
-      
-    </nav>
-    <%-include('../../views/partials/admin/header')%>
+    <header class="header">
+        <div class="logo">Admin Dashboard</div>
+        <a href="/admin/logout" class="logout-btn">Logout</a>
+    </header>
+    <%- include('./partials/sidebar') %>
+   
 
     <div class="container">
         
@@ -368,3 +419,4 @@
     
 </body>
 </html>
+<%- include('../partials/user/footer') %>
