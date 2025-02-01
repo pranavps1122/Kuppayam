@@ -84,6 +84,8 @@ router.get('/deleteCoupon/:id',customerController.deleteCoupon)
 router.get('/offerManagement',customerController.LoadOfferManagement)
 
 router.post('/addOffer',customerController.addOffer)
+router.get('/deleteOffer/:id',customerController.deleteOffer)
+
 
 
 

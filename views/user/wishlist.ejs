@@ -144,7 +144,7 @@
         }
     }
 </style>
-
+<!-- views/wishlist.ejs -->
 <div class="container-fluid">
     <div class="wishlist-container">
         <h1 class="wishlist-title">My Wishlist</h1>
@@ -153,15 +153,39 @@
             <div class="products-grid">
                 <% wishlistItems.forEach(item => { %>
                     <div class="wishlist-item">
-                        <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productName %>">
+                        <img src="/<%= item.product && item.product.productImage ? item.product.productImage[0] : 'default-image.jpg' %>" 
+                             alt="<%= item.product ? item.product.productName : 'Product Name' %>">
                         <div class="card-body">
-                            <h5 class="card-title"><%= item.productId.productName %></h5>
-                            <p class="card-text">₹<%= item.productId.Price %></p>
-                            <p class="card-text"><%= item.selectedSize %></p>
+                            <h5 class="card-title"><%= item.product ? item.product.productName : 'Product Name' %></h5>
+                            
+                            <% if (item.product.discountPercentage > 0) { %>
+                                <p class="original-price" style="text-decoration: line-through; color: gray;">
+                                    ₹<%= item.product.Price %>
+                                </p>
+                                <p class="offer-price" style="color: green; font-weight: bold;">
+                                    ₹<%= item.product.finalPrice %>
+                                </p>
+                                <p class="discount-percentage" style="color: red; font-size: 14px;">
+                                    (<%= item.product.discountPercentage %>% Off) 
+                                    <%= item.product.discountType === 'product' ? '(Product Discount)' : '(Category Discount)' %>
+                                </p>
+                            <% } else { %>
+                                <p class="offer-price">₹<%= item.product.Price %></p>
+                            <% } %>
+
+                            <p class="card-text">Size: <%= item.selectedSize %></p>
 
                             <div class="button-group">
-                                <a href="/addtocart/<%= item.productId._id %>"><button class="btn" >Add to Cart</button>
-                                <a href="/removeWishlist/<%= item.productId._id %>"><button class="btn">Remove</button></a>
+                                <form action="/addtocart/<%= item.product._id %>" method="POST">
+                                    <input type="hidden" name="size" value="<%= item.selectedSize %>">
+                                    <input type="hidden" name="price" value="<%= item.product.finalPrice %>">
+                                    <input type="hidden" name="discountPercentage" value="<%= item.product.discountPercentage %>">
+                                    <input type="hidden" name="discountType" value="<%= item.product.discountType %>">
+                                    <button type="submit" class="btn">Add to Cart</button>
+                                </form>
+                                <form action="/removeWishlist/<%= item.product._id %>" method="POST">
+                                    <button type="submit" class="btn">Remove</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -177,10 +201,6 @@
         <% } %>
     </div>
 </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <% if (message) { %>
     <script>

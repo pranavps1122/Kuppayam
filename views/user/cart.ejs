@@ -215,79 +215,93 @@ body {
     <h1 class="cart-title">Your Shopping Cart</h1>
 
     <% if (cart && cart.item && cart.item.length > 0) { %>
-      
-            <div class="cart-items">
-                <% cart.item.forEach(item => { %>
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <% if (item.productId) { %>
-                                <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+        <div class="cart-items">
+            <% cart.item.forEach(item => { %>
+                <div class="cart-item">
+                    <div class="item-image">
+                        <% if (item.productId) { %>
+                            <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+                        <% } else { %>
+                            <p>Product not available</p>
+                        <% } %>
+                    </div>
+                    <div class="item-details">
+                        <% if (item.productId) { %>
+                            <h3><%= item.productId.productName %></h3>
+                            
+                            <% if (item.discountInfo && item.discountInfo.discountPercentage > 0) { %>
+                                <div class="price-breakdown">
+                                    <p class="original-price">Original Price: ₹<%= item.discountInfo.originalPrice * item.quantity %></p>
+                                    <div class="discount-badge">
+                                        <% if (item.discountInfo.discountType === 'category') { %>
+                                            <span class="category-tag">
+                                                <%= item.discountInfo.categoryName %> Category: <%= item.discountInfo.discountPercentage %>% off
+                                            </span>
+                                        <% } else { %>
+                                            <span class="product-tag">
+                                                Product Discount: <%= item.discountInfo.discountPercentage %>% off
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <p class="final-price">Price: ₹<%= item.price * item.quantity %></p>
+                                </div>
                             <% } else { %>
-                                <p>Product not available</p>
-                            <% } %>
-                        </div>
-                        <div class="item-details">
-                            <% if (item.productId) { %>
-                                <h3><%= item.productId.productName %></h3>
                                 <p class="total">Price: ₹<%= item.price * item.quantity %></p>
-                            <% } else { %>
-                                <h3>Unknown Product</h3>
                             <% } %>
+                            
                             <p class="quantity">Quantity: <%= item.quantity %></p>
                             <p class="quantity">Size: <%= item.size %></p>
-                            
-                           
                             <p class="total">Total: ₹<%= item.price * item.quantity %></p>
-                            
-                            
-                        </div>
-                        <div class="item-actions">
-                            <div class="quantity-actions">
-                                <!-- Decrease Quantity Button -->
-                                <form action="/updatequantity" method="POST" class="quantity-form">
-                                    <input type="hidden" name="itemId" value="<%= item._id %>">
-                                    <input type="hidden" name="action" value="decrease">
-                                    <button 
-                                        type="submit" 
-                                        class="quantity-btn decrease" 
-                                        <%= item.quantity <= 1 ? 'disabled' : '' %>>
-                                        <span>-</span>
-                                    </button>
-                                </form>
-                        
-                                <!-- Display Current Quantity -->
-                                <span class="quantity-display"><%= item.quantity %></span>
-                        
-                                <!-- Increase Quantity Button -->
-                                <form action="/updatequantity" method="POST" class="quantity-form">
-                                    <input type="hidden" name="itemId" value="<%= item._id %>">
-                                    <input type="hidden" name="action" value="increase">
-                                    <button 
-                                        type="submit" 
-                                        class="quantity-btn increase" 
-                                        <%= item.quantity >= 5 ? 'disabled' : '' %>>
-                                        <span>+</span>
-                                    </button>
-                                </form>
-                            </div>
-                            <a href="/removeproduct/<%= item._id %>"><button class="remove-btn">Remove</button></a>
-                        </div>
-                        
+                        <% } else { %>
+                            <h3>Unknown Product</h3>
+                        <% } %>
                     </div>
-                <% }); %>
-            </div>
+                    <div class="item-actions">
+                        <div class="quantity-actions">
+                            <!-- Decrease Quantity Button -->
+                            <form action="/updatequantity" method="POST" class="quantity-form">
+                                <input type="hidden" name="itemId" value="<%= item._id %>">
+                                <input type="hidden" name="action" value="decrease">
+                                
+                                <button 
+                                    type="submit" 
+                                    class="quantity-btn decrease" 
+                                    <%= item.quantity <= 1 ? 'disabled' : '' %>>
+                                    <span>-</span>
+                                </button>
+                            </form>
+                    
+                            <!-- Display Current Quantity -->
+                            <span class="quantity-display"><%= item.quantity %></span>
+                    
+                            <!-- Increase Quantity Button -->
+                            <form action="/updatequantity" method="POST" class="quantity-form">
+                                <input type="hidden" name="itemId" value="<%= item._id %>">
+                                <input type="hidden" name="action" value="increase">
+                                <button 
+                                    type="submit" 
+                                    class="quantity-btn increase" 
+                                    <%= item.quantity >= 5 ? 'disabled' : '' %>>
+                                    <span>+</span>
+                                </button>
+                            </form>
+                        </div>
+                        <a href="/removeproduct/<%= item._id %>"><button class="remove-btn">Remove</button></a>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
 
-            <div class="cart-summary">
-                <div class="cart-buttons">
-                    <a href="/shop" class="continue-shopping-btn">Continue Shopping</a>
-                   <a href="/Checkout"><button type="submit" class="checkout-btn">Proceed to Checkout</button></a> 
-                </div>
-                <div class="summary-row total">
-                    <span>Total:</span>
-                    <span>₹<%= cart.cartTotal %></span>
-                </div>
+        <div class="cart-summary">
+            <div class="cart-buttons">
+                <a href="/shop" class="continue-shopping-btn">Continue Shopping</a>
+                <a href="/Checkout"><button type="submit" class="checkout-btn">Proceed to Checkout</button></a> 
             </div>
-     
+            <div class="summary-row total">
+                <span>Total:</span>
+                <span>₹<%= cart.cartTotal %></span>
+            </div>
+        </div>
     <% } else { %>
         <div class="empty-cart">
             <p>Your cart is empty</p>

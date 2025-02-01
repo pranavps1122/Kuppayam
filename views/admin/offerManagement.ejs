@@ -383,38 +383,34 @@
                 </thead>
                 <tbody>
                     <% if (offers && offers.length > 0) { %>
-                      <% offers.filter(items => items.offerType === 'product').forEach(items => { %>
-                        <tr>
-                          <!-- Check if productId exists before finding the product -->
-                          <% if (items.productId) { %>
-                            <% const product = products.find(product => product._id.toString() === items.productId.toString()); %>
-                            <td><%= product ? product.productName : 'Product not found' %></td>
-                          <% } else { %>
-                            <td>Product ID not provided</td>
-                          <% } %>
-                          
-                          <td><%= items.discount %></td>
-                          <td><%= new Date(items.startDate).toISOString().split('T')[0] %></td>
-                          <td><%= new Date(items.endDate).toISOString().split('T')[0] %></td>
-                          <td><%= items.status %></td>
-                          <td>
-                            <button class="btn btn-edit">Edit</button>
-                            <button class="btn btn-delete">Delete</button>
-                          </td>
-                        </tr>
-                      <% }) %>
+                        <% offers.filter(item => item.offerType === 'product').forEach(item => { %>
+                            <tr>
+                                <% if (item.productId) { %>
+                                    <td><%= item.productId.productName %></td> 
+                                <% } else { %>
+                                    <td>Product ID not provided</td>
+                                <% } %>
+                                <td><%= item.discount %>%</td>
+                                <td><%= new Date(item.startDate).toISOString().split('T')[0] %></td>
+                                <td><%= new Date(item.endDate).toISOString().split('T')[0] %></td>
+                                <td><%= item.status ? 'Active' : 'Inactive' %></td>
+                                <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <a href="/admin/deleteOffer/<%= item._id %>"><button class="btn btn-delete">Delete</button></a>
+                                </td>
+                            </tr>
+                        <% }) %>
                     <% } else { %>
-                      <tr>
-                        <td colspan="6">No product-based offers available</td>
-                      </tr>
+                        <tr>
+                            <td colspan="6">No product-based offers available</td>
+                        </tr>
                     <% } %>
-                  </tbody>
-                  
-                  
+                </tbody>
+                
             </table>
         </div>
     
-        <!-- Category Offers Section -->
+      
         <div id="category-offers" class="offer-section">
             <table>
                 <thead>
@@ -428,22 +424,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        
-                        <td>Electronics</td>
-                        <td>15%</td>
-                        <td>2025-01-15</td>
-                        <td>2025-02-15</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>
-                            <button class="btn btn-edit">Edit</button>
-                            <button class="btn btn-delete">Delete</button>
-                        </td>
-                    </tr>
+                    <% if (offers && offers.length > 0) { %>
+                        <% offers.filter(item => item.offerType === 'category').forEach(item => { %>
+                            <tr>
+                                <% if (item.categoryId) { %>
+                                    <td><%= item.categoryId.categoryName %></td> <!-- Display Category Name -->
+                                <% } else { %>
+                                    <td>Category not found</td>
+                                <% } %>
+                                <td><%= item.discount %>%</td>
+                                <td><%= new Date(item.startDate).toISOString().split('T')[0] %></td>
+                                <td><%= new Date(item.endDate).toISOString().split('T')[0] %></td>
+                                <td>
+                                    <span class="status-badge <%= item.status ? 'status-active' : 'status-inactive' %>">
+                                        <%= item.status ? 'Active' : 'Inactive' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6">No category-based offers available</td>
+                        </tr>
+                    <% } %>
                 </tbody>
             </table>
         </div>
-    
+        
         <!-- Referral Offers Section -->
         <div id="referral-offers" class="offer-section">
             <table>
@@ -465,8 +476,7 @@
                         <td>45</td>
                         <td><span class="status-badge status-active">Active</span></td>
                         <td>
-                            <button class="btn btn-edit">Edit</button>
-                            <button class="btn btn-delete">Delete</button>
+                            <a href="/route"><button class="btn btn-delete">Delete</button></a>
                         </td>
                     </tr>
                 </tbody>
@@ -498,6 +508,18 @@
                         </select>
                     </div>
         
+                     <!-- Category selection field -->
+                    <div class="form-group" id="categorySelection" style="display: none;">
+                        <label for="categoryId">Select Category</label>
+                        <select id="categoryId" name="categoryId">
+                            <option value="">Select a category</option>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category._id %>"><%= category.categoryName %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+
                     <div class="form-group">
                         <label for="discount">Discount (%)</label>
                         <input type="number" id="discount" name="discount" required min="0" max="100">
@@ -522,97 +544,120 @@
       
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-                    
-        document.getElementById('offerType').addEventListener('change', function() {
-            const productSelection = document.getElementById('productSelection');
-            if (this.value === 'product') {
-                productSelection.style.display = 'block';
-            } else {
-                productSelection.style.display = 'none';
-            }
-        });
-
-        // Initialize with correct display if product offer is selected
-        window.onload = function() {
-            const offerType = document.getElementById('offerType');
-            if (offerType.value === 'product') {
-                document.getElementById('productSelection').style.display = 'block';
-            }
-        };
-
-        // Set minimum date as today for start date
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('startDate').min = today;
-
-        // Update end date minimum when start date changes
-        document.getElementById('startDate').addEventListener('change', function() {
-            document.getElementById('endDate').min = this.value;
-        });
-
-        function closeModal() {
-            document.getElementById('offerModal').style.display = 'none';
-            document.getElementById('offerForm').reset();
-        }
-                    function showTab(tabName) {
-
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
+            document.getElementById('offerType').addEventListener('change', function() {
+                const productSelection = document.getElementById('productSelection');
+                const categorySelection = document.getElementById('categorySelection');
+            
+                if (this.value === 'product') {
+                    productSelection.style.display = 'block';
+                    categorySelection.style.display = 'none';
+                    document.getElementById('productId').setAttribute("required", "true");
+                    document.getElementById('categoryId').removeAttribute("required");
+                } else if (this.value === 'category') {
+                    productSelection.style.display = 'none';
+                    categorySelection.style.display = 'block';
+                    document.getElementById('categoryId').setAttribute("required", "true");
+                    document.getElementById('productId').removeAttribute("required");
+                } else {
+                    productSelection.style.display = 'none';
+                    categorySelection.style.display = 'none';
+                    document.getElementById('productId').removeAttribute("required");
+                    document.getElementById('categoryId').removeAttribute("required");
+                }
             });
-
-            document.querySelectorAll('.offer-section').forEach(section => {
-                section.classList.remove('active');
+            
+            // Initialize with correct display if product or category offer is selected
+            window.onload = function() {
+                const offerType = document.getElementById('offerType');
+                if (offerType.value === 'product') {
+                    document.getElementById('productSelection').style.display = 'block';
+                } else if (offerType.value === 'category') {
+                    document.getElementById('categorySelection').style.display = 'block';
+                }
+            
+                // Set minimum date as today for start date
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').min = today;
+            };
+            
+            // Update end date minimum when start date changes
+            document.getElementById('startDate').addEventListener('change', function() {
+                document.getElementById('endDate').min = this.value;
             });
-
-        
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-
-
-            document.getElementById(tabName + '-offers').classList.add('active');
-        }
-                    function openModal() {
-                        document.getElementById('offerModal').style.display = 'block';
-                    }
-                
-                    function closeModal() {
-                        document.getElementById('offerModal').style.display = 'none';
-                    }
-                
-                    window.onclick = function(event) {
-                        if (event.target == document.getElementById('offerModal')) {
-                            closeModal();
-                        }
-                    };
-        
-                    document.getElementById('offerForm').onsubmit = function(e) {
-                        
-                        const discount = document.getElementById('discount').value;
-                        if (discount < 0 || discount > 100) {
-                            alert("Discount must be between 0 and 100.");
-                            return false; 
-                        }
-                
-                    
-                        closeModal();
-                    };
-
-
-                        
-                <% if (message) { %>
-                document.addEventListener('DOMContentLoaded', function() {
-                    let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; 
-                    Swal.fire({
-                        text: '<%= message.text %>',
-                        icon: iconType, 
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    });
+            
+            function closeModal() {
+                document.getElementById('offerModal').style.display = 'none';
+                document.getElementById('offerForm').reset();
+            }
+            
+            function showTab(tabName) {
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
                 });
+            
+                document.querySelectorAll('.offer-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+            
+                document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+                document.getElementById(tabName + '-offers').classList.add('active');
+            }
+            
+            function openModal() {
+                document.getElementById('offerModal').style.display = 'block';
+            }
+            
+            function closeModal() {
+                document.getElementById('offerModal').style.display = 'none';
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('offerModal')) {
+                    closeModal();
+                }
+            };
+            
+            // Form validation for discount and required fields
+            document.getElementById('offerForm').onsubmit = function(e) {
+                const discount = document.getElementById('discount').value;
+                const offerType = document.getElementById('offerType').value;
+                const productId = document.getElementById('productId').value;
+                const categoryId = document.getElementById('categoryId').value;
+            
+                if (discount < 0 || discount > 100) {
+                    alert("Discount must be between 0 and 100.");
+                    return false;
+                }
+            
+                if (offerType === 'product' && !productId) {
+                    alert("Please select a product.");
+                    return false;
+                }
+            
+                if (offerType === 'category' && !categoryId) {
+                    alert("Please select a category.");
+                    return false;
+                }
+            
+                closeModal();
+            };
+            
+            <% if (message) { %>
+            document.addEventListener('DOMContentLoaded', function() {
+                let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; 
+                Swal.fire({
+                    text: '<%= message.text %>',
+                    icon: iconType, 
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
             <% } %>
-
-                </script>
+            </script>
+            
               
     </main>
 </body>

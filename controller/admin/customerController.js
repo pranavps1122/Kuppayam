@@ -3,7 +3,8 @@ const Order =require('../../model/orderSchema');
 const { Product } = require('../../model/productSchema');
 const Wallet = require('../../model/walletSchema')
 const Coupon = require('../../model/couponSchema')
-const Offer = require('../../model/offerSchema')
+const Offer = require('../../model/offerSchema');
+const Category = require('../../model/categorySchema');
 
 
 
@@ -324,27 +325,40 @@ const LoadCouponManagement = async (req,res)=>{
         }
       }
 
-      const LoadOfferManagement = async (req,res)=>{
-
+      const LoadOfferManagement = async (req, res) => {
         try {
-            const product = await Product.find({ isActive: true });
-            const offer = await Offer.find()
+           
+            const products = await Product.find({ isActive: true });
+            const categories = await Category.find({ isActive: true });
+
+   
+            const offers = await Offer.find().populate('productId').populate('categoryId'); 
             
-            console.log('products',product)
-            console.log('offers',offer)
-              res.render('offerManagement',{
+   
+            console.log('products', products);
+            console.log('offers', offers);
+
+           
+            res.render('offerManagement', {
                 admin: req.session.admin,
                 active: 'offers',
-                message:null,
-                offers:offer,
-                products:product
-               
-            })
+                message: null,
+                offers: offers,
+                products: products,
+                categories: categories 
+            });
         } catch (error) {
-            console.log('error while loading offer',error)
+            console.log('error while loading offer', error);
+            res.render('offerManagement', {
+                admin: req.session.admin,
+                active: 'offers',
+                message: { text: 'Error loading offers', type: 'error' },
+                offers: [],
+                products: [],
+                categories: []
+            });
         }
-
-      }
+    };
 
 
       const addOffer = async (req,res)=>{
@@ -352,45 +366,126 @@ const LoadCouponManagement = async (req,res)=>{
         try {
             const offers = await Offer.find().populate('productId');
             const product = await Product.find({ isActive: true });
+            const categories = await Category.find({ isActive: true });
             
-            const {offerType,discount,startDate,endDate,productId}=req.body;
+            const {offerType,discount,startDate,endDate,productId,categoryId}=req.body;
+            console.log('categoryId',categoryId)
             if(!offerType||!discount||!startDate||!endDate){
                 return res.render('offerManagement',{
                     message: { text: 'Offer adding failed', type: 'error' },
                     admin: req.session.admin,
                     active: 'offers',
                     offers:offers,
-                    products:product
+                    products:product,
+                    categories 
+                  
+
                    
                 })
             }
-            const newOffer = new Offer({
-                offerType:offerType,
-                discount:discount,
-                startDate:startDate,
-                endDate:endDate,
-                status:true,
-                productId:productId
-              
-                
+            if (!offerType || !discount || !startDate || !endDate) {
+                return res.render('offerManagement', {
+                    message: { text: 'Offer adding failed: Missing required fields', type: 'error' },
+                    admin: req.session.admin,
+                    active: 'offers',
+                    offers,
+                    products:product,
+                    categories 
+                });
+            }
 
-            })
+                let offerData = {
+                    offerType,
+                    discount,
+                    startDate,
+                    endDate,
+                    status: true
+                };
+
+                if (offerType === "product") {
+                    if (!productId || productId.trim() === "") {
+                        return res.render('offerManagement', {
+                            message: { text: 'Product ID is required for product-type offers', type: 'error' },
+                            admin: req.session.admin,
+                            active: 'offers',
+                            offers,
+                            products:product,
+                            categories 
+                        });
+                    }
+                    offerData.productId = productId;
+                }
+                if (offerType === "category") {
+                    if (!categoryId || categoryId.trim() === "") {
+                        return res.render('offerManagement', {
+                            message: { text: 'Category ID is required for category-type offers', type: 'error' },
+                            admin: req.session.admin,
+                            active: 'offers',
+                            offers,
+                            products:product,
+                            categories 
+                        });
+                    }
+                    offerData.categoryId = categoryId;
+                }
+        
+        
+    
+            const newOffer = new Offer(offerData)
             await newOffer.save()
-            const offer= await Offer.find()
+
+            const updatedOffers = await Offer.find().populate('productId').populate('categoryId');
             console.log('new offer added',newOffer)
-            return res.render('offerManagement',{
+          
+            return res.render('offerManagement', {
                 message: { text: 'Offer added successfully', type: 'success' },
                 admin: req.session.admin,
                 active: 'offers',
-                offers:offer,
-                products: product // Ensure products array is passed
+                offers: updatedOffers,
+                products:product,
+                categories 
             });
+    
             
             
         } catch (error) {
             console.log('error while adding offer',error)
         }
       }
+
+
+      const deleteOffer = async (req,res)=>{
+
+        try {
+           const offerId = req.params.id
+           console.log('offerId',offerId) 
+           const product = await Product.find({ isActive: true });
+           const categories = await Category.find({ isActive: true });
+           const deleteOffer = await Offer.findByIdAndDelete(offerId)
+           console.log('offer deleted',deleteOffer)
+
+           const offer = await Offer.find()
+            
+          
+           return res.render('offerManagement',{
+            message: { text: 'Offer deleted succesfully', type: 'success' },
+            admin: req.session.admin,
+            active: 'offers',
+            offers:offer,
+            products: product, // Ensure products array is passed
+            categories
+        });
+        
+        } catch (error) {
+           console.log('error while deleting offer',error) 
+        }
+
+      }
+
+
+
+
+
 
 module.exports={
     customerInfo,
@@ -404,5 +499,7 @@ module.exports={
     addCoupon,
     deleteCoupon,
     LoadOfferManagement,
-    addOffer
+    addOffer,
+    deleteOffer,
+ 
 }

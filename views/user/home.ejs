@@ -17,39 +17,40 @@
     <section class="product-section">
         <h2>NEW ARRIVALS</h2>
         <div class="product-grid">
-        
             <% products.forEach(product => { %>
-                <a href="/productDetail/<%= product._id %>" style="text-decoration: none; color: black;" >
-                <div class="product-card">
-                    <div class="product-image" >
-                       
-                   <img src="<%= product.productImage[0] %>" 
-                        
-                        style='<% if (product.quantity <= 0 || product.isActive==false) { %>opacity: 0.5;<% } %>'
-                        
-                        onerror="this.onerror=null;this.src='https://th.bing.com/th/id/OIP.7cRYFyLoDEDh4sRtM73vvwHaDg?rs=1&pid=ImgDetMain';">
-                        <button class="quick-add" data-product-id="<%= product._id %>">Quick Add</button>
-                      
-                        
+                <a href="/productDetail/<%= product._id %>/<%= product.category._id %>" style="text-decoration: none; color: black;">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="<%= product.productImage[0] %>" 
+                                style='<% if (product.quantity <= 0 || product.isActive == false) { %>opacity: 0.5;<% } %>'
+                                onerror="this.onerror=null;this.src='https://th.bing.com/th/id/OIP.7cRYFyLoDEDh4sRtM73vvwHaDg?rs=1&pid=ImgDetMain';">
+                            <button class="quick-add" data-product-id="<%= product._id %>">Quick Add</button>
+                        </div>
+    
+                        <h3>
+                            <%= product.productName %> 
+                            <% if (product.quantity <= 0) { %>
+                                <span style="color: red;">(Out of Stock)</span>
+                            <% } else if (product.isActive == false) { %>
+                                <span style="color: red; font-size: 15px;">(Not Available)</span>
+                            <% } %>
+                        </h3>
+    
+                        <div class="price">
+                            <% if (product.discountAmount > 0) { %>
+                                <span class="original-price" style="text-decoration: line-through; color: gray;">₹<%= product.originalPrice %></span>
+                                <span class="sale-price" style="color: red; font-weight: bold;">₹<%= product.finalPrice %></span>
+                                <span class="discount-percentage" style="color: green; font-size: 14px;">(<%= product.discountPercentage %>% OFF)</span>
+                            <% } else { %>
+                                <span class="sale-price" style="color: black;">₹<%= product.originalPrice %></span>
+                            <% } %>
+                        </div>
                     </div>
-                    
-                    <h3><%= product.productName %> <% if (product.quantity<=0) { %>
-                        <span style="color: red;">(Out of Stock)</span>
-                    <% }else if(product.isActive==false){%>
-                        <span style="color: red; font-size: 15px;">( Not Available)</span>
-                   <% } %>
-                
-                </h3>
-                  
-                    <div class="price">
-                        <span class="sale-price" style="color: black;">₹<%= product.Price %></span>
-                        
-                    </div>
-                </div>
-               </a>
+                </a>
             <% }) %>
         </div>
     </section>
+    
 
     <section class="product-section">
     <h2>TOP SELLING</h2>

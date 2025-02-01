@@ -47,7 +47,6 @@
 
                 return Product.find(query).where(filter).sort(sortOptions[sortCriteria] || { productName: 1 }).skip(skip).limit(limit);
             };
-
             const loadShop = async (req, res) => {
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 8;
@@ -59,46 +58,68 @@
                     const sortCriteria = req.query.sort || 'Az';
                     const categoryFilter = req.query.category || 'all';
             
-                    // Fetch filtered products
                     const products = await fetchProducts(sortCriteria, categoryFilter, searchTerm, skip, limit);
+                    
+                 
                     const productIds = products.map(product => product._id);
+                    const categoryIds = categories.map(category => category._id);
+                    
+                    const productOffers = await Offer.find({ productId: { $in: productIds } });
+                    const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds } });
             
-                    // Fetch offers for the products
-                    const offers = await Offer.find({ productId: { $in: productIds } });
-            
-                    // Map offers to products by matching productId
                     const productsWithOffers = products.map(product => {
-                        const offer = offers.find(o => o.productId.toString() === product._id.toString());
+                       
+                        const productOffer = productOffers.find(o => 
+                            o.productId.toString() === product._id.toString()
+                        );
+                      
+                        const categoryOffer = categoryOffers.find(o => 
+                            o.categoryId.toString() === product.category.toString()
+                        );
+            
+                    
+                        let productDiscount = 0;
+                        let categoryDiscount = 0;
                         
-                        if (offer) {
-                            // Calculate discount if offer exists
-                            const discountAmount = Math.round(product.Price * offer.discount / 100);
-                            product.discountAmount = discountAmount;
-                            console.log(discountAmount)
-                            product.finalPrice = product.Price - discountAmount;
-                            product.discountPercentage = offer.discount;
-                            console.log(offer.discount)
-                        } else {
-                            product.discountAmount = 0;
-                            product.finalPrice = product.Price;
+                        if (productOffer) {
+                            productDiscount = Math.round(product.Price * productOffer.discount / 100);
+                        }
+                        
+                        if (categoryOffer) {
+                            categoryDiscount = Math.round(product.Price * categoryOffer.discount / 100);
                         }
             
-                        return product;
+             
+                        const bestDiscount = Math.max(productDiscount, categoryDiscount);
+                        const bestDiscountPercentage = bestDiscount === productDiscount 
+                            ? productOffer?.discount 
+                            : categoryOffer?.discount;
+            
+
+                        return {
+                            ...product.toObject(),
+                            discountAmount: bestDiscount,
+                            finalPrice: product.Price - bestDiscount,
+                            discountPercentage: bestDiscountPercentage || 0,
+                            discountType: bestDiscount === productDiscount ? 'product' : 'category',
+                            originalPrice: product.Price
+                        };
                     });
             
-                   
-              
-                    // Count total products with the same filters
+            
                     const query = {};
                     const filter = {};
             
                     if (categoryFilter && categoryFilter !== 'all') {
-                        const category = await Category.findOne({ categoryName: new RegExp(`^${categoryFilter}$`, 'i') });
+                        const category = await Category.findOne({ 
+                            categoryName: new RegExp(`^${categoryFilter}$`, 'i') 
+                        });
                         if (!category) {
                             throw new Error(`Category "${categoryFilter}" not found`);
                         }
                         filter.category = category._id;
                     }
+            
                     if (searchTerm) {
                         query.$or = [
                             { productName: { $regex: searchTerm, $options: 'i' } },
@@ -121,9 +142,8 @@
                         searchQuery: searchTerm,
                         currentPage: page,
                         totalPages: totalPages,
-           
                     });
-                    console.log(products.discount)
+            
                 } catch (error) {
                     console.error('Error while rendering the shop page:', error);
                     res.status(500).send('Internal Server Error');
@@ -133,7 +153,7 @@
             const loadCheckout = async (req, res) => {
                 try {
                     const userId = req.session.userId;
-                    const user = req.session.user; // Get user from session
+                    const user = req.session.user;
                     
                     const cart = await Cart.findOne({ userId: userId }).populate('item.productId');
                     const address = await Address.find({ userId: userId });

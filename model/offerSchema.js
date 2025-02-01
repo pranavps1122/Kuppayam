@@ -18,6 +18,16 @@ const offerSchema = new mongoose.Schema({
             message: 'Product ID is required for product-type offers'
         }
     },
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        validate: {
+            validator: function(value) {
+                return this.offerType !== 'category' || value != null;
+            },
+            message: 'Category ID is required for category-type offers'
+        }
+    },
     // Rest of your schema remains the same
     discount: {
         type: Number,

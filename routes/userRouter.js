@@ -32,7 +32,8 @@ router.post('/verify-otp', userController.verifyOtp);
 
 router.post('/resend-otp', userController.resendOtp);
 
-router.get('/productDetail/:id',userController.LoadproductDetaill)
+router.get('/productDetail/:productId/:categoryId', userController.LoadproductDetaill);
+
 
 router.get('/logout',logged,userController.logout)
 
@@ -51,7 +52,7 @@ router.post('/resetpassword',logged,profileController.resetpassword)
 
 
 router.get('/cart',logged,cartController.loadCart)
-router.post('/cart/:id',logged,cartController.addtoCart)
+router.post('/cart/:productId/:categoryId',logged,cartController.addtoCart)
 
 router.get('/removeproduct/:id',cartController.removeProduct)
 

@@ -3,6 +3,7 @@
         const Cart=require('../../model/cartSchema')
         const Address=require('../../model/addressSchema')
         const Offer =require('../../model/offerSchema')
+const Category = require('../../model/categorySchema')
 
         const loadCart = async (req, res) => {
             try {
@@ -33,86 +34,108 @@
         const addtoCart = async (req, res) => {
             try {
                 console.log('entering the cart');
-                const id = req.params.id;
-                const { size } = req.body; 
+                const { productId, categoryId } = req.params;
+                const { size } = req.body;
                 const userId = req.session.userId;
+                
                 console.log('product size:', size);
-                const product = await Product.findOne({ _id: id, "stock.size": size });
-                const offerProduct = await Offer.findOne({ productId: id});
-
                 
-              
+                // Find product and verify it exists
+                const product = await Product.findOne({ _id: productId, "stock.size": size });
+                if (!product) {
+                    return res.render('cart', {
+                        cart: await Cart.findOne({ userId }).populate('item.productId'),
+                        message: 'Product not found'
+                    });
+                }
+                
+                const category = await Category.findById(categoryId);
+                
+                // Check for offers
+                const offerProduct = await Offer.findOne({ productId: productId });
+                const offerCategory = await Offer.findOne({ categoryId: categoryId });
+                
+                // Calculate discounted price and store discount information
                 let discountedPrice = product.Price;
-
-                
-                if (offerProduct && offerProduct.discount) {
-                    const discountAmount = Math.round(product.Price * offerProduct.discount / 100);
-                    discountedPrice = product.Price - discountAmount;
-                }
-
-                console.log('fetched products', product);
-                console.log('done');
-
-                const selectedStock = product.stock.find((item) => {
-                    return item.size == size;
-                });
-
-                console.log('SelectedStock', selectedStock);
-
-                let cart = await Cart.findOne({ userId: userId });
-
-                console.log('checking', cart);
-
-                if (!cart) {
-                    cart = new Cart({ userId: req.session.userId, item: [], cartTotal: 0 });
-                    console.log('cart', cart);
-                }
-                const newItem = {
-                    productId: id,
-                    quantity: 1,
-                    size: size,
-                    price: discountedPrice,   // Use discounted price here
-                    stock: selectedStock.quantity,
-                    total: discountedPrice * 1,  // Total price based on quantity
+                let discountInfo = {
+                    originalPrice: product.Price,
+                    discountPercentage: 0,
+                    discountType: null
                 };
         
-
-                const Caart = await Cart.findOne({ userId }).populate('item.productId');
-                const itemExists = cart.item.some((item) => item.productId == id && item.size == size);
-                
+                if (offerProduct?.discount || offerCategory?.discount) {
+                    const productDiscount = offerProduct?.discount || 0;
+                    const categoryDiscount = offerCategory?.discount || 0;
+                    
+                    // Use the higher discount
+                    const discount = Math.max(productDiscount, categoryDiscount);
+                    const discountAmount = Math.round(product.Price * (discount / 100));
+                    discountedPrice = product.Price - discountAmount;
+                    
+                    discountInfo = {
+                        originalPrice: product.Price,
+                        discountPercentage: discount,
+                        discountType: productDiscount > categoryDiscount ? 'product' : 'category',
+                        categoryName: category.name
+                    };
+                }
+        
+                // Find the selected stock size
+                const selectedStock = product.stock.find(item => item.size === size);
+                if (!selectedStock) {
+                    return res.render('cart', {
+                        cart: await Cart.findOne({ userId }).populate('item.productId'),
+                        message: 'Selected size not available'
+                    });
+                }
+        
+                // Find or create cart
+                let cart = await Cart.findOne({ userId });
+                if (!cart) {
+                    cart = new Cart({ userId, item: [], cartTotal: 0 });
+                }
+        
+                // Create new item with discount information
+                const newItem = {
+                    productId: productId,
+                    quantity: 1,
+                    size: size,
+                    price: discountedPrice,
+                    stock: selectedStock.quantity,
+                    total: discountedPrice * 1,
+                    discountInfo: discountInfo,
+                    categoryId: categoryId
+                };
+        
+                // Check if item already exists in cart
+                const populatedCart = await Cart.findOne({ userId }).populate('item.productId');
+                const itemExists = cart.item.some(item => 
+                    item.productId.toString() === productId && item.size === size
+                );
+        
                 if (itemExists) {
                     return res.render('cart', {
-                        cart:Caart,
-                        message : 'Item already in cart' });
+                        cart: populatedCart,
+                        message: 'Item already in cart'
+                    });
                 }
-
-                if(product.quantity<=0||product.isActive==false){
-                    return res.render('cart', {
-                        cart:Caart,
-                        message : 'Product Not Available' });
-                }
-
-                if(product.quantity>selectedStock.quantity){
-                    return res.render('cart', {
-                        cart:Caart,
-                        message : `Product only has ${selectedStock.quantity} stock left for size ${size}` });
-                }
+        
+                // Add item to cart
                 cart.item.push(newItem);
-
-                cart.cartTotal = cart.item.reduce((acc, item) => acc + Number(item.total || item.price * item.quantity || 0), 0);
-                console.log('cart.CartTotal', cart.cartTotal);
-
+        
+                // Recalculate cart total
+                cart.cartTotal = cart.item.reduce((acc, item) => 
+                    acc + Number(item.total || item.price * item.quantity || 0), 0
+                );
+        
                 await cart.save();
-                console.log('Savedcart', cart);
-
                 res.redirect('/cart');
+        
             } catch (error) {
                 console.error('Error while adding to cart:', error);
                 res.status(500).send('Internal Server Error');
             }
         };
-
-
         const removeProduct = async (req,res)=>{
 
             try {

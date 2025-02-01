@@ -610,9 +610,7 @@ body {
    
     <div class="breadcrumbs">
         <a href="/">Home</a> > 
-        <a href="/productDetail/<%= productId %>">Product Detail</a>
-
-       
+        <a href="/productDetail/<%= product._id %>/<%= product.category._id || product.category %>">View Product</a>
         <span><%= product.productName %></span>
     </div>
 
@@ -651,12 +649,28 @@ body {
                 <div class="price-section">
                     <span class="current-price">₹<%= product.finalPrice || product.Price %></span>
                 
-                    <% if (product.discount) { %>
-                        <span class="original-price" style="text-decoration: line-through; color: #999;">₹<%= product.Price %></span>
-                        <span class="discount-percent" style="color: #e74c3c; margin-left: 10px;">(<%= product.discount %>% OFF)</span>
+                    <% if (product.discount || product.categoryDiscount) { %>
+                        <span class="original-price" style="text-decoration: line-through; color: #999;">
+                            ₹<%= product.Price %>
+                        </span>
+                        
+                        <% if (product.discount) { %>
+                            <span class="discount-percent" style="color: #e74c3c; margin-left: 10px;">
+                                (Product Offer: <%= product.discount %>% OFF)
+                            </span>
+                        <% } %>
+                        
+                        <% if (product.categoryDiscount) { %>
+                            <span class="discount-percent" style="color: #e74c3c; margin-left: 10px;">
+                                ( <%= product.categoryDiscount %>% OFF)
+                            </span>
+                        <% } %>
+                        
+                        <div class="total-savings" style="color: #2ecc71; margin-top: 5px;">
+                            You Save: ₹<%= product.Price - product.finalPrice %>
+                        </div>
                     <% } %>
                 </div>
-                
                
                 <div class="stars">
                     <span class="star filled">★</span>
@@ -669,7 +683,7 @@ body {
               
             
              
-                <form class="size-options" method="POST" action="/cart/<%= product._id %>">
+                <form class="size-options" method="POST" action="/cart/<%= product._id %>/<%= product.category._id %>">
                     <div>Size</div>
                     <div class="size-selector">
                         <% ['S', 'M', 'L', 'XL'].forEach(size => { %>

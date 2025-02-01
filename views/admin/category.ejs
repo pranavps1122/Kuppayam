@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="/styles/sidebar.css">
     <link rel="stylesheet" href="/styles/admin.css">
     <style>
+     
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa;
             overflow: scroll;
+            
         }
 
         .header {
@@ -56,6 +58,7 @@
             align-items: center;
             margin-bottom: 30px;
             margin-top: 80px; /* Adjust for fixed header */
+            
         }
 
         .page-title {
@@ -70,11 +73,13 @@
             font-size: 14px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            
         }
 
         .btn-primary {
             background-color: #3498db;
             color: white;
+            
         }
 
         .btn-warning {
@@ -164,6 +169,7 @@
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
         }
+        
 
         .btn-secondary {
             background-color: #e9ecef; /* Standard secondary button color */
@@ -233,11 +239,7 @@
             </tbody>
         </table>
     </main>
-    <footer class="footer">
-        <div class="container">
-            <%- include('../partials/user/footer') %>
-        </div>
-    </footer>
+    
 
     <script>
         const searchInput = document.getElementById('searchInput');

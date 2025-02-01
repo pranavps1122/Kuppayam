@@ -9,8 +9,8 @@ const Wishlist = require('../../model/wishlistSchema')
 const mongoose = require('mongoose');
 const Cart=require('../../model/cartSchema')
 const Wallet = require('../../model/walletSchema')
-
-
+const Category=require('../../model/categorySchema')
+const Offer=require('../../model/offerSchema')
 const loadprofile = async (req,res) => {
 
     try {
@@ -196,102 +196,141 @@ const loadorderStatus = async (req, res) => {
     }
 };
 
-// Load Wishlist Function
-// Load Wishlist Function// Load Wishlist Function
+
+
 const loadWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
 
-        // Find the wishlist for the user and populate the productId
-        const wishlist = await Wishlist.findOne({ userId: userId })
-            .populate('items.productId', null, null, { strictPopulate: false });
+        // Find the wishlist and populate product details
+        const wishlist = await Wishlist.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category'
+                }
+            })
+            .exec();
 
         if (!wishlist) {
-            return res.status(404).render('wishlist', { message: 'Wishlist not found', wishlistItems: [] });
+            return res.render('wishlist', { 
+                wishlistItems: [], 
+                message: null 
+            });
         }
 
-        // Log the wishlist to see its structure
-        console.log('Loaded Wishlist:', JSON.stringify(wishlist, null, 2));
+        // Process each wishlist item to include discount information
+        const processedWishlistItems = await Promise.all(
+            wishlist.items.map(async (item) => {
+                const product = item.productId;
+                if (!product) return null;
 
-        // Render the wishlist page with the items
-        res.render('wishlist', { wishlistItems: wishlist.items, message: null });
+                // Get offers for product and category
+                const [productOffer, categoryOffer] = await Promise.all([
+                    Offer.findOne({ productId: product._id }),
+                    Offer.findOne({ categoryId: product.category._id })
+                ]);
+
+                // Calculate discounts
+                const productDiscount = productOffer ? productOffer.discount : 0;
+                const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
+
+                // Calculate final price with the better discount
+                const productDiscountAmount = (product.Price * productDiscount) / 100;
+                const categoryDiscountAmount = (product.Price * categoryDiscount) / 100;
+
+                const finalPrice = Math.round(
+                    product.Price - Math.max(productDiscountAmount, categoryDiscountAmount)
+                );
+
+                // Determine which discount type is being applied
+                const discountPercentage = Math.max(productDiscount, categoryDiscount);
+                const discountType = productDiscount > categoryDiscount ? 'product' : 'category';
+
+                return {
+                    ...item.toObject(),
+                    product: {
+                        ...product.toObject(),
+                        finalPrice,
+                        discountPercentage,
+                        discountType
+                    }
+                };
+            })
+        );
+
+        // Filter out null items
+        const filteredWishlistItems = processedWishlistItems.filter(item => item !== null);
+
+        res.render('wishlist', {
+            wishlistItems: filteredWishlistItems,
+            message: null
+        });
     } catch (error) {
-        console.error('Error loading wishlist page:', error);
-        res.status(500).render('wishlist', { message: 'An error occurred while loading your wishlist', wishlistItems: [] });
+        console.error('Error while loading wishlist:', error);
+        res.status(500).send('Internal Server Error');
     }
 };
-const wishlist = async (req, res) => {
+
+// Add to wishlist
+     const wishlist = async (req, res) => {
     try {
         const { size } = req.body;
         const productId = req.params.id;
         const userId = req.session.userId;
 
-        // Check if product exists
-        const product = await Product.findById(productId);
+        // Validate product
+        const product = await Product.findById(productId).populate('category');
         if (!product) {
-            return res.status(404).send('Product not found');
+            return res.status(404).json({ message: 'Product not found' });
         }
+
+        // Get offers
+        const [productOffer, categoryOffer] = await Promise.all([
+            Offer.findOne({ productId }),
+            Offer.findOne({ categoryId: product.category._id })
+        ]);
+
+        // Calculate discounts
+        const productDiscount = productOffer ? productOffer.discount : 0;
+        const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
+        const bestDiscount = Math.max(productDiscount, categoryDiscount);
+        const discountAmount = Math.round((product.Price * bestDiscount) / 100);
+        const finalPrice = product.Price - discountAmount;
 
         // Find or create wishlist
-        let userWishlist = await Wishlist.findOne({ userId });
-
-        // If no wishlist exists, create a new one
-        if (!userWishlist) {
-            userWishlist = new Wishlist({
-                userId: userId,
-                items: [], // Initialize items as an empty array
-                wallet: {
-                    balance: 0,  // Default balance
-                    userId: userId  // Ensure userId is included
-                }
+        let wishlist = await Wishlist.findOne({ userId });
+        if (!wishlist) {
+            wishlist = new Wishlist({
+                userId,
+                items: []
             });
         }
 
-        // Ensure that items array is initialized
-        if (!userWishlist.items) {
-            userWishlist.items = []; // Initialize it if undefined
+        // Check for existing item
+        const existingItemIndex = wishlist.items.findIndex(item => 
+            item.productId.equals(productId) && item.selectedSize === size
+        );
+
+        if (existingItemIndex !== -1) {
+            return res.redirect('/wishlist');
         }
 
-        // Check if item already exists in the wishlist
-        let existingItem = false;
-        if (userWishlist.items.length > 0) {
-            existingItem = userWishlist.items.some(item => {
-                return item.productId && 
-                       item.productId.equals(productId) && 
-                       item.selectedSize === size;
-            });
-        }
-
-        // If item exists, return to wishlist page with message
-        if (existingItem) {
-            const populatedWishlist = await Wishlist.findOne({ userId })
-                                                  .populate('items.productId');
-            return res.render('wishlist', {
-                message: 'Product with selected size already in wishlist',
-                wishlistItems: populatedWishlist ? populatedWishlist.items : [],
-                user: req.user
-            });
-        }
-
-        // Add new item to wishlist
-        userWishlist.items.push({
-            productId: productId,
+        // Add new item
+        wishlist.items.push({
+            productId,
             selectedSize: size,
             addedAt: new Date()
         });
 
-        // Save the updated wishlist
-        await userWishlist.save();
-
-        // Redirect to wishlist page
+        await wishlist.save();
         res.redirect('/wishlist');
 
     } catch (error) {
         console.error('Error adding to wishlist:', error);
-        res.status(500).send('Error adding to wishlist');
+        res.status(500).json({ message: 'Error adding to wishlist' });
     }
 };
-
 
         const removeWishlist = async (req, res) => {
             try {
@@ -327,59 +366,59 @@ const wishlist = async (req, res) => {
             try {
                 const userId = req.session.userId;
                 const productId = req.params.id;
-                console.log('Product ID:', productId);
-                console.log('Request body:', req.body);
-        
-                const findWishlist = await Wishlist.findOne(
-                    {
-                        userId: new mongoose.Types.ObjectId(userId),
-                        items: { 
-                            $elemMatch: { productId: new mongoose.Types.ObjectId(productId) }
-                        }
-                    },
-                    {
-                        "items.$": 1
+
+                const findWishlist = await Wishlist.findOne({
+                    userId: new mongoose.Types.ObjectId(userId),
+                    items: { 
+                        $elemMatch: { productId: new mongoose.Types.ObjectId(productId) }
                     }
-                );
-        
+                }, {
+                    "items.$": 1
+                });
+
                 if (!findWishlist || findWishlist.items.length === 0) {
-                    console.log('Product not found in wishlist');
                     return res.status(404).json({ message: 'Product not found in wishlist' });
                 }
-        
+
                 const wishlistItem = findWishlist.items[0];
-                console.log('Found product in wishlist:', wishlistItem);
-        
                 const product = await Product.findById(wishlistItem.productId);
-                console.log('Found product details:', product);
-        
+
                 if (!product || !product.Price || !product.stock) {
-                    console.log('Invalid product data detected');
                     return res.status(400).json({ message: 'Invalid product data' });
                 }
-        
+
+                // Calculate the final price based on offers
+                const [productOffer, categoryOffer] = await Promise.all([
+                    Offer.findOne({ productId: product._id }),
+                    Offer.findOne({ categoryId: product.category._id })
+                ]);
+
+                const productDiscount = productOffer ? productOffer.discount : 0;
+                const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
+
+                const productDiscountAmount = (product.Price * productDiscount) / 100;
+                const categoryDiscountAmount = (product.Price * categoryDiscount) / 100;
+
+                const finalPrice = Math.round(
+                    product.Price - Math.max(productDiscountAmount, categoryDiscountAmount)
+                );
+
                 const selectedSizeStock = product.stock.find(stock => stock.size === wishlistItem.selectedSize);
                 if (!selectedSizeStock) {
-                    console.log('Selected size is not available');
                     return res.status(400).json({ message: 'Selected size is not available' });
                 }
-        
-                console.log('Product price:', product.Price);
-                console.log('Selected size stock:', selectedSizeStock.quantity);
-                console.log('Selected size:', wishlistItem.selectedSize);
-        
-                const total = product.Price * 1;
-        
+
+                const total = finalPrice * 1; // Use finalPrice instead of product.Price
+
                 const cart = await Cart.findOne({ userId: new mongoose.Types.ObjectId(userId) });
-                console.log('Cart found:', cart);
-        
+
                 if (!cart) {
                     const newCart = new Cart({
                         userId: new mongoose.Types.ObjectId(userId),
                         item: [{
                             productId: product._id,
                             size: wishlistItem.selectedSize,
-                            price: product.Price,
+                            price: finalPrice, // Use finalPrice
                             stock: selectedSizeStock.quantity,
                             quantity: 1,
                             total: total,
@@ -387,46 +426,37 @@ const wishlist = async (req, res) => {
                         }],
                         cartTotal: total
                     });
-        
-                    await newCart.save();
-                    console.log('New cart created:', newCart);
-                } else {
 
+                    await newCart.save();
+                } else {
                     const existingItem = cart.item.find(
                         item => item.productId.toString() === productId && item.size === wishlistItem.selectedSize
                     );
-        
-                    const wishlistItems = await Wishlist.findOne({ userId: userId }).populate('items.productId');
-                    console.log('wishlist items',wishlistItems)
 
                     if (existingItem) {
-                        console.log('Product already exists in the cart');
-                        return res.render('wishlist',{
-                            message:'Product Already in Cart',
-                            wishlistItems: wishlistItems ? wishlistItems.items : [] 
-                        })
+                        return res.render('wishlist', {
+                            message: 'Product Already in Cart',
+                            wishlistItems: await Wishlist.findOne({ userId }).populate('items.productId') // Fetch wishlist items again
+                        });
                     }
-        
-          
+
                     cart.item.push({
                         productId: product._id,
                         size: wishlistItem.selectedSize,
-                        price: product.Price,
+                        price: finalPrice, // Use finalPrice
                         stock: selectedSizeStock.quantity,
                         quantity: 1,
                         total: total,
                         addedAt: Date.now()
                     });
-        
+
                     cart.cartTotal = cart.item.reduce((total, item) => total + item.total, 0);
-        
                     await cart.save();
-                    console.log('Product added to existing cart:', cart);
                 }
-        
+
                 res.redirect('/cart');
             } catch (error) {
-                console.log('Error while adding product to cart:', error);
+                console.error('Error while adding product to cart:', error);
                 res.status(500).json({ message: 'An error occurred while adding the product to cart' });
             }
         };
@@ -528,7 +558,7 @@ const addToWishlist = async (req, res) => {
         }
 
         // Find or create a wishlist for the user
-        let wishlist = await Wishlist.findOne({ userId: userId });
+        let wishlist = await Wishlist.findOne({ userId });
         if (!wishlist) {
             wishlist = new Wishlist({ userId: userId, items: [] });
         }
