@@ -49,6 +49,13 @@ const Category = require('../../model/categorySchema')
                     });
                 }
                 
+                if(!product.isActive){
+                    return res.render('cart', {
+                        cart: await Cart.findOne({ userId }).populate('item.productId'),
+                        message: 'Product is not available'
+                    });
+                }
+
                 const category = await Category.findById(categoryId);
                 
                 // Check for offers
