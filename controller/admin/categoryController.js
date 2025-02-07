@@ -24,7 +24,7 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
             currentPage:page,
             totalPages : totalPage,
             totalCategories:totalCategories,
-            admin: req.session.admin, // Ensure admin data is passed correctly
+            admin: req.session.admin, 
             active: 'category'  
         })
        

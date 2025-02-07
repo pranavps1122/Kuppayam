@@ -281,10 +281,36 @@ h2 {
     border: none;
 
 }
+.wallet-option {
+
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.wallet-balance {
+  
+    color:  #2962ff;
+    
+    font-size: 14px;
+    font-weight: bold;
+   
+    border-radius: 4px;
+    width: 190px;
+  
+  
+
+}
+.wallet-amount{
+    width: 50px;
+}
 
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <%-include('../../views/partials/user/header')%>
+
+
+
 <div class="page-wrapper">
     <div class="content-wrapper">
         <div class="checkout-container">
@@ -307,12 +333,11 @@ h2 {
                 <div class="coupon-container">
                     <h2>Apply Coupon</h2>
                     <form action="/applyCoupon" method="POST" class="coupon-form" id="couponForm">
-                        <div class="coupon-input">
-                            <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" required />
-                            <button type="submit" id="applyCouponButton" class="checkout-button">Apply</button>
-                        </div>
+                        <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" required />
+                        <button type="submit" id="applyCouponButton" class="checkout-button">Apply</button>
                         <input type="hidden" id="appliedCouponHidden" name="appliedCoupon" />
                     </form>
+                    
                 </div>
                 
                 <div class="place-order">
@@ -356,106 +381,126 @@ h2 {
                     <div class="add-new-address">
                         <a href="/address" class="add-address-link">+ Add New Address</a>
                     </div>
-    
-                    <!-- Payment Method Selection -->
-                    <div class="payment-method">
-                        <h2>Payment Method</h2>
-                        <div class="payment-options">
-                            <label>
-                                <input type="radio" name="paymentMethod" value="cod" required>
-                                Cash on Delivery (COD)
-                            </label>
-                            
-                            <label>
-                                <input type="radio" name="paymentMethod" value="online" required>
-                                Online Payment
-                            </label>
-                        </div>
-                    </div>
-    
-                    <!-- Submit Button -->
-                    <div class="checkout-actions">
-                        <button type="submit" class="checkout-button">Place order</button>
-                    </div>
-                </form>
-            </div>
-            
+        
+                        <!-- Payment Method Selection -->
+    <div class="payment-method">
+        <h2>Payment Method</h2>
+        <div class="payment-options">
+            <label>
+                <input type="radio" name="paymentMethod" value="cod" required>
+                Cash on Delivery (COD)
+            </label>
+
+            <label>
+                <input type="radio" name="paymentMethod" value="online" required>
+                Online Payment
+            </label>
+
+            <label class="wallet-option">
+                <input type="radio" name="paymentMethod" value="wallet" required>
+                Wallet 
+                <div class="wallet-balance">
+                    
+                    <span class="wallet-amount"> Available balance : ₹ <%= wallet.balance.toFixed(0) %></span>
+                </div>
+            </label>
         </div>
     </div>
-</div>
-  
-<%-include('../../views/partials/user/footer')%>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function selectAddress(card, addressId) {
-    document.querySelectorAll('.address-card').forEach(c => {
-        c.classList.remove('selected');
-    });
-    
-    card.classList.add('selected');
-    
-    card.querySelector('input[type="radio"]').checked = true;
-    
-    document.getElementById('newAddressForm').classList.remove('active');
-}
 
-function toggleNewAddressForm() {
-    const form = document.getElementById('newAddressForm');
-    form.classList.toggle('active');
+        
+                        <!-- Submit Button -->
+                        <div class="checkout-actions">
+                            <button type="submit" class="checkout-button">Place order</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
     
-    document.querySelectorAll('.address-card').forEach(card => {
-        card.classList.remove('selected');
-        card.querySelector('input[type="radio"]').checked = false;
-    });
-}
+    <%-include('../../views/partials/user/footer')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function selectAddress(card, addressId) {
+        document.querySelectorAll('.address-card').forEach(c => {
+            c.classList.remove('selected');
+        });
+        
+        card.classList.add('selected');
+        
+        card.querySelector('input[type="radio"]').checked = true;
+        
+        document.getElementById('newAddressForm').classList.remove('active');
+    }
 
-function initializeRazorpay(orderId, amount) {
-    const options = {
-        key: '<%= process.env.key_id %>',
-        amount: amount * 100,
-        currency: 'INR',
-        name: 'Kuppayam',
-        description: 'Purchase Payment',
-        order_id: orderId,
-        handler: function(response) {
-            // Handle successful payment
-            fetch('/verify-payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
+    function toggleNewAddressForm() {
+        const form = document.getElementById('newAddressForm');
+        form.classList.toggle('active');
+        
+        document.querySelectorAll('.address-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelector('input[type="radio"]').checked = false;
+        });
+    }
+    document.getElementById("couponForm").addEventListener("submit", function () {
+        const couponCode = document.getElementById("couponCode").value.trim();
+        if (couponCode) {
+            sessionStorage.setItem("appliedCoupon", couponCode);
+            document.getElementById("appliedCouponHidden").value = couponCode; // Ensure it's stored
+        }
+    });
+
+    const appliedCoupon = sessionStorage.getItem("appliedCoupon") || "";
+    function initializeRazorpay(orderId, amount) {
+        const options = {
+            key: '<%= process.env.key_id %>',
+            amount: amount * 100,
+            currency: 'INR',
+            name: 'Kuppayam',
+            description: 'Purchase Payment',
+            order_id: orderId,
+            handler: function(response) {
+                const couponCode = document.getElementById('couponCode').value.trim(); // Capture it dynamically
+                fetch('/verify-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                                body: JSON.stringify({
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_signature: response.razorpay_signature,
-                    addressId: document.querySelector('input[name="addressId"]:checked').value
+                    addressId: document.querySelector('input[name="addressId"]:checked').value,
+                    couponCode: appliedCoupon // Pass stored coupon code
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/ordersuccess';
-                } else {
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/ordersuccess';
+                    } else {
+                        alert('Payment verification failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     alert('Payment verification failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Payment verification failed');
-            });
-        },
-        prefill: {
-            name: '<%= user?.name %>',
-            email: '<%= user?.email %>',
-        },
-        theme: {
-            color: '#2962ff'
-        }
-    };
+                });
+            },
+            prefill: {
+                name: '<%= user?.name %>',
+                email: '<%= user?.email %>',
+            },
+            theme: {
+                color: '#2962ff'
+            }
+        };
 
-    const rzp = new Razorpay(options);
-    rzp.open();
-}
+        const rzp = new Razorpay(options);
+        rzp.open();
+    }
+
 
 document.querySelector('.checkout-form').addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -483,7 +528,12 @@ document.querySelector('.checkout-form').addEventListener('submit', async functi
             console.error('Error:', error);
             alert('Failed to initiate payment');
         }
-    } else {
+    }else if(paymentMethod=='cod'){
+
+
+        
+
+    }else {
         this.submit();
     }
 });
@@ -499,12 +549,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const couponCode = document.getElementById("couponCode").value.trim();
         if (couponCode) {
             sessionStorage.setItem("appliedCoupon", couponCode);
-            document.getElementById("appliedCouponHidden").value = couponCode; // Store in hidden input
+            document.getElementById("appliedCouponHidden").value = couponCode;
         }
     });
 
     document.getElementById("removeCouponForm").addEventListener("submit", function () {
-        sessionStorage.removeItem("appliedCoupon"); // Remove from session storage
+        sessionStorage.removeItem("appliedCoupon");
     });
 
 <% if (message) { %>
@@ -512,7 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 text: '<%= message %>',
-                icon: '<%= messageType === "success" ? "success" : "error" %>', // Set icon based on messageType
+                icon: '<%= messageType === "success" ? "success" : "error" %>',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,

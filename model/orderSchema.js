@@ -5,15 +5,17 @@ const orderSchema = new mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true
     },
     cartId: {
         type: Schema.Types.ObjectId,
-        ref:'Cart'
+        ref: 'Cart'
     },
     orderedItem: [{
         productId: {
             type: Schema.Types.ObjectId,
             ref: 'Product',
+            required: true
         },
         quantity: {
             type: Number,
@@ -29,6 +31,7 @@ const orderSchema = new mongoose.Schema({
         },
         productStatus: {
             type: String,
+            enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
             default: "pending",
             required: true
         },
@@ -36,6 +39,10 @@ const orderSchema = new mongoose.Schema({
             type: Number,
             required: true
         },
+        itemDiscount: {
+            type: Number,
+            default: 0
+        }
     }],
     deliveryAddress: {
         type: Array,
@@ -45,13 +52,50 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    totalDiscount: {
+        type: Number,
+        default: 0
+    },
    
     paymentMethod: {
         type: String,
+        enum: ['COD', 'Online Payment','Wallet'],
         required: true
     },
-}, { timestamps: true });
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid', 'failed'],
+        default: 'pending'
+    },
+    paymentId: {
+        type: String
+    },
+    couponCode: {
+        type: String,
+        default: ""
+    },
+    couponDiscount: {
+        type: Number,
+        default: 0
+    },
+  
+    date: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
+}, { 
+    timestamps: true 
+});
 
-const orderModel = mongoose.model("orders", orderSchema);
+// Add an index for faster queries
+orderSchema.index({ userId: 1, date: -1 });
 
-module.exports = orderModel;
+// Virtual for calculating total amount with discount
+orderSchema.virtual('discountedAmount').get(function() {
+    return this.orderAmount - this.totalDiscount;
+});
+
+const Order = mongoose.model("orders", orderSchema);
+
+module.exports = Order;

@@ -564,7 +564,7 @@ body {
                                         <%= product.productName %>
                                     </h3>
         
-                                    <% if (product.discountAmount > 0 || categories.discountAmount) { %>
+                                    <% if ((product.discountAmount > 0 || categories.discountAmount)) { %>
                                         <p class="price">
                                             <span class="original-price" style="text-decoration: line-through; color: gray;">₹<%= product.Price %></span>
                                             <span class="discount-price" style="color: red; font-weight: bold;">₹<%= product.finalPrice || categories.finalPrice %></span>

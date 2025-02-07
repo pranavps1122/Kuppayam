@@ -186,7 +186,7 @@
                 const croppedUrl = URL.createObjectURL(blob);
                 currentPreview.src = croppedUrl;
 
-                // Attach the cropped image to the input element
+                
                 const file = new File([blob], currentInput.files[0].name, { type: blob.type });
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);

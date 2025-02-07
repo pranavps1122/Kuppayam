@@ -208,6 +208,142 @@
             background-color: #e9ecef; /* Standard secondary button color */
             color: #2d3436;
         }
+        .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+    }
+
+    /* Popup Box */
+    .popup-content {
+        width: 350px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -55%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+     /* Overlay Background */
+     .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+        z-index: 1000;
+    }
+
+    /* Popup Box */
+    .popup-content {
+        width: 400px;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Form Title */
+    .popup-content h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: #333;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #444;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s;
+    }
+
+    .form-group input:focus {
+        border: 1px solid #4CAF50;
+        box-shadow: 0px 0px 5px rgba(76, 175, 80, 0.3);
+    }
+
+    /* Button Styles */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .btn-cancel {
+        background: #888;
+        color: white;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+        width: 48%;
+    }
+
+    .btn-save {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+        width: 48%;
+    }
+
+    .btn-cancel:hover {
+        background: #666;
+    }
+
+    .btn-save:hover {
+        background: #45a049;
+    }
     </style>
 </head>
 <body>
@@ -284,10 +420,63 @@
                                     <td><%= couponItem.discount %></td>
                                     <td><%= couponItem.expiry.toLocaleDateString() %></td>
                                     <td><%= couponItem.status ? 'Active' : 'Inactive' %></td>
-                                    <td> <a href="/admin/deleteCoupon/<%= couponItem._id %>" style="background-color: red; text-decoration: none; color: white; font-size: 13px; padding: 6px 8px;">Delete</a> </td>
+                                    <td>
+                                        <a href="/admin/deleteCoupon/<%= couponItem._id %>" 
+                                            style="background-color: #007bff; text-decoration: none; color: white; font-size: 13px; padding: 6px 8px;">
+                                            <%= couponItem.status== 1 ? 'Inactive' : 'Active' %>
+                                         </a>
+                                         
+                                          
+                                        <button onclick="openEditForm('<%= couponItem._id %>', '<%= couponItem.couponCode %>', '<%= couponItem.discount %>', '<%= couponItem.minimumPrice %>', '<%= couponItem.maxRedeem %>', '<%= couponItem.expiry.toISOString().split('T')[0] %>')" style="background-color: #4CAF50; border: none; color: white; font-size: 13px; padding: 6px 8px; cursor: pointer; margin-left: 5px;">
+                                            Edit
+                                        </button>
+                                    </td>
+
+
+                                            
+                                    
                                         
                                    
                                 </tr>
+                                <div id="editFormPopup" class="popup-overlay">
+                                    <div class="popup-content">
+                                        <h3>Edit Coupon</h3>
+                                        <form id="editCouponForm" action="/admin/editCoupon" method="POST">
+                                            <input type="hidden" id="editCouponId" name="couponId">
+                                
+                                            <div class="form-group">
+                                                <label for="editCode">Coupon Code</label>
+                                                <input type="text" id="editCode" name="code" required>
+                                            </div>
+                                
+                                            <div class="form-group">
+                                                <label for="editDiscount">Discount Percentage</label>
+                                                <input type="number" id="editDiscount" name="discount" min="0" max="100" required>
+                                            </div>
+                                
+                                            <div class="form-group">
+                                                <label for="editMinimumPrice">Minimum Price</label>
+                                                <input type="number" id="editMinimumPrice" name="minimumPrice" min="0" required>
+                                            </div>
+                                
+                                            <div class="form-group">
+                                                <label for="editMaxRedeem">Max Redeemable</label>
+                                                <input type="number" id="editMaxRedeem" name="maxRedeem" min="1" required>
+                                            </div>
+                                
+                                            <div class="form-group">
+                                                <label for="editExpiry">Expiry Date</label>
+                                                <input type="date" id="editExpiry" name="expiry" required>
+                                            </div>
+                                
+                                            <div class="form-actions">
+                                                <button type="button" class="btn-cancel" onclick="closeEditForm()">Cancel</button>
+                                                <button type="submit" class="btn-save">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                
                             <% }); %>
                         <% } else { %>
                             <tr>
@@ -316,13 +505,28 @@
                 document.getElementById('errorMessage').textContent = '';
             }
         }
+
+        function openEditForm(id, code, discount, minPrice, maxRedeem, expiry) {
+        document.getElementById('editCouponId').value = id;
+        document.getElementById('editCode').value = code;
+        document.getElementById('editDiscount').value = discount;
+        document.getElementById('editMinimumPrice').value = minPrice;
+        document.getElementById('editMaxRedeem').value = maxRedeem;
+        document.getElementById('editExpiry').value = expiry;
+
+        document.getElementById('editFormPopup').style.display = 'block';
+    }
+
+    function closeEditForm() {
+        document.getElementById('editFormPopup').style.display = 'none';
+    }
             
              <% if (message) { %>
             document.addEventListener('DOMContentLoaded', function() {
-                let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; // Change based on message type
+                let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error';
                 Swal.fire({
                     text: '<%= message.text %>',
-                    icon: iconType, // Dynamically choose 'success' or 'error'
+                    icon: iconType, 
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,

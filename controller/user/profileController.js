@@ -185,7 +185,7 @@ const loadorderStatus = async (req, res) => {
             userId: req.session.userId
         });
         
-        // Log the full error for debugging
+        
         console.log('Full error:', error);
         
         return res.render('orderStatus', {
@@ -202,7 +202,6 @@ const loadWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
 
-        // Find the wishlist and populate product details
         const wishlist = await Wishlist.findOne({ userId })
             .populate({
                 path: 'items.productId',
@@ -219,23 +218,21 @@ const loadWishlist = async (req, res) => {
             });
         }
 
-        // Process each wishlist item to include discount information
+
         const processedWishlistItems = await Promise.all(
             wishlist.items.map(async (item) => {
                 const product = item.productId;
                 if (!product) return null;
 
-                // Get offers for product and category
+              
                 const [productOffer, categoryOffer] = await Promise.all([
                     Offer.findOne({ productId: product._id }),
                     Offer.findOne({ categoryId: product.category._id })
                 ]);
 
-                // Calculate discounts
                 const productDiscount = productOffer ? productOffer.discount : 0;
                 const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
 
-                // Calculate final price with the better discount
                 const productDiscountAmount = (product.Price * productDiscount) / 100;
                 const categoryDiscountAmount = (product.Price * categoryDiscount) / 100;
 
@@ -243,7 +240,6 @@ const loadWishlist = async (req, res) => {
                     product.Price - Math.max(productDiscountAmount, categoryDiscountAmount)
                 );
 
-                // Determine which discount type is being applied
                 const discountPercentage = Math.max(productDiscount, categoryDiscount);
                 const discountType = productDiscount > categoryDiscount ? 'product' : 'category';
 
@@ -259,7 +255,7 @@ const loadWishlist = async (req, res) => {
             })
         );
 
-        // Filter out null items
+   
         const filteredWishlistItems = processedWishlistItems.filter(item => item !== null);
 
         res.render('wishlist', {
@@ -272,33 +268,30 @@ const loadWishlist = async (req, res) => {
     }
 };
 
-// Add to wishlist
-     const wishlist = async (req, res) => {
+
+const wishlist = async (req, res) => {
     try {
         const { size } = req.body;
         const productId = req.params.id;
         const userId = req.session.userId;
 
-        // Validate product
         const product = await Product.findById(productId).populate('category');
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Get offers
         const [productOffer, categoryOffer] = await Promise.all([
             Offer.findOne({ productId }),
             Offer.findOne({ categoryId: product.category._id })
         ]);
 
-        // Calculate discounts
         const productDiscount = productOffer ? productOffer.discount : 0;
         const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
         const bestDiscount = Math.max(productDiscount, categoryDiscount);
         const discountAmount = Math.round((product.Price * bestDiscount) / 100);
         const finalPrice = product.Price - discountAmount;
 
-        // Find or create wishlist
+   
         let wishlist = await Wishlist.findOne({ userId });
         if (!wishlist) {
             wishlist = new Wishlist({
@@ -307,16 +300,68 @@ const loadWishlist = async (req, res) => {
             });
         }
 
-        // Check for existing item
+     
         const existingItemIndex = wishlist.items.findIndex(item => 
             item.productId.equals(productId) && item.selectedSize === size
         );
 
         if (existingItemIndex !== -1) {
-            return res.redirect('/wishlist');
-        }
+    
+            const wishlistData = await Wishlist.findOne({ userId })
+                .populate({
+                    path: 'items.productId',
+                    populate: {
+                        path: 'category'
+                    }
+                })
+                .exec();
 
-        // Add new item
+            const processedWishlistItems = await Promise.all(
+                wishlistData.items.map(async (item) => {
+                    const product = item.productId;
+                    if (!product) return null;
+
+                   
+                    const [productOffer, categoryOffer] = await Promise.all([
+                        Offer.findOne({ productId: product._id }),
+                        Offer.findOne({ categoryId: product.category._id })
+                    ]);
+
+            
+                    const productDiscount = productOffer ? productOffer.discount : 0;
+                    const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
+                    const productDiscountAmount = (product.Price * productDiscount) / 100;
+                    const categoryDiscountAmount = (product.Price * categoryDiscount) / 100;
+                    const finalPrice = Math.round(
+                        product.Price - Math.max(productDiscountAmount, categoryDiscountAmount)
+                    );
+
+                    const discountPercentage = Math.max(productDiscount, categoryDiscount);
+                    const discountType = productDiscount > categoryDiscount ? 'product' : 'category';
+
+                    return {
+                        ...item.toObject(),
+                        product: {
+                            ...product.toObject(),
+                            finalPrice,
+                            discountPercentage,
+                            discountType
+                        }
+                    };
+                })
+            );
+          
+            const filteredWishlistItems = processedWishlistItems.filter(item => item !== null);
+
+
+
+            return res.render('wishlist', {
+                wishlistItems: filteredWishlistItems,
+                message: 'Item already in wishlist'
+            });
+        }
+        
+
         wishlist.items.push({
             productId,
             selectedSize: size,
@@ -334,19 +379,28 @@ const loadWishlist = async (req, res) => {
 
         const removeWishlist = async (req, res) => {
             try {
-                const productId = req.params.id; 
+                const {product_id,productSize}=req.params;
+                console.log(productSize,product_id)
+             
                 const userId = req.session.userId; 
+                console.log('req.body',req.body)
 
-                console.log('productId:', productId);
-                console.log('typeof userId:', typeof userId);
-                console.log('typeof productId:', typeof productId);
+            
 
             
                 const result = await Wishlist.findOneAndUpdate(
                     { userId: new mongoose.Types.ObjectId(userId) },
-                    { $pull: { items: { productId: new mongoose.Types.ObjectId(productId) } } },
+                    { 
+                      $pull: { 
+                        items: { 
+                          productId: new mongoose.Types.ObjectId(product_id), 
+                          selectedSize: productSize  
+                        } 
+                      } 
+                    },
                     { new: true } 
-                );
+                  );
+                  
 
                 console.log('Product removed:', result);
 
@@ -364,6 +418,8 @@ const loadWishlist = async (req, res) => {
         };    
         const fromWishlist = async (req, res) => {
             try {
+
+                
                 const userId = req.session.userId;
                 const productId = req.params.id;
 
@@ -387,7 +443,7 @@ const loadWishlist = async (req, res) => {
                     return res.status(400).json({ message: 'Invalid product data' });
                 }
 
-                // Calculate the final price based on offers
+                
                 const [productOffer, categoryOffer] = await Promise.all([
                     Offer.findOne({ productId: product._id }),
                     Offer.findOne({ categoryId: product.category._id })
@@ -408,8 +464,7 @@ const loadWishlist = async (req, res) => {
                     return res.status(400).json({ message: 'Selected size is not available' });
                 }
 
-                const total = finalPrice * 1; // Use finalPrice instead of product.Price
-
+                const total = finalPrice * 1; 
                 const cart = await Cart.findOne({ userId: new mongoose.Types.ObjectId(userId) });
 
                 if (!cart) {
@@ -428,6 +483,7 @@ const loadWishlist = async (req, res) => {
                     });
 
                     await newCart.save();
+               
                 } else {
                     const existingItem = cart.item.find(
                         item => item.productId.toString() === productId && item.size === wishlistItem.selectedSize
@@ -435,8 +491,9 @@ const loadWishlist = async (req, res) => {
 
                     if (existingItem) {
                         return res.render('wishlist', {
+                            wishlistItems: await Wishlist.findOne({ userId }).populate('items.productId') ,
                             message: 'Product Already in Cart',
-                            wishlistItems: await Wishlist.findOne({ userId }).populate('items.productId') // Fetch wishlist items again
+                          
                         });
                     }
 
@@ -452,6 +509,10 @@ const loadWishlist = async (req, res) => {
 
                     cart.cartTotal = cart.item.reduce((total, item) => total + item.total, 0);
                     await cart.save();
+                    await Wishlist.updateOne(
+                        { userId: new mongoose.Types.ObjectId(userId) },
+                        { $pull: { items: { productId: new mongoose.Types.ObjectId(productId) } } }
+                    );
                 }
 
                 res.redirect('/cart');
@@ -546,6 +607,34 @@ const loadWishlist = async (req, res) => {
             }
         };
         
+
+
+        const addMoney = async (req,res)=>{
+
+            try {
+                const userId=req.session.userId
+                const {amount}=req.body;
+
+                if(!amount||amount<=0){
+                    return res.status(400).json({ message: 'Invalid amount' }); 
+                }
+                let wallet= await Wallet.findOne({userId:userId})
+                console.log('wallet',wallet)
+
+                if(!wallet){
+                    return res.status(400).json({ message: 'Wallet not found' }); 
+                }
+                wallet.balance+=parseFloat(amount)
+                await wallet.save()
+                return res.json({ message: 'Money added successfully!', newBalance: wallet.balance });
+
+            } catch (error) {
+                console.log('error while adding money',error)
+            }
+        }
+
+
+
 const addToWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -597,5 +686,6 @@ module.exports={
     fromWishlist,
     loadWallet,
     createWallet,
-    addToWishlist
+    addToWishlist,
+    addMoney
 }

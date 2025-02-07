@@ -84,11 +84,12 @@ router.post('/returnorder/:orderid/:productid', logged, shopController.returnOrd
 
 
 
-router.get('/wishlist',profileController.loadWishlist)
+router.get('/wishlist',logged,profileController.loadWishlist)
 
 router.post('/wishlist/:id',profileController.wishlist)
 
-router.get('/removeWishlist/:id',profileController.removeWishlist)
+router.post('/removeWishlist/:product_id/:productSize', profileController.removeWishlist);
+
 router.get('/addtocart/:id',profileController.fromWishlist)
 router.post('/addtocart/:id',profileController.fromWishlist)
 
@@ -98,6 +99,7 @@ router.post('/verify-payment', shopController.verifyPayment);
 
 router.get('/wallet', logged, profileController.loadWallet);
 router.post('/create-wallet', logged, profileController.createWallet);
+router.post('/add-money',logged,profileController.addMoney)
 
 router.post('/applyCoupon',shopController.applyCoupon)
 router.post('/removeCoupon',shopController.removeCoupon)

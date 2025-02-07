@@ -340,15 +340,15 @@
                             <input type="hidden" name="productId" value="<%= item.productId._id %>">
                             <select name="status">
                                 <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
-                                <option value="Shipped" <%= item.productStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                <option value="Delivered" <%= item.productStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                <option value="Cancelled" <%= item.productStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                <option value="Returned" <%= item.productStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                <option value="processing" <%= item.productStatus === 'processing' ? 'selected' : '' %>>Processing</option>
+                                <option value="shipped" <%= item.productStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                <option value="delivered" <%= item.productStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                <option value="cancelled" <%= item.productStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                <option value="returned" <%= item.productStatus === 'returned' ? 'selected' : '' %>>Returned</option>
                             </select>
                             <button type="submit" class="btn-update">Update</button>
                         </form>
-                
-                   
+                        
                         <% if (item.productStatus === 'Delivered') { %>
                            
                         <% } %>

@@ -343,9 +343,9 @@
                     processedProduct.categoryDiscountAmount = categoryDiscountAmount;
                 }
         
-                // Determine the best discount to apply
+               
                 if (offerProduct && offerCategory) {
-                    // Apply the better discount
+                 
                     const productFinalPrice = product.Price - processedProduct.productDiscountAmount;
                     const categoryFinalPrice = product.Price - processedProduct.categoryDiscountAmount;
                     

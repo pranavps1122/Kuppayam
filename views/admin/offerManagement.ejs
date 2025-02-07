@@ -346,6 +346,134 @@
         background-color: #e9ecef; /* Standard secondary button color */
         color: #2d3436;
     }
+    .edit-form-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.hover-edit-form {
+    display: none;
+    position: absolute;
+    left: -320px;
+    top: -10px;
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1000;
+}
+
+.edit-form-container:hover .hover-edit-form {
+    display: block;
+}
+
+.hover-edit-form:hover {
+    display: block;
+}
+
+.edit-offer-form .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-offer-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.edit-offer-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit-offer-form input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-edit {
+    background-color: #e9ecef;
+    color: #2d3436;
+}
+
+/* Animation for smooth appearance */
+.hover-edit-form {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.edit-form-container:hover .hover-edit-form {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Add arrow pointer to the form */
+.hover-edit-form::before {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 15px;
+    border-width: 10px 0 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent white;
+    filter: drop-shadow(2px 0 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Prevent form from disappearing when clicking inputs */
+.hover-edit-form:focus-within {
+    display: block;
+}
+
+/* Add validation styles */
+.edit-offer-form input:invalid {
+    border-color: #dc3545;
+}
+
+.edit-offer-form input:invalid:focus {
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}
+.active-btn {
+  background-color: rgb(255, 0, 0);
+  color: white;
+}
+
+.inactive-btn {
+  background-color:#007bff;
+  color: rgb(255, 255, 255);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hover-edit-form {
+        left: auto;
+        right: 0;
+        top: 100%;
+        margin-top: 10px;
+    }
+
+    .hover-edit-form::before {
+        left: 20px;
+        top: -10px;
+        border-width: 0 10px 10px 10px;
+        border-color: transparent transparent white transparent;
+    }
+}
     </style>
 </head>
 <body>
@@ -368,7 +496,7 @@
             <button class="tab" onclick="showTab('referral')">Referral Offers</button>
         </div>
     
-        <!-- Product Offers Section -->
+       
         <div id="product-offers" class="offer-section active">
             <table>
                 <thead>
@@ -395,8 +523,38 @@
                                 <td><%= new Date(item.endDate).toISOString().split('T')[0] %></td>
                                 <td><%= item.status ? 'Active' : 'Inactive' %></td>
                                 <td>
-                                    <button class="btn btn-edit">Edit</button>
-                                    <a href="/admin/deleteOffer/<%= item._id %>"><button class="btn btn-delete">Delete</button></a>
+                                    <div class="edit-form-container">
+                                        <button class="btn btn-edit hover-edit-trigger">Edit</button>
+                                        <div class="hover-edit-form">
+                                            <form action="/admin/editProductOffer/<%= item.productId._id %>" method="POST" class="edit-offer-form">
+                                                <div class="form-group">
+                                                    <label for="discount_<%= item._id %>">Discount (%)</label>
+                                                    <input type="number" id="discount_<%= item._id %>" name="discount" 
+                                                           value="<%= item.discount %>" min="0" max="100" required>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="startDate_<%= item._id %>">Start Date</label>
+                                                    <input type="date" id="startDate_<%= item._id %>" name="startDate" 
+                                                           value="<%= new Date(item.startDate).toISOString().split('T')[0] %>" required>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="endDate_<%= item._id %>">End Date</label>
+                                                    <input type="date" id="endDate_<%= item._id %>" name="endDate" 
+                                                           value="<%= new Date(item.endDate).toISOString().split('T')[0] %>" required>
+                                                </div>
+                                                
+                                                <div class="form-buttons">
+                                                    <button type="button" class="btn btn-warning cancel-edit">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <a href="/admin/deleteOffer/<%= item._id %>"> <button class="btn <%= item.status ? 'active-btn' : 'inactive-btn' %>">
+                                        <%= item.status ? 'Inactive' : 'Active' %>
+                                      </button></a>
                                 </td>
                             </tr>
                         <% }) %>
@@ -424,11 +582,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     <% if (offers && offers.length > 0) { %>
                         <% offers.filter(item => item.offerType === 'category').forEach(item => { %>
                             <tr>
                                 <% if (item.categoryId) { %>
-                                    <td><%= item.categoryId.categoryName %></td> <!-- Display Category Name -->
+                                    <td><%= item.categoryId.categoryName %></td> 
                                 <% } else { %>
                                     <td>Category not found</td>
                                 <% } %>
@@ -441,8 +600,41 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-edit">Edit</button>
-                                    <button class="btn btn-delete">Delete</button>
+                                    <div class="edit-form-container">
+                                        <button class="btn btn-edit hover-edit-trigger">Edit</button>
+                                        <div class="hover-edit-form">
+                                            <form action="/admin/editOffer/<%= item.categoryId._id %>" method="POST" class="edit-offer-form">
+                                                <div class="form-group">
+                                                    <label for="discount_<%= item._id %>">Discount (%)</label>
+                                                    <input type="number" id="discount_<%= item._id %>" name="discount" 
+                                                           value="<%= item.discount %>" min="0" max="100" required>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="startDate_<%= item._id %>">Start Date</label>
+                                                    <input type="date" id="startDate_<%= item._id %>" name="startDate" 
+                                                           value="<%= new Date(item.startDate).toISOString().split('T')[0] %>" required>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="endDate_<%= item._id %>">End Date</label>
+                                                    <input type="date" id="endDate_<%= item._id %>" name="endDate" 
+                                                           value="<%= new Date(item.endDate).toISOString().split('T')[0] %>" required>
+                                                </div>
+                                                
+                                                <div class="form-buttons">
+                                                    <button type="button" class="btn btn-warning cancel-edit">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <a href="/admin/deleteOffer/<%= item._id %>">
+                                        <button class="btn <%= item.status ? 'active-btn' : 'inactive-btn' %>">
+                                          <%= item.status ? 'Inactive' : 'Active' %>
+                                        </button>
+                                      </a>
+                                      
                                 </td>
                             </tr>
                         <% }) %>
@@ -497,7 +689,7 @@
                         </select>
                     </div>
         
-                    <!-- Product selection field -->
+              
                     <div class="form-group" id="productSelection" style="display: none;">
                         <label for="productId">Select Product</label>
                         <select id="productId" name="productId" required>
@@ -508,7 +700,7 @@
                         </select>
                     </div>
         
-                     <!-- Category selection field -->
+                    
                     <div class="form-group" id="categorySelection" style="display: none;">
                         <label for="categoryId">Select Category</label>
                         <select id="categoryId" name="categoryId">
@@ -519,6 +711,10 @@
                         </select>
                     </div>
 
+                    <div class="form-group" id="referralSelection" style="display: none;">
+                        <label for="referralCode">Referral Code</label>
+                        <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code">
+                    </div>
 
                     <div class="form-group">
                         <label for="discount">Discount (%)</label>
@@ -544,118 +740,127 @@
       
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            document.getElementById('offerType').addEventListener('change', function() {
-                const productSelection = document.getElementById('productSelection');
-                const categorySelection = document.getElementById('categorySelection');
-            
-                if (this.value === 'product') {
-                    productSelection.style.display = 'block';
-                    categorySelection.style.display = 'none';
-                    document.getElementById('productId').setAttribute("required", "true");
-                    document.getElementById('categoryId').removeAttribute("required");
-                } else if (this.value === 'category') {
-                    productSelection.style.display = 'none';
-                    categorySelection.style.display = 'block';
-                    document.getElementById('categoryId').setAttribute("required", "true");
-                    document.getElementById('productId').removeAttribute("required");
-                } else {
-                    productSelection.style.display = 'none';
-                    categorySelection.style.display = 'none';
-                    document.getElementById('productId').removeAttribute("required");
-                    document.getElementById('categoryId').removeAttribute("required");
-                }
-            });
-            
-            // Initialize with correct display if product or category offer is selected
-            window.onload = function() {
-                const offerType = document.getElementById('offerType');
-                if (offerType.value === 'product') {
-                    document.getElementById('productSelection').style.display = 'block';
-                } else if (offerType.value === 'category') {
-                    document.getElementById('categorySelection').style.display = 'block';
-                }
-            
-                // Set minimum date as today for start date
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('startDate').min = today;
-            };
-            
-            // Update end date minimum when start date changes
-            document.getElementById('startDate').addEventListener('change', function() {
-                document.getElementById('endDate').min = this.value;
-            });
-            
-            function closeModal() {
-                document.getElementById('offerModal').style.display = 'none';
-                document.getElementById('offerForm').reset();
-            }
-            
-            function showTab(tabName) {
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-            
-                document.querySelectorAll('.offer-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-            
-                document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-                document.getElementById(tabName + '-offers').classList.add('active');
-            }
-            
-            function openModal() {
-                document.getElementById('offerModal').style.display = 'block';
-            }
-            
-            function closeModal() {
-                document.getElementById('offerModal').style.display = 'none';
-            }
-            
-            window.onclick = function(event) {
-                if (event.target == document.getElementById('offerModal')) {
-                    closeModal();
-                }
-            };
-            
-            // Form validation for discount and required fields
-            document.getElementById('offerForm').onsubmit = function(e) {
-                const discount = document.getElementById('discount').value;
-                const offerType = document.getElementById('offerType').value;
-                const productId = document.getElementById('productId').value;
-                const categoryId = document.getElementById('categoryId').value;
-            
-                if (discount < 0 || discount > 100) {
-                    alert("Discount must be between 0 and 100.");
-                    return false;
-                }
-            
-                if (offerType === 'product' && !productId) {
-                    alert("Please select a product.");
-                    return false;
-                }
-            
-                if (offerType === 'category' && !categoryId) {
-                    alert("Please select a category.");
-                    return false;
-                }
-            
-                closeModal();
-            };
-            
-            <% if (message) { %>
-            document.addEventListener('DOMContentLoaded', function() {
-                let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; 
-                Swal.fire({
-                    text: '<%= message.text %>',
-                    icon: iconType, 
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            });
-            <% } %>
+      // Main offer type change handler
+document.getElementById('offerType').addEventListener('change', function() {
+    const productSelection = document.getElementById('productSelection');
+    const categorySelection = document.getElementById('categorySelection');
+
+    if (this.value === 'product') {
+        productSelection.style.display = 'block';
+        categorySelection.style.display = 'none';
+        document.getElementById('productId').setAttribute("required", "true");
+        document.getElementById('categoryId').removeAttribute("required");
+    } else if (this.value === 'category') {
+        productSelection.style.display = 'none';
+        categorySelection.style.display = 'block';
+        document.getElementById('categoryId').setAttribute("required", "true");
+        document.getElementById('productId').removeAttribute("required");
+    } else {
+        productSelection.style.display = 'none';
+        categorySelection.style.display = 'none';
+        document.getElementById('productId').removeAttribute("required");
+        document.getElementById('categoryId').removeAttribute("required");
+    }
+});
+
+// Window load handler
+window.onload = function() {
+    const offerType = document.getElementById('offerType');
+    if (offerType.value === 'product') {
+        document.getElementById('productSelection').style.display = 'block';
+    } else if (offerType.value === 'category') {
+        document.getElementById('categorySelection').style.display = 'block';
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').min = today;
+};
+
+// Start date change handler
+document.getElementById('startDate').addEventListener('change', function() {
+    document.getElementById('endDate').min = this.value;
+});
+
+// Tab handling function
+function showTab(tabName) {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    document.querySelectorAll('.offer-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(tabName + '-offers').classList.add('active');
+}
+
+// Modal functions
+function openModal() {
+    document.getElementById('offerModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('offerModal').style.display = 'none';
+    document.getElementById('offerForm').reset();
+}
+
+// Modal outside click handler
+window.onclick = function(event) {
+    if (event.target == document.getElementById('offerModal')) {
+        closeModal();
+    }
+};
+
+// Form submission handler (without fetch)
+document.getElementById('offerForm').onsubmit = function(e) {
+    const discount = document.getElementById('discount').value;
+    const offerType = document.getElementById('offerType').value;
+    const productId = document.getElementById('productId').value;
+    const categoryId = document.getElementById('categoryId').value;
+
+    if (discount < 0 || discount > 100) {
+        alert("Discount must be between 0 and 100.");
+        e.preventDefault(); // Prevent form submission
+        return;
+    }
+
+    if (offerType === 'product' && !productId) {
+        alert("Please select a product.");
+        e.preventDefault();
+        return;
+    }
+
+    if (offerType === 'category' && !categoryId) {
+        alert("Please select a category.");
+        e.preventDefault();
+        return;
+    }
+};
+
+// Message handling (SweetAlert)
+document.addEventListener('DOMContentLoaded', function() {
+    <% if (message) { %>
+        let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; 
+        Swal.fire({
+            text: '<%= message.text %>',
+            icon: iconType, 
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    <% } %>
+});
+
+// Cancel button handlers for hover edit form
+document.querySelectorAll('.cancel-edit').forEach(button => {
+    button.addEventListener('click', function() {
+        this.closest('.hover-edit-form').style.display = 'none';
+    });
+});
+
             </script>
             
               

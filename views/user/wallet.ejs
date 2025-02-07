@@ -244,6 +244,40 @@
             color: white;
             border-color: #4f46e5;
         }
+        .add-money {
+    display: flex;
+    justify-content: end;
+   margin-top: -30px;
+    
+}
+
+#add-money-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient blue */
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: -20px;
+    padding: 6px 9px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+ 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#add-money-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #003f7f); /* Darker blue */
+    transform: scale(1.05);
+
+}
+
+#add-money-btn:active {
+    transform: scale(0.95);
+   
+}
     </style>
 </head>
 <body>
@@ -255,6 +289,10 @@
             <div id="wallet-section" class="content-section">
                 <h2>My Wallet</h2>
                 <div class="wallet-details">
+                    <div class="add-money">
+                        <button id="add-money-btn" onclick="addMoney()">💰 Add Money</button>
+                    </div>
+                </div>
                     <div class="balance-container">
                         <p class="balance-label">Current Balance</p>
                         <p class="balance-amount">₹<%= walletBalance.toFixed(2) %></p>
@@ -264,8 +302,11 @@
                         <div class="create-wallet">
                             <button id="create-wallet-btn" onclick="createWallet()">Create Wallet</button>
                         </div>
+
+                       
                     <% } %>
                 </div>
+
 
                 <!-- Transactions section -->
                 <div class="transactions-container">
@@ -330,30 +371,27 @@
             try {
                 const response = await fetch('/create-wallet', {
                     method: 'POST',
-                    credentials: 'same-origin', // Include session data with the request
+                    credentials: 'same-origin',
                 });
-
+    
                 if (response.ok) {
-                    // Success case
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: 'Wallet created successfully!', // Static message
-                        timer: 3000, // Keeps the message visible for 3 seconds (3000ms)
-                        showConfirmButton: true, // Hides the confirm button
+                        text: 'Wallet created successfully!',
+                        timer: 3000,
+                        showConfirmButton: true,
                     });
-
-                    // Reload the page to show the updated wallet balance
+    
                     setTimeout(() => {
                         location.reload();
-                    }, 3000); // Reloads after 3 seconds
+                    }, 3000);
                 } else {
-                    // Failure case (for 400 or 500 status)
                     Swal.fire({
                         icon: 'error',
                         title: 'Failed',
-                        text: 'Failed to create wallet. Please try again.', // Static message
-                        timer: 3000, // Keeps the message visible for 3 seconds
+                        text: 'Failed to create wallet. Please try again.',
+                        timer: 3000,
                         showConfirmButton: true,
                     });
                 }
@@ -361,13 +399,74 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'An unexpected error occurred. Please try again.', // Static message
-                    timer: 3000, // Keeps the message visible for 3 seconds
+                    text: 'An unexpected error occurred. Please try again.',
+                    timer: 3000,
                     showConfirmButton: false,
                 });
             }
         }
+    
+        async function addMoney() {
+            const { value: amount } = await Swal.fire({
+                title: 'Enter Amount',
+                input: 'number',
+                inputPlaceholder: 'Enter amount to add',
+                showCancelButton: true,
+                confirmButtonText: 'Add Money',
+                inputValidator: (value) => {
+                    if (!value || value <= 0) {
+                        return 'Please enter a valid amount!';
+                    }
+                }
+            });
+    
+            if (amount) {
+                try {
+                    const response = await fetch('/add-money', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ amount: parseFloat(amount) }),
+                        credentials: 'same-origin',
+                    });
+    
+                    const result = await response.json();
+    
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: `₹${amount} added to your wallet!`,
+                            timer: 3000,
+                            showConfirmButton: true,
+                        });
+    
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed',
+                            text: result.message || 'Failed to add money. Please try again.',
+                            timer: 3000,
+                            showConfirmButton: true,
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again.',
+                        timer: 3000,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+        }
     </script>
+    
 </body>
 </html>
  

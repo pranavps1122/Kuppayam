@@ -27,8 +27,8 @@
                     products,
                     currentPage: page,
                     totalPages,
-                    admin: req.session.admin, // Ensure admin data is passed correctly
-                    active: 'products'        // Fix syntax error
+                    admin: req.session.admin, 
+                    active: 'products'        
                 });
                 
         };
@@ -215,7 +215,7 @@
                 const { id } = req.params;
                 const { productName, quantity_s, quantity_m, quantity_l, quantity_xl, Price, category } = req.body;
         
-                // Convert quantities to integers
+              
                 const size_s = parseInt(quantity_s) || 0;
                 const size_m = parseInt(quantity_m) || 0;
                 const size_l = parseInt(quantity_l) || 0;

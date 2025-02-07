@@ -6,11 +6,10 @@ const offerSchema = new mongoose.Schema({
         enum: ["product", "category", "referral"], 
         required: true
     },
-    // Add these new fields
+
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        // Only required if offerType is "product"
         validate: {
             validator: function(value) {
                 return this.offerType !== 'product' || value != null;
@@ -18,6 +17,7 @@ const offerSchema = new mongoose.Schema({
             message: 'Product ID is required for product-type offers'
         }
     },
+
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
@@ -28,17 +28,28 @@ const offerSchema = new mongoose.Schema({
             message: 'Category ID is required for category-type offers'
         }
     },
-    // Rest of your schema remains the same
+
+    referralCode: {
+        type: String,
+        unique: true,  // Keep unique constraint
+        sparse: true,  // Avoid errors when it's null
+        required: function() {
+            return this.offerType === 'referral';
+        }
+    },
+
     discount: {
         type: Number,
         required: true,
         min: 0,
         max: 100
     },
+
     startDate: {
         type: Date,
         required: true
     },
+
     endDate: {
         type: Date,
         required: true,
@@ -49,16 +60,36 @@ const offerSchema = new mongoose.Schema({
             message: "End date must be after start date."
         }
     },
+
     status: {
         type: Boolean,
         required: true,
         default: true
     },
+
     createdAt: {
         type: Date,
         default: Date.now
+    },
+
+    redeemCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+
+    maxRedemptions: {
+        type: Number,
+        default: null,
+        min: 1
     }
 });
+
+// Only add index if it doesn't already exist
+if (!offerSchema.indexes().some(idx => JSON.stringify(idx[0]) === JSON.stringify({ referralCode: 1 }))) {
+    offerSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
+}
+
 const Offer = mongoose.model("Offer", offerSchema);
 
 module.exports = Offer;

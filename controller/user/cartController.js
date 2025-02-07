@@ -3,8 +3,8 @@
         const Cart=require('../../model/cartSchema')
         const Address=require('../../model/addressSchema')
         const Offer =require('../../model/offerSchema')
-const Category = require('../../model/categorySchema')
-
+        const Category = require('../../model/categorySchema')
+  
         const loadCart = async (req, res) => {
             try {
                 const userId =req.session.userId 
@@ -40,7 +40,6 @@ const Category = require('../../model/categorySchema')
                 
                 console.log('product size:', size);
                 
-                // Find product and verify it exists
                 const product = await Product.findOne({ _id: productId, "stock.size": size });
                 if (!product) {
                     return res.render('cart', {
@@ -58,11 +57,10 @@ const Category = require('../../model/categorySchema')
 
                 const category = await Category.findById(categoryId);
                 
-                // Check for offers
+             
                 const offerProduct = await Offer.findOne({ productId: productId });
                 const offerCategory = await Offer.findOne({ categoryId: categoryId });
                 
-                // Calculate discounted price and store discount information
                 let discountedPrice = product.Price;
                 let discountInfo = {
                     originalPrice: product.Price,
@@ -74,7 +72,7 @@ const Category = require('../../model/categorySchema')
                     const productDiscount = offerProduct?.discount || 0;
                     const categoryDiscount = offerCategory?.discount || 0;
                     
-                    // Use the higher discount
+                    
                     const discount = Math.max(productDiscount, categoryDiscount);
                     const discountAmount = Math.round(product.Price * (discount / 100));
                     discountedPrice = product.Price - discountAmount;
@@ -87,7 +85,7 @@ const Category = require('../../model/categorySchema')
                     };
                 }
         
-                // Find the selected stock size
+              
                 const selectedStock = product.stock.find(item => item.size === size);
                 if (!selectedStock) {
                     return res.render('cart', {
@@ -96,13 +94,13 @@ const Category = require('../../model/categorySchema')
                     });
                 }
         
-                // Find or create cart
+             
                 let cart = await Cart.findOne({ userId });
                 if (!cart) {
                     cart = new Cart({ userId, item: [], cartTotal: 0 });
                 }
         
-                // Create new item with discount information
+               
                 const newItem = {
                     productId: productId,
                     quantity: 1,
@@ -114,7 +112,6 @@ const Category = require('../../model/categorySchema')
                     categoryId: categoryId
                 };
         
-                // Check if item already exists in cart
                 const populatedCart = await Cart.findOne({ userId }).populate('item.productId');
                 const itemExists = cart.item.some(item => 
                     item.productId.toString() === productId && item.size === size
@@ -122,15 +119,15 @@ const Category = require('../../model/categorySchema')
         
                 if (itemExists) {
                     return res.render('cart', {
-                        cart: populatedCart,
+                        cart: await Cart.findOne({ userId }).populate('item.productId'),
+                        
                         message: 'Item already in cart'
                     });
                 }
         
-                // Add item to cart
                 cart.item.push(newItem);
         
-                // Recalculate cart total
+              
                 cart.cartTotal = cart.item.reduce((acc, item) => 
                     acc + Number(item.total || item.price * item.quantity || 0), 0
                 );

@@ -147,16 +147,32 @@
           <td><%= item.productId.productName %></td>
           <td><%= item.quantity %></td>
           <td><%= item.size %></td>
-          <td>₹<%= item.productPrice.toFixed(2) %></td>
-          <td>₹<%= (item.quantity * item.productPrice).toFixed(2) %></td>
+          <td>
+            <% if (order.couponDiscount > 0) { %>
+              ₹<%= item.productPrice.toFixed(0) %>
+            <% } else { %>
+              ₹<%= item.productPrice.toFixed(2) %>
+            <% } %>
+          </td>
+          <td>
+            <% if (order.couponDiscount > 0) { %>
+              <del>₹<%= (item.productPrice * item.quantity).toFixed(0) %></del> 
+              <% if (order.couponDiscount>0) { %>
+                ₹<%=item.productPrice-order.couponDiscount.toFixed(0) %>
+              <% } else { %>
+                ₹<%= (item.productPrice * item.quantity).toFixed(0) %>
+              <% } %>
+            <% } else { %>
+              ₹<%= (item.productPrice * item.quantity).toFixed(0) %>
+            <% } %>
+          </td>
           <td><%= item.productStatus %></td>
           <td>
-            <%= console.log('Product Status:', item.productStatus) %>
-            <% if (item.productStatus === 'pending' || item.productStatus === 'Shipped') { %>
+            <% if (item.productStatus === 'pending' || item.productStatus === 'shipped') { %>
               <form action="/cancelorder/<%= order._id %>/<%= item.productId._id %>" method="POST" style="display: inline;">
                 <button type="submit" class="cancel-btn">Cancel</button>
               </form>
-            <% } else if (item.productStatus === 'Delivered') { %>
+            <% } else if (item.productStatus === 'delivered') { %>
               <form action="/returnorder/<%= order._id %>/<%= item.productId._id %>" method="POST" style="display: inline;">
                 <input type="hidden" name="orderId" value="<%= order._id %>">
                 <input type="hidden" name="productId" value="<%= item.productId._id %>">
@@ -166,7 +182,9 @@
           </td>
         </tr>
       <% }); %>
+      
     </tbody>
+    
   </table>
 
   <div class="total-section">

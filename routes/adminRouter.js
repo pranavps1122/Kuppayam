@@ -6,6 +6,8 @@ const {userAuth,adminAuth}=require('../middlewares/auth')
 const customerController = require('../controller/admin/customerController')
 const categoryController =require('../controller/admin/categoryController')
 const productController =require('../controller/admin/productController')
+const salesController = require('../controller/admin/salesController')
+
 const path = require('path')
 
 const storage = multer.diskStorage({
@@ -78,15 +80,24 @@ router.post('/decline-return/:orderid/:productid', customerController.returnDecl
 
 router.get('/couponManagement',customerController.LoadCouponManagement)
 router.post('/addCoupons',customerController.addCoupon)
-
 router.get('/deleteCoupon/:id',customerController.deleteCoupon)
+router.post('/editCoupon',customerController.editCoupon)
 
-router.get('/offerManagement',customerController.LoadOfferManagement)
 
-router.post('/addOffer',customerController.addOffer)
+
+
+router.get('/offerManagement',adminAuth,customerController.LoadOfferManagement)
+router.post('/addOffer',adminAuth,customerController.addOffer)
 router.get('/deleteOffer/:id',customerController.deleteOffer)
+router.get('/catDelete/:id',customerController.catDelete)
+router.post('/editOffer/:id',customerController.editCategoryOffer)
+router.post('/editProductOffer/:id',customerController.editProductOffer)
 
-
+router.get('/sales-report', adminAuth, salesController.loadSalesReport);
+router.post('/generate-sales-report', adminAuth, salesController.generateSalesReport);
+router.post('/export-sales-pdf', adminAuth, salesController.exportPDF);
+router.post('/export-sales-excel', adminAuth, salesController.exportExcel);
+router.get('/sales-dashboard', adminAuth, salesController.getSalesDashboard);
 
 
 module.exports=router
