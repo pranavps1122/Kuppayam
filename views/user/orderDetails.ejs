@@ -15,6 +15,10 @@
         padding: 1rem;
         margin-bottom: 1rem;
     }
+    svg {
+    width: 100% !important; /* Or a fixed value like 24px */
+}
+
 
     .item-table {
         width: 100%;
@@ -74,6 +78,13 @@
         color: white;
         border-color: #4f46e5;
     }
+    .invoice{
+        background-color: #000000;
+        color: white;
+        text-decoration: none;
+        font-size: 12px;
+        padding: 6px 8px;
+    }
 </style>
 
 <div class="page-container">
@@ -91,21 +102,44 @@
                                     <th>Order ID</th>
                                     <th>Date</th>
                                     <th>Action</th>
+                                    <th>invoice</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>#<%= order._id %></td>
-                                    <td><%= new Date(order.timestamps).toLocaleDateString() %></td>
+                                    <td><%= new Date(order.date).toLocaleDateString() %></td>
+
                                     <td>
-                                        <a href="/orderstatus/<%= order._id %>" class="cancel-btn">View</a>
+                                        <% if (order.paymentMethod === 'Online Payment' && order.paymentStatus === 'pending') { %>
+                                            <button onclick="retryPayment('<%= order.razorpayOrderId %>')" class="cancel-btn">Retry</button>
+                                        <% } else { %>
+                                            <a href="/orderstatus/<%= order._id %>" class="cancel-btn">View</a>
+                                    
+                                            <td>
+                                            <% let invoiceShown = false; %> <!-- Flag to ensure only one button is shown -->
+                                            <% order.orderedItem.forEach(item => { %>
+                                                <% if (item.productStatus === 'delivered' && !invoiceShown) { %>
+                                                    <a href="/downloadInvoice/<%= order._id %>" class="invoice">Download</a>
+                                                    <% invoiceShown = true; %> <!-- Set flag to true after showing once -->
+                                                <% } %>
+                                            <% }) %>
+                                        </td>
+                                        <% } %>
                                     </td>
+                                    
+                                            
+                                    </td>
+                                    
+                                    
                                 </tr>
                             </tbody>
                         </table>
+                        
                         <div class="order-total">
                             Total: ₹<%= order.orderAmount.toFixed(2) %>
                         </div>
+                        
                     </div>
                 <% }); %>
 
@@ -133,5 +167,74 @@
         </div>
     </main>
 </div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+<script>
+    async function retryPayment(orderId) {
+        console.log('Retrying payment for Order ID:', orderId);
+        try {
+            const response = await fetch('/retry-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ razorpayOrderId: orderId })
+            });
+
+            const data = await response.json();
+            console.log('Server Response:', data);
+
+            if (data.success) {
+                initializeRazorpay(data.razorpayOrderId, data.amount);
+            } else {
+                alert('Failed to retry payment. ' + data.error);
+            }
+        } catch (error) {
+            console.error('Error in retryPayment:', error);
+            alert('An error occurred while retrying the payment.');
+        }
+    }
+
+    function initializeRazorpay(orderId, amount) {
+        const options = {
+            key: '<%= process.env.KEY_ID %>',
+            amount: amount * 100, 
+            currency: 'INR',
+            name: 'Kuppayam',
+            description: 'Purchase Payment',
+            order_id: orderId,
+            handler: function(response) {
+                fetch('/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/ordersuccess';
+                    } else {
+                        window.location.href = '/orderDetails';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Payment verification failed. Please try again.');
+                });
+            },
+            prefill: {
+                name: '<%= user?.name %>',
+                email: '<%= user?.email %>',
+            },
+            theme: {
+                color: '#2962ff'
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    }
+</script>
 <%- include('../partials/user/footer') %>

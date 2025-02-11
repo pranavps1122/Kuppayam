@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
         },
         productStatus: {
             type: String,
-            enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+            enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'Return Requested','Returned','Return Declined'],
             default: "pending",
             required: true
         },
@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    totalDiscount: {
+    orginalPrice: {
         type: Number,
         default: 0
     },
@@ -78,6 +78,9 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    razorpayOrderId: { type: String, 
+        default: null },
+
   
     date: {
         type: Date,

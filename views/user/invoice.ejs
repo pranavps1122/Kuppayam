@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #<%= orderId %></title>
+    <style>
+        @page {
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+        }
+
+        .invoice-header {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-number {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-section h2 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .products-table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .status-pending {
+            color: #f59e0b;
+            background: #fef3c7;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+
+        .total-amount {
+            text-align: right;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        @media print {
+            .invoice-container {
+                margin: 0;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h1 class="order-number">Invoice #<%= orderId %></h1>
+            
+            <div class="info-grid">
+                <div class="info-section">
+                    <h2>Customer Details</h2>
+                    <p>Name: <%= customerDetails.name %></p>
+                    <p>Email: <%= customerDetails.email %></p>
+                    <p>Phone: <%= customerDetails.phone %></p>
+                </div>
+
+                <div class="info-section">
+                    <h2>Company Details</h2>
+                    <p><%= companyDetails.name %></p>
+                    <p><%= companyDetails.address %></p>
+                    <p>Email: <%= companyDetails.email %></p>
+                    <p>Phone: <%= companyDetails.phone %></p>
+                    <p>GST: <%= companyDetails.gst %></p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-section">
+                    <h2>Shipping Address</h2>
+                    <p><%= shippingAddress.street %></p>
+                    <p><%= shippingAddress.city %>, <%= shippingAddress.state %></p>
+                    <p><%= shippingAddress.zipCode %></p>
+                    <p><%= shippingAddress.country %></p>
+                </div>
+                
+                <div class="info-section">
+                    <h2>Invoice Details</h2>
+                    <p>Invoice Date: <%= invoiceDate %></p>
+                    <p>Due Date: <%= dueDate %></p>
+                    <p>Payment Method: <%= paymentMethod %></p>
+                </div>
+            </div>
+        </div>
+
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                    <tr>
+                        <td>
+                            <%= product.name %>
+                        </td>
+                        <td><%= product.quantity %></td>
+                        <td><%= product.size %></td>
+                        <td>₹<%= product.price.toFixed(2) %></td>
+                        <td>₹<%= (product.price * product.quantity).toFixed(2) %></td>
+                        <td><span class="status-pending"><%= product.status %></span></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="total-amount">
+            <p>Total Amount: ₹<%= totalAmount.toFixed(2) %></p>
+        </div>
+    </div>
+</body>
+</html>

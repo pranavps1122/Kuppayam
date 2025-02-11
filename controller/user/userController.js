@@ -4,7 +4,8 @@
         const bcrypt=require('bcrypt')
         const {Product} = require('../../model/productSchema');
         const { block } = require('sharp');
-        const Offer = require('../../model/offerSchema')
+        const Offer = require('../../model/offerSchema');
+const Category = require('../../model/categorySchema');
 
 
         const loadHomepage = async (req, res) => {
@@ -307,70 +308,71 @@
             try {
                 const { productId } = req.params;
                 const user = req.session.user;
-             
+                const categories = await Category.find();
+                
                 const product = await Product.findById(productId).populate('category');
                 if (!product) {
                     return res.status(404).send('Product not found');
                 }
-        
-         
-                const offerProduct = await Offer.findOne({ productId: productId });
-                const offerCategory = await Offer.findOne({ categoryId: product.category._id });
+                
+               
+                const productOffer = await Offer.findOne({ productId: productId, status: true });
+                const categoryOffer = await Offer.findOne({ categoryId: product.category._id, status: true });
+                
+                let productDiscount = 0;
+                let categoryDiscount = 0;
+                let bestDiscount = 0;
+                let bestDiscountPercentage = 0;
+                let discountType = '';
+                
+                if (productOffer) {
+                    productDiscount = Math.round(product.Price * productOffer.discount / 100);
+                }
+                
+                if (categoryOffer) {
+                    categoryDiscount = Math.round(product.Price * categoryOffer.discount / 100);
+                }
+               
+                if (productDiscount >= categoryDiscount) {
+                    bestDiscount = productDiscount;
+                    bestDiscountPercentage = productOffer?.discount || 0;
+                    discountType = 'product';
+                } else {
+                    bestDiscount = categoryDiscount;
+                    bestDiscountPercentage = categoryOffer?.discount || 0;
+                    discountType = 'category';
+                }
+                
+             
+                const finalPrice = product.Price - bestDiscount;
+                
+                const processedProduct = {
+                    ...product.toObject(),
+                    discountAmount: bestDiscount,
+                    finalPrice: finalPrice,
+                    discountPercentage: bestDiscountPercentage,
+                    discountType: discountType,
+                    originalPrice: product.Price
+                };
                 
                 const relatedProducts = await Product.find({
                     category: product.category._id,
-                    _id: { $ne: productId }, 
+                    _id: { $ne: productId },
                 }).limit(4);
-        
-             
-                let processedProduct = {
-                    ...product.toObject(),
-                    finalPrice: product.Price,
-                    productDiscount: 0,
-                    categoryDiscount: 0
-                };
-        
-                if (offerProduct) {
-                    const productDiscountAmount = Math.round(product.Price * offerProduct.discount / 100);
-                    processedProduct.productDiscount = offerProduct.discount;
-                    processedProduct.productDiscountAmount = productDiscountAmount;
-                }
-        
-     
-                if (offerCategory) {
-                    const categoryDiscountAmount = Math.round(product.Price * offerCategory.discount / 100);
-                    processedProduct.categoryDiscount = offerCategory.discount;
-                    processedProduct.categoryDiscountAmount = categoryDiscountAmount;
-                }
-        
-               
-                if (offerProduct && offerCategory) {
-                 
-                    const productFinalPrice = product.Price - processedProduct.productDiscountAmount;
-                    const categoryFinalPrice = product.Price - processedProduct.categoryDiscountAmount;
-                    
-                    processedProduct.finalPrice = Math.min(productFinalPrice, categoryFinalPrice);
-                    processedProduct.appliedDiscount = productFinalPrice < categoryFinalPrice ? 
-                        processedProduct.productDiscount : processedProduct.categoryDiscount;
-                } else if (offerProduct) {
-                    processedProduct.finalPrice = product.Price - processedProduct.productDiscountAmount;
-                    processedProduct.appliedDiscount = processedProduct.productDiscount;
-                } else if (offerCategory) {
-                    processedProduct.finalPrice = product.Price - processedProduct.categoryDiscountAmount;
-                    processedProduct.appliedDiscount = processedProduct.categoryDiscount;
-                }
-        
+                
                 res.render('productDetail', {
                     product: processedProduct,
                     relatedProducts,
                     productId,
-                    user
+                    user,
+                    categories
                 });
             } catch (error) {
-                console.log(error);
+                console.error('Error while loading product details:', error);
                 res.status(500).send('Internal Server Error');
             }
         };
+        
 
         const loadForgotPassword = async (req,res)=>{
 

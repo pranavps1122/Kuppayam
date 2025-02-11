@@ -145,15 +145,15 @@
             try {
             const userId=req.session.userId || req.session.user.id
             const id =req.params.id 
-            console.log('id of product',id)
+        
             await Cart.updateOne({userId:userId},{$pull:{item:{_id:id}}})
 
             const updateCart=await Cart.findOne({userId:userId})
 
-            console.log('updated cart',updateCart)
+        
 
             updateCart.cartTotal = updateCart.item.reduce((acc, item) => acc + Number(item.total || 0), 0);
-            console.log('updateCarttotal',updateCart.cartTotal)
+           
 
             await updateCart.save()
             
@@ -165,61 +165,74 @@
                 console.log('error while removing ')
             }
         }
-            const updateQuantity = async (req, res) => {
+
+
+        const updateQuantity = async (req, res) => {
             const { itemId, action } = req.body;
             const userId = req.session.userId || req.session.user.id;
-
-            const updateQuantity = action === 'increase' ? 1 : -1;
-
-            try {
+           
         
-                const cart = await Cart.findOne({ userId: userId, "item._id": itemId }).populate('item.productId');
-
+            const updateQuantity = action === 'increase' ? 1 : -1;
+        
+            try {
+                const cart = await Cart.findOne({ userId });
+        
                 if (!cart) {
-                    return res.status(404).send('Cart or item not found');
+                    return res.status(404).send('Cart not found');
                 }
-
-            
+        
                 const itemIndex = cart.item.findIndex(item => item._id.toString() === itemId);
-
+        
                 if (itemIndex === -1) {
                     return res.status(404).send('Item not found in cart');
                 }
-
-                let item = cart.item[itemIndex];
-
-            
-                const newQuantity = item.quantity + updateQuantity;
-
-                if (newQuantity > item.stock) {
-                    return res.render('cart',{
-                        cart,
-                        message:`Product only has ${item.stock} stock available`
-                    })
-                }
-
-                
-                if (newQuantity <= 0) {
-                    return res.status(400).send('Quantity must be at least 1');
-                }
-
-
-                cart.item[itemIndex].quantity = newQuantity;
-
         
-                cart.cartTotal = cart.item.reduce((acc, item) => {
-                    return acc + (item.price * item.quantity || 0);
-                }, 0);
-
+                let item = cart.item[itemIndex];
+        
+    
+                const product = await Product.findById(item.productId);
+                if (!product) {
+                    return res.status(404).send('Product not found');
+                }
+        
+             
+                const selectedStock = product.stock.find(stockItem => stockItem.size === item.size);
+                if (!selectedStock) {
+                    return res.status(404).send('Stock information not found');
+                }
+        
+                const newQuantity = item.quantity + updateQuantity;
+        
+              
+                if (newQuantity > selectedStock.quantity) {
+                    return res.render('cart', {
+                        cart,
+                        message: `Only ${selectedStock.quantity} left in stock`
+                    });
+                }
+        
+         
+                if (newQuantity <= 0) {
+                    cart.item.splice(itemIndex, 1);
+                } else {
+                    cart.item[itemIndex].quantity = newQuantity;
+                    cart.item[itemIndex].total = newQuantity * cart.item[itemIndex].price;
+                }
+        
+               
+                cart.cartTotal = cart.item.length > 0 
+                    ? cart.item.reduce((acc, item) => acc + (item.price * item.quantity || 0), 0)
+                    : 0;
+        
                 await cart.save();
-
-                console.log('Updated Cart:', cart);
                 res.redirect('/cart');
+        
             } catch (error) {
                 console.error('Error updating quantity:', error);
                 res.status(500).send('Error updating quantity');
             }
         };
+        
 
         module.exports={
             loadCart,

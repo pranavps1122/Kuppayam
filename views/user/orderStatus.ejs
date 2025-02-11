@@ -178,10 +178,15 @@
                 <input type="hidden" name="productId" value="<%= item.productId._id %>">
                 <button type="submit" class="return-btn" style="background-color: #4f46e5; color: white; padding: 4px 3px; border: solid; border-radius: 4px;">Return</button>
               </form>
+
+             
             <% } %>
+          
           </td>
         </tr>
+        
       <% }); %>
+
       
     </tbody>
     
@@ -190,12 +195,21 @@
   <div class="total-section">
     <p><strong>Total Amount: ₹<%= order.orderAmount.toFixed(2) %></strong></p>
   </div>
+  
+  <% if (order.paymentStatus === 'Payment Pending') { %>
+    <div class="retry-payment">
+      <p style="color: red; font-weight: bold;">Your payment failed. Please try again.</p>
+      <button onclick="retryPayment('<%= order._id %>')" class="retry-btn">Retry Payment</button>
+    </div>
+  <% } %>
+  
 </div>
 
 <%- include('../../views/partials/user/footer') %>
 
 <% if (message) { %>
   <script>
+    
     document.addEventListener('DOMContentLoaded', function() {
       Swal.fire({
         text: '<%= message %>',

@@ -43,7 +43,10 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
     const loadAddCategory = async (req,res) =>{
         
         res.render('addCategory',{
-            message:null
+            message:null,
+            admin:req.session.admin,
+            active:'category'
+
         })
     }
 
@@ -63,15 +66,18 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
                 });
 
                 if (existingCategory) {
-                    return res.render('addCategory', { message: 'Category Already Exists' });
+                    return res.render('addCategory', { message: 'Category Already Exists' , admin:req.session.admin,
+                        active:'category'});
                 }
 
             if (!categoryName) {
-                return res.render('addCategory', { message: 'Category name is required' });
+                return res.render('addCategory', { message: 'Category name is required' , admin:req.session.admin,
+                    active:'category'});
             }
 
               if (/\s/.test(categoryName)) {
-                return res.render('addCategory', { message: 'Avoid white spaces' });
+                return res.render('addCategory', { message: 'Avoid white spaces', admin:req.session.admin,
+                    active:'category' });
            }
             
             

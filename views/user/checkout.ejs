@@ -178,8 +178,12 @@ h2 {
     font-size: 16px; /* Font size */
     font-weight: bold; /* Bold text */
     cursor: pointer; /* Pointer cursor on hover */
-    width: 100%; /* Full width button */
+    width: 20%; /* Full width button */
     transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+    margin-left: 650px;
+    margin-top: -40px;
+ 
+  
 }
 
 .checkout-button:hover {
@@ -220,7 +224,7 @@ h2 {
     background-color: #e6f7ff; /* Light background for the coupon section */
     border: 1px solid #cbd5e1; /* Border color */
     border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Padding around the content */
+    padding: 30px; /* Padding around the content */
     margin-top: 20px; /* Space above the coupon section */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     
@@ -304,7 +308,132 @@ h2 {
 .wallet-amount{
     width: 50px;
 }
+.checkout-button2{
+    background-color: #4f46e5; 
+    color: white;
+    border: none;
+    padding: 8px;
+    margin-left: 580px;
+    cursor: pointer;
+}
+.coupon-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+}
 
+.coupon-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-code {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.coupon-discount {
+    font-size: 14px;
+    color: #28a745;
+}
+
+.apply-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.apply-btn:hover {
+    background-color: #218838;
+}
+
+.no-coupons {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+}
+/* Styles for coupon system */
+.coupon-form {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.coupon-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.coupon-input-group input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.coupon-input-group input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.apply-coupon {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apply-coupon:hover {
+    background-color: #45a049;
+}
+
+.removeCoupon {
+    padding: 6px 12px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.removeCoupon:hover {
+    background-color: #cc0000;
+}
+
+.coupon-message {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+#appliedCoupon {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #e8f5e9;
+    border-radius: 4px;
+    margin-left: 5px;
+}
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <%-include('../../views/partials/user/header')%>
@@ -330,23 +459,17 @@ h2 {
                         </div>
                     </div>
                 <% }); %>
-                <div class="coupon-container">
-                    <h2>Apply Coupon</h2>
-                    <form action="/applyCoupon" method="POST" class="coupon-form" id="couponForm">
-                        <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" required />
-                        <button type="submit" id="applyCouponButton" class="checkout-button">Apply</button>
-                        <input type="hidden" id="appliedCouponHidden" name="appliedCoupon" />
-                    </form>
-                    
-                </div>
+              
                 
-                <div class="place-order">
-                    <h2>Place Order</h2>
-                    <p>Coupon Applied: <span id="appliedCoupon" style="font-weight: bold; color: green;"></span></p>
-                
-                    <form action="/removeCoupon" method="POST" id="removeCouponForm" style="display: none;">
-                        <button type="submit" id="removeCouponButton" class="removeCoupon">Remove Coupon</button>
-                    </form>
+                <div class="coupon-section">
+                    <!-- Coupon form will be injected by JavaScript -->
+                    <div class="place-order">
+                        <h2>Place Order</h2>
+                        <p>Coupon Applied: <span id="appliedCoupon"></span></p>
+                        <form action="/remove-coupon" method="POST" id="removeCouponForm" style="display: none;">
+                            <button type="submit" class="removeCoupon">Remove Coupon</button>
+                        </form>
+                    </div>
                 </div>
                 
                 <div class="order-total">
@@ -354,11 +477,10 @@ h2 {
                 </div>
             </div>
     
-            <!-- Shipping Details Section -->
             <div class="shipping-details">
                 <h2>Shipping Details</h2>
                 <form class="checkout-form" method="POST" action="/checkout">
-                    <!-- Address Selection -->
+                    
                     <div class="address-cards-container">
                         <% address.forEach(addr => { %>
                             <div class="address-card" onclick="selectAddress(this, '<%= addr.id %>')">
@@ -376,20 +498,24 @@ h2 {
                             </div>
                         <% }); %>
                     </div>
-    
-                    <!-- Add New Address Button -->
+                    
+                   
                     <div class="add-new-address">
                         <a href="/address" class="add-address-link">+ Add New Address</a>
                     </div>
         
-                        <!-- Payment Method Selection -->
     <div class="payment-method">
         <h2>Payment Method</h2>
         <div class="payment-options">
-            <label>
-                <input type="radio" name="paymentMethod" value="cod" required>
-                Cash on Delivery (COD)
-            </label>
+            <% if (cart.cartTotal <= 1000) { %>
+                <label style="color: red;">Cash on Delivery (COD) not available for orders above Rs 1000</label>
+            <% } else { %>
+                <label>
+                    <input type="radio" name="paymentMethod" value="COD" required>
+                    Cash on Delivery (COD)
+                </label>
+            <% } %>
+            
 
             <label>
                 <input type="radio" name="paymentMethod" value="online" required>
@@ -397,7 +523,7 @@ h2 {
             </label>
 
             <label class="wallet-option">
-                <input type="radio" name="paymentMethod" value="wallet" required>
+                <input type="radio" name="paymentMethod" value="Wallet" required>
                 Wallet 
                 <div class="wallet-balance">
                     
@@ -423,83 +549,108 @@ h2 {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     function selectAddress(card, addressId) {
-        document.querySelectorAll('.address-card').forEach(c => {
-            c.classList.remove('selected');
-        });
-        
-        card.classList.add('selected');
-        
-        card.querySelector('input[type="radio"]').checked = true;
-        
-        document.getElementById('newAddressForm').classList.remove('active');
-    }
-
-    function toggleNewAddressForm() {
-        const form = document.getElementById('newAddressForm');
-        form.classList.toggle('active');
-        
-        document.querySelectorAll('.address-card').forEach(card => {
-            card.classList.remove('selected');
-            card.querySelector('input[type="radio"]').checked = false;
-        });
-    }
-    document.getElementById("couponForm").addEventListener("submit", function () {
-        const couponCode = document.getElementById("couponCode").value.trim();
-        if (couponCode) {
-            sessionStorage.setItem("appliedCoupon", couponCode);
-            document.getElementById("appliedCouponHidden").value = couponCode; // Ensure it's stored
-        }
+    document.querySelectorAll('.address-card').forEach(c => {
+        c.classList.remove('selected');
     });
+    
+    card.classList.add('selected');
+    
+    card.querySelector('input[type="radio"]').checked = true;
+    
+    document.getElementById('newAddressForm').classList.remove('active');
+}
 
-    const appliedCoupon = sessionStorage.getItem("appliedCoupon") || "";
-    function initializeRazorpay(orderId, amount) {
-        const options = {
-            key: '<%= process.env.key_id %>',
-            amount: amount * 100,
-            currency: 'INR',
-            name: 'Kuppayam',
-            description: 'Purchase Payment',
-            order_id: orderId,
-            handler: function(response) {
-                const couponCode = document.getElementById('couponCode').value.trim(); // Capture it dynamically
-                fetch('/verify-payment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                                body: JSON.stringify({
+function toggleNewAddressForm() {
+    const form = document.getElementById('newAddressForm');
+    form.classList.toggle('active');
+    
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.classList.remove('selected');
+        card.querySelector('input[type="radio"]').checked = false;
+    });
+}
+
+
+function initializeRazorpay(orderId, amount) {
+    const options = {
+        key: '<%= process.env.key_id %>', 
+        amount: amount * 100, // Convert to paise
+        currency: 'INR',
+        name: 'Kuppayam',
+        description: 'Purchase Payment',
+        order_id: orderId,
+        handler: function(response) {
+            // Send payment success data to the server
+            fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_signature: response.razorpay_signature,
-                    addressId: document.querySelector('input[name="addressId"]:checked').value,
-                    couponCode: appliedCoupon // Pass stored coupon code
+                    addressId: document.querySelector('input[name="addressId"]:checked').value
                 })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = '/ordersuccess';
-                    } else {
-                        alert('Payment verification failed');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Payment verification failed');
-                });
-            },
-            prefill: {
-                name: '<%= user?.name %>',
-                email: '<%= user?.email %>',
-            },
-            theme: {
-                color: '#2962ff'
-            }
-        };
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/ordersuccess';
+                } else {
+                    window.location.href = '/orderDetails';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Payment verification failed. Please try again.');
+            });
+        },
+        prefill: {
+            name: '<%= user?.name %>',
+            email: '<%= user?.email %>',
+        },
+        theme: {
+            color: '#2962ff'
+        }
+    };
 
-        const rzp = new Razorpay(options);
-        rzp.open();
-    }
+    const rzp = new Razorpay(options);
+
+    // Add event listener for payment failure
+    rzp.on('payment.failed', function(response) {
+        console.error('Payment failed:', response.error);
+
+        // Send payment failure data to the server
+        fetch('/payment-failed', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                razorpay_order_id: response.error.metadata.order_id,
+                razorpay_payment_id: response.error.metadata.payment_id,
+                error_code: response.error.code,
+                error_description: response.error.description,
+                addressId: document.querySelector('input[name="addressId"]:checked').value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/orderDetails';
+            } else {
+                alert('Failed to save payment failure details.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to save payment failure details.');
+        });
+    });
+
+    rzp.open();
+}
 
 
 document.querySelector('.checkout-form').addEventListener('submit', async function (event) {
@@ -528,49 +679,152 @@ document.querySelector('.checkout-form').addEventListener('submit', async functi
             console.error('Error:', error);
             alert('Failed to initiate payment');
         }
-    }else if(paymentMethod=='cod'){
-
-
-        
-
-    }else {
+    } else {
         this.submit();
     }
 });
-document.addEventListener("DOMContentLoaded", function () {
-        const storedCoupon = sessionStorage.getItem("appliedCoupon");
-        if (storedCoupon) {
-            document.getElementById("appliedCoupon").textContent = storedCoupon;
-            document.getElementById("removeCouponForm").style.display = "block";
+
+const couponSystem = {
+    init() {
+        this.setupCouponForm();
+        this.setupRemoveCouponButton();
+    },
+
+    setupCouponForm() {
+        const couponForm = document.createElement('form');
+        couponForm.id = 'couponForm';
+        couponForm.className = 'coupon-form';
+        couponForm.innerHTML = `
+            <div class="coupon-input-group">
+                <input type="text" 
+                    name="couponCode" 
+                    id="couponCode" 
+                    placeholder="Enter coupon code"
+                    required
+                >
+                <button type="submit" class="apply-coupon">Apply Coupon</button>
+            </div>
+            <p class="coupon-message" id="couponMessage"></p>
+        `;
+
+        // Insert the form before the place order section
+        const placeOrderSection = document.querySelector('.place-order');
+        placeOrderSection.parentNode.insertBefore(couponForm, placeOrderSection);
+
+        // Bind the event handler with the correct context
+        couponForm.addEventListener('submit', (e) => this.handleCouponSubmit(e));
+    },
+
+    setupRemoveCouponButton() {
+        const removeCouponForm = document.getElementById('removeCouponForm');
+        if (removeCouponForm) {
+            // Bind the event handler with the correct context
+            removeCouponForm.addEventListener('submit', (e) => this.handleRemoveCoupon(e));
         }
-    });
+    },
 
-    document.getElementById("couponForm").addEventListener("submit", function () {
-        const couponCode = document.getElementById("couponCode").value.trim();
-        if (couponCode) {
-            sessionStorage.setItem("appliedCoupon", couponCode);
-            document.getElementById("appliedCouponHidden").value = couponCode;
-        }
-    });
+    async handleCouponSubmit(e) {
+        e.preventDefault();
+        const couponCode = document.getElementById('couponCode').value;
+        const messageElement = document.getElementById('couponMessage');
+        
+        try {
+            const response = await fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ couponCode })
+            });
 
-    document.getElementById("removeCouponForm").addEventListener("submit", function () {
-        sessionStorage.removeItem("appliedCoupon");
-    });
+            const data = await response.json();
 
-<% if (message) { %>
-    
-        document.addEventListener('DOMContentLoaded', function() {
+            if (data.success) {
+         
+                Swal.fire({
+                    text: `Coupon applied successfully! You saved ₹${data.discount}`,
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                
+               
+                document.getElementById('totalAmount').textContent = data.newTotal;
+                document.getElementById('appliedCoupon').textContent = couponCode;
+                document.getElementById('removeCouponForm').style.display = 'block';
+                document.getElementById('couponCode').value = '';
+                document.getElementById('couponCode').disabled = true;
+            } else {
+             
+                Swal.fire({
+                    text: data.message || 'Invalid coupon code',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        } catch (error) {
             Swal.fire({
-                text: '<%= message %>',
-                icon: '<%= messageType === "success" ? "success" : "error" %>',
+                text: 'Error applying coupon',
+                icon: 'error',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
+                timer: 3000
             });
-        });
-   
-<% } %>
+        }
+    },
 
+    async handleRemoveCoupon(e) {
+        e.preventDefault();
+        
+        try {
+            const response = await fetch('/remove-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show success message
+                Swal.fire({
+                    text: 'Coupon removed successfully',
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                // Reset UI
+                document.getElementById('appliedCoupon').textContent = '';
+                document.getElementById('couponMessage').textContent = '';
+                document.getElementById('totalAmount').textContent = data.newTotal;
+                document.getElementById('couponCode').disabled = false;
+                document.getElementById('removeCouponForm').style.display = 'none';
+            }
+        } catch (error) {
+            Swal.fire({
+                text: 'Error removing coupon',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    }
+};
+
+// Initialize the coupon system
+document.addEventListener('DOMContentLoaded', () => {
+    couponSystem.init();
+});
 </script>

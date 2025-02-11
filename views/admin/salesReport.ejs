@@ -453,51 +453,7 @@
       </tbody>
     </table>
     
-<div class="pagination-container">
-    <div class="items-per-page">
-      <label for="pageSize">Items per page:</label>
-      <select id="pageSize" name="pageSize">
-        <option value="5" <%= pageSize === 5? 'selected' : '' %>>5</option>
-        <option value="25" <%= pageSize === 25 ? 'selected' : '' %>>25</option>
-        <option value="50" <%= pageSize === 50 ? 'selected' : '' %>>50</option>
-        <option value="100" <%= pageSize === 100 ? 'selected' : '' %>>100</option>
-      </select>
-    </div>
-    
-    <div class="pagination-controls">
-      <button 
-        onclick="changePage(1)" 
-        <%= currentPage === 1 ? 'disabled' : '' %>
-      >
-        First
-      </button>
-      <button 
-        onclick="changePage(<%= currentPage - 1 %>)" 
-        <%= currentPage === 1 ? 'disabled' : '' %>
-      >
-        Previous
-      </button>
-      
-      <span class="current-page">Page <%= currentPage %> of <%= totalPages %></span>
-      
-      <button 
-        onclick="changePage(<%= currentPage + 1 %>)" 
-        <%= currentPage === totalPages ? 'disabled' : '' %>
-      >
-        Next
-      </button>
-      <button 
-        onclick="changePage(<%= totalPages %>)" 
-        <%= currentPage === totalPages ? 'disabled' : '' %>
-      >
-        Last
-      </button>
-    </div>
-    
-    <div class="page-info">
-      Showing <%= (currentPage - 1) * pageSize + 1 %> to <%= Math.min(currentPage * pageSize, totalItems) %> of <%= totalItems %> entries
-    </div>
-  </div>
+
   </div>
 
   <script>
@@ -566,10 +522,10 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `
                 <td> ${new Date(order.date).toLocaleDateString()}</td>
                 <td>${order.orderId}</td>
-                <td> ₹${order.amount.toFixed(2)}</td>
-                <td> ₹${order.discount.toFixed(2)}</td>
-                <td> ${order.couponCode}</td>
-                <td> ₹${order.finalAmount.toFixed(2)}</td>
+                <td> ₹${order.amount.toFixed(0)}</td>
+                <td> ₹${order.discount.toFixed(0)}</td>
+                <td> ${order.couponCode ? order.couponCode : "No coupon used"}</td>
+                <td> ₹${order.finalAmount.toFixed(0)}</td>
             `;
             salesTable.appendChild(row);
         });
@@ -580,32 +536,34 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('button:nth-child(2)').addEventListener('click', exportExcel);
 
     async function exportPDF() {
-        try {
-            const response = await fetch('/admin/export-sales-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    reportType: reportType.value,
-                    startDate: document.getElementById('startDate').value,
-                    endDate: document.getElementById('endDate').value
-                })
-            });
+    try {
+        const response = await fetch('/admin/export-sales-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                reportType: document.getElementById('reportType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value
+            })
+        });
 
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'sales-report.pdf';
-                a.click();
-                window.URL.revokeObjectURL(url);
-            }
-        } catch (error) {
-            alert('Error exporting PDF: ' + error.message);
-        }
+        if (!response.ok) throw new Error('Failed to generate PDF');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sales-report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error exporting PDF:', error);
+        alert('Error exporting PDF: ' + error.message);
     }
+}
+
 
     async function exportExcel() {
         try {

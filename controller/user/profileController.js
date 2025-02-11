@@ -3,14 +3,21 @@ const Address=require('../../model/addressSchema')
 const bcrypt=require('bcrypt')
 const Order = require('../../model/orderSchema')
 const {Product} =require('../../model/productSchema')
-
-
+const Razorpay = require('razorpay');
+require('dotenv').config();
+const crypto = require('crypto');
 const Wishlist = require('../../model/wishlistSchema')
 const mongoose = require('mongoose');
 const Cart=require('../../model/cartSchema')
 const Wallet = require('../../model/walletSchema')
 const Category=require('../../model/categorySchema')
 const Offer=require('../../model/offerSchema')
+const Coupon = require('../../model/couponSchema')
+
+const razorpay = new Razorpay({
+    key_id: process.env.key_id,
+    key_secret: process.env.key_secret
+});
 const loadprofile = async (req,res) => {
 
     try {
@@ -521,7 +528,7 @@ const wishlist = async (req, res) => {
                 res.status(500).json({ message: 'An error occurred while adding the product to cart' });
             }
         };
-        
+      
         const loadWallet = async (req, res) => {
             try {
                 const userId = req.session.userId;
@@ -539,16 +546,16 @@ const wishlist = async (req, res) => {
                 const walletBalance = wallet ? wallet.balance : 0;
 
                 // Pagination logic
-                const page = parseInt(req.query.page) || 1; // Current page
-                const limit = parseInt(req.query.limit) || 5; // Number of transactions per page
-                const skip = (page - 1) * limit; // Calculate how many transactions to skip
+                const page = parseInt(req.query.page) || 1;
+                const limit = parseInt(req.query.limit) || 5; 
+                const skip = (page - 1) * limit;
 
-                // Fetch transactions for the current page
+             
                 const transactions = wallet ? wallet.transactions.slice().reverse().slice(skip, skip + limit) : []; // Get transactions for the current page
 
-                // Count total transactions for pagination
-                const totalTransactions = wallet ? wallet.transactions.length : 0; // Count total transactions
-                const totalPages = Math.ceil(totalTransactions / limit); // Calculate total pages
+               
+                const totalTransactions = wallet ? wallet.transactions.length : 0; 
+                const totalPages = Math.ceil(totalTransactions / limit); 
 
                 res.render('wallet', {
                     user,
@@ -556,7 +563,7 @@ const wishlist = async (req, res) => {
                     transactions,
                     currentPage: page,
                     totalPages,
-                    message: null // Optional: You can pass any message here, such as success or error messages
+                    message: null 
                 });
             } catch (error) {
                 console.error('Error while rendering wallet:', error);
@@ -609,50 +616,106 @@ const wishlist = async (req, res) => {
         
 
 
-        const addMoney = async (req,res)=>{
-
+        const addMoney = async (req, res) => {
             try {
-                const userId=req.session.userId
-                const {amount}=req.body;
-
-                if(!amount||amount<=0){
-                    return res.status(400).json({ message: 'Invalid amount' }); 
+                const userId = req.session.userId;
+                const { amount } = req.body;
+        
+                if (!amount || amount <= 0) {
+                    return res.status(400).json({ message: 'Invalid amount' });
                 }
-                let wallet= await Wallet.findOne({userId:userId})
-                console.log('wallet',wallet)
-
-                if(!wallet){
-                    return res.status(400).json({ message: 'Wallet not found' }); 
+                if (amount > 10000) {
+                    return res.status(400).json({ message: '₹10,000 is the one-time limit' });
                 }
-                wallet.balance+=parseFloat(amount)
-                await wallet.save()
-                return res.json({ message: 'Money added successfully!', newBalance: wallet.balance });
-
+        
+                let wallet = await Wallet.findOne({ userId });
+        
+                if (!wallet) {
+                    return res.status(400).json({ message: 'Wallet not found' });
+                }
+        
+                // Create a Razorpay order
+                const options = {
+                    amount: amount * 100, // Convert ₹ to paise
+                    currency: 'INR',
+                    receipt: `wallet_${Date.now()}`,
+                    payment_capture: 1,
+                };
+        
+                const order = await razorpay.orders.create(options);
+                res.json({ success: true, order });
+        
             } catch (error) {
-                console.log('error while adding money',error)
+                console.error('Error while adding money:', error);
+                res.status(500).json({ message: 'Internal server error' });
             }
-        }
+        };
 
 
 
+
+
+
+        const VerifyPayment = async (req, res) => {
+            try {
+                console.log("Received payment verification request:", req.body); // Debugging log
+        
+                const { razorpay_payment_id, razorpay_order_id, razorpay_signature, amount } = req.body;
+                console.log(req.body)
+                const userId = req.session.userId;
+        
+                if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+                    console.log("Missing payment details");
+                    return res.status(400).json({ message: 'Missing payment details' });
+                }
+        
+                const generated_signature = crypto
+                    .createHmac("sha256", process.env.key_secret)
+                    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+                    .digest("hex");
+        
+                console.log("Generated Signature:", generated_signature);
+                console.log("Received Signature:", razorpay_signature);
+        
+                if (generated_signature !== razorpay_signature) {
+                    console.log("Signature mismatch - verification failed");
+                    return res.status(400).json({ message: "Payment verification failed! Signature mismatch." });
+                }
+        
+                let wallet = await Wallet.findOne({ userId });
+                if (!wallet) {
+                    console.log("Wallet not found for user:", userId);
+                    return res.status(400).json({ message: "Wallet not found" });
+                }
+        
+                wallet.balance += parseFloat(amount);
+                await wallet.save();
+        
+                console.log(`Money added successfully! New balance: ₹${wallet.balance}`);
+                return res.json({ message: "Money added successfully!", newBalance: wallet.balance });
+        
+            } catch (error) {
+                console.error("Error verifying payment:", error);
+                res.status(500).json({ message: "Payment verification failed due to server error." });
+            }
+        };
 const addToWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
         const { productId, selectedSize } = req.body;
 
-        // Check if the product exists
         const productExists = await Product.findById(productId);
         if (!productExists) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Find or create a wishlist for the user
+   
         let wishlist = await Wishlist.findOne({ userId });
         if (!wishlist) {
             wishlist = new Wishlist({ userId: userId, items: [] });
         }
 
-        // Check if the product is already in the wishlist
+       
         const productInWishlist = wishlist.items.find(item => 
             item.productId.toString() === productId && item.selectedSize === selectedSize
         );
@@ -661,7 +724,7 @@ const addToWishlist = async (req, res) => {
             return res.status(400).json({ message: 'Product already in wishlist' });
         }
 
-        // Add the product to the wishlist
+  
         wishlist.items.push({ productId: productId, selectedSize: selectedSize });
         await wishlist.save();
 
@@ -671,6 +734,127 @@ const addToWishlist = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const applyCoupon = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { couponCode } = req.body;
+        
+        const cart = await Cart.findOne({ userId });
+        const coupon = await Coupon.findOne({ 
+            couponCode: couponCode.toUpperCase() 
+        });
+
+        if (!coupon) {
+            return res.json({
+                success: false,
+                message: 'Invalid coupon code'
+            });
+        }
+
+        if(coupon.status==false){
+            return res.json({
+                success: false,
+                message: 'Invalid coupon code'
+            });
+        }
+       
+        if (!cart) {
+            return res.json({
+                success: false,
+                message: 'Cart not found'
+            });
+        }
+
+      if(!coupon){
+        return cart.cartTotal
+      }
+
+        let discountAmount;
+        
+            discountAmount = (cart.cartTotal * coupon.discount) / 100;
+           
+       
+        cart.appliedCoupon = coupon._id;
+        cart.discountAmount = discountAmount;
+        cart.discountedTotal = cart.cartTotal - discountAmount;
+  
+        await cart.save();
+
+        coupon.usedCount += 1;
+        await coupon.save();
+
+        res.json({
+            success: true,
+            discount: discountAmount,
+            newTotal: cart.discountedTotal,
+            message: 'Coupon applied successfully'
+        });
+
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        res.json({
+            success: false,
+            message: 'Error applying coupon'
+        });
+    }
+};
+
+    const removeCoupon = async (req,res)=>{
+        
+
+
+        try {
+          const userId=req.session.userId  
+          const cart=await Cart.findOne({userId:userId})
+
+          if (!cart) {
+            return res.json({
+                success: false,
+                message: 'Cart not found'
+            });
+        }
+
+        const originalPrice = cart.discountedTotal+cart.discountAmount
+        console.log('dfd',originalPrice)
+
+        await Cart.findOneAndUpdate(
+            { userId: userId },
+            { 
+                cartTotal: originalPrice,
+                appliedCoupon: null,
+                discountAmount: 0
+            }
+        );
+
+        req.session.appliedCoupon = null;
+
+
+
+        res.json({
+            success: true,
+            newTotal: originalPrice,
+            message: 'Coupon removed successfully'
+        });
+
+        } catch (error) {
+            console.log('error while removing the coupon',error)
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports={
     loadprofile,
@@ -687,5 +871,8 @@ module.exports={
     loadWallet,
     createWallet,
     addToWishlist,
-    addMoney
+    addMoney,
+    applyCoupon,
+    removeCoupon,
+    VerifyPayment
 }

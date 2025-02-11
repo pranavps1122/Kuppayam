@@ -365,106 +365,113 @@
     <%- include('../partials/user/footer') %>
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
     <script>
-        async function createWallet() {
-            try {
-                const response = await fetch('/create-wallet', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                });
-    
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Wallet created successfully!',
-                        timer: 3000,
-                        showConfirmButton: true,
-                    });
-    
-                    setTimeout(() => {
-                        location.reload();
-                    }, 3000);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed',
-                        text: 'Failed to create wallet. Please try again.',
-                        timer: 3000,
-                        showConfirmButton: true,
-                    });
-                }
-            } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred. Please try again.',
-                    timer: 3000,
-                    showConfirmButton: false,
-                });
+       async function addMoney() {
+    const { value: amount } = await Swal.fire({
+        title: 'Enter Amount',
+        input: 'number',
+        inputPlaceholder: 'Enter amount to add',
+        showCancelButton: true,
+        confirmButtonText: 'Add Money',
+        inputValidator: (value) => {
+            if (!value || value <= 0) {
+                return 'Please enter a valid amount!';
             }
         }
-    
-        async function addMoney() {
-            const { value: amount } = await Swal.fire({
-                title: 'Enter Amount',
-                input: 'number',
-                inputPlaceholder: 'Enter amount to add',
-                showCancelButton: true,
-                confirmButtonText: 'Add Money',
-                inputValidator: (value) => {
-                    if (!value || value <= 0) {
-                        return 'Please enter a valid amount!';
-                    }
-                }
-            });
-    
-            if (amount) {
-                try {
-                    const response = await fetch('/add-money', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ amount: parseFloat(amount) }),
-                        credentials: 'same-origin',
-                    });
-    
-                    const result = await response.json();
-    
-                    if (response.ok) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: `₹${amount} added to your wallet!`,
-                            timer: 3000,
-                            showConfirmButton: true,
-                        });
-    
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Failed',
-                            text: result.message || 'Failed to add money. Please try again.',
-                            timer: 3000,
-                            showConfirmButton: true,
-                        });
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An unexpected error occurred. Please try again.',
-                        timer: 3000,
-                        showConfirmButton: false,
-                    });
-                }
-            }
+    });
+
+    if (!amount) return;
+
+    try {
+        const response = await fetch('/add-money', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseFloat(amount) }),
+            credentials: 'same-origin',
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || 'Failed to initiate payment.');
         }
+
+        const options = {
+            key: '<%= process.env.key_id %>', // Replace with your Razorpay key
+            amount: result.order.amount, // Amount in paise
+            currency: 'INR',
+            name: 'Kuppayam',
+            description: 'Add Money to Wallet',
+            order_id: result.order.id,
+            handler: async function (paymentResponse) {
+                await verifyPayment(paymentResponse, amount);
+            },
+            prefill: {
+                name: '<%= user?.name %>',
+                email: '<%= user?.email %>',
+            },
+            theme: { color: '#3399cc' },
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,
+            timer: 3000,
+            showConfirmButton: true,
+        });
+    }
+}
+
+async function verifyPayment(paymentResponse, amount) {
+    try {
+        const response = await fetch('/verify-wallet-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                amount: amount,
+            }),
+            credentials: 'same-origin',
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || 'Payment verification failed.');
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Payment Successful!',
+            text: `₹${amount} added to your wallet!`,
+            timer: 3000,
+            showConfirmButton: true,
+        });
+
+        setTimeout(() => {
+            location.reload();
+        }, 3000);
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,
+            timer: 3000,
+            showConfirmButton: true,
+        });
+    }
+}
+
+
     </script>
     
 </body>

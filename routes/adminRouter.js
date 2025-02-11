@@ -56,7 +56,6 @@ router.post('/addproduct',upload.array('images',3),productController.addProduct)
 router.post('/deleteProduct',productController.DelProduct)
 router.get('/editProduct/:id',adminAuth,productController.loadEditProductPage)
 
-// Update the edit product route to handle multiple images
 router.post('/editProduct/:id', productController.editProduct);
 
 router.get('/updateimage/:id',adminAuth,productController.updateImage)
@@ -93,11 +92,14 @@ router.get('/catDelete/:id',customerController.catDelete)
 router.post('/editOffer/:id',customerController.editCategoryOffer)
 router.post('/editProductOffer/:id',customerController.editProductOffer)
 
-router.get('/sales-report', adminAuth, salesController.loadSalesReport);
-router.post('/generate-sales-report', adminAuth, salesController.generateSalesReport);
-router.post('/export-sales-pdf', adminAuth, salesController.exportPDF);
-router.post('/export-sales-excel', adminAuth, salesController.exportExcel);
-router.get('/sales-dashboard', adminAuth, salesController.getSalesDashboard);
+router.get('/salesreport', salesController.salesreport);
 
+router.post('/generate-sales-report', salesController.generateSalesReport);
+
+// Route to export sales report to PDF
+router.post('/export-sales-pdf', salesController.exportSalesPDF);
+
+// Route to export sales report to Excel
+router.post('/export-sales-excel', salesController.exportSalesExcel);
 
 module.exports=router

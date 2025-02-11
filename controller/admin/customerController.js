@@ -62,9 +62,11 @@ const loadOrderManagement = async (req, res) => {
                 model: 'Product',
                 select: 'productName productImage price'
             })
+            
             .sort({ createdAt: -1 }) // Sort by creation date, latest first
             .skip(skip)
             .limit(limit);
+            console.log('orders',orders)
 
         res.render('orderManage', {
             orders,
@@ -152,7 +154,7 @@ const updateProductStatus = async (req, res) => {
     }
 };
 
-const returnApprove = async (req,res)=>{
+const returnApprove = async (req, res) => {
     try {
         const orderId = req.params.orderid;
         const productId = req.params.productid;
@@ -163,7 +165,19 @@ const returnApprove = async (req,res)=>{
         const itemToReturn = order.orderedItem.find(item => item.productId._id.toString() === productId);
         if (!itemToReturn) return res.status(404).send('Product not found in order');
 
-        const refundAmount = order.orderAmount
+        const totalQuantity = order.orderedItem.reduce((sum, item) => sum + item.quantity, 0);
+
+        // Calculate refund amount for the returned item
+        let refundAmount;
+        if (order.couponCode) {
+            refundAmount = (order.orderAmount / totalQuantity) * itemToReturn.quantity;
+        } else {
+            refundAmount = itemToReturn.productPrice * itemToReturn.quantity;
+        }
+
+        console.log(`Refund Amount for ${itemToReturn.productId._id}: ${refundAmount}`);
+
+        // Restore product stock
         const product = await Product.findById(productId);
         if (product) {
             const sizeIndex = product.stock.findIndex(stock => stock.size == itemToReturn.size);
@@ -174,10 +188,10 @@ const returnApprove = async (req,res)=>{
             }
         }
 
+        // Update wallet balance and transactions
         let wallet = await Wallet.findOne({ userId: order.userId });
         if (!wallet) {
             wallet = new Wallet({ userId: order.userId, balance: 0, transactions: [] });
-            await wallet.save();
         }
         wallet.balance += refundAmount;
         wallet.transactions.push({
@@ -188,7 +202,7 @@ const returnApprove = async (req,res)=>{
         });
         await wallet.save();
 
-   
+        // Update order status
         itemToReturn.productStatus = 'Returned';
         await order.save();
 
@@ -197,7 +211,7 @@ const returnApprove = async (req,res)=>{
         console.error('Error approving return:', error);
         res.status(500).send('Error processing return approval');
     }
-}
+};
 
 const returnDecline = async (req,res)=>{
     try {

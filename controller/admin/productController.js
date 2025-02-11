@@ -39,6 +39,8 @@
                 res.render('addProducts', {
                     category,
                     message: null,
+                    admin: req.session.admin,
+                    active: 'product',
                 });
             } catch (error) {
                 res.redirect('/admin/adminError');
@@ -119,6 +121,10 @@
                     imgArray[0] = `product-images/${req.files[0].filename}`;
                     imgArray[1] = `product-images/${req.files[1].filename}`;
                     imgArray[2] = `product-images/${req.files[2].filename}`;
+
+
+
+                    
                     const totalStock= parseInt(products.size_s)+parseInt(products.size_m)+parseInt(products.size_l)+parseInt(products.size_xl)
 
                     const newProduct = new Product({
@@ -203,6 +209,8 @@
                 res.render('editProduct', {
                     product: product,
                     categories: categories,
+                    admin: req.session.admin,
+                    active: 'product',
                 });
             } catch (error) {
                 console.error('Error loading edit product page:', error);
