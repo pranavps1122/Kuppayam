@@ -1,6 +1,184 @@
-
-
 <%-include('../../views/partials/user/header')%>
+
+<!-- Add this creative loader HTML -->
+<div id="loader-wrapper">
+    <div class="fashion-loader">
+        <div class="hanger">
+            <div class="hanger-top"></div>
+            <div class="hanger-bottom"></div>
+        </div>
+        <div class="clothes">
+            <div class="shirt">👕</div>
+            <div class="pants">👖</div>
+            <div class="dress">👗</div>
+        </div>
+    </div>
+    <div class="loader-text">
+        <span>K</span>
+        <span>U</span>
+        <span>P</span>
+        <span>P</span>
+        <span>A</span>
+        <span>Y</span>
+        <span>A</span>
+        <span>M</span>
+    </div>
+</div>
+
+<style>
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.fashion-loader {
+    position: relative;
+    height: 150px;
+    width: 200px;
+}
+
+.hanger {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hanger-top {
+    width: 80px;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    position: relative;
+}
+
+.hanger-top::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 20px;
+    background: #333;
+}
+
+.hanger-bottom {
+    width: 4px;
+    height: 40px;
+    background: #333;
+    margin: 0 auto;
+}
+
+.clothes {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.shirt, .pants, .dress {
+    font-size: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: clothesAnimation 4s infinite;
+}
+
+.pants {
+    animation-delay: 0.5s;
+}
+
+.dress {
+    animation-delay: 1s;
+}
+
+.loader-text {
+    margin-top: 40px;
+    display: flex;
+    gap: 8px;
+}
+
+.loader-text span {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    animation: textAnimation 1s infinite;
+}
+
+@keyframes clothesAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes textAnimation {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+        color: #3498db;
+    }
+}
+
+/* Add animation delay for each letter */
+.loader-text span:nth-child(1) { animation-delay: 0.1s; }
+.loader-text span:nth-child(2) { animation-delay: 0.2s; }
+.loader-text span:nth-child(3) { animation-delay: 0.3s; }
+.loader-text span:nth-child(4) { animation-delay: 0.4s; }
+.loader-text span:nth-child(5) { animation-delay: 0.5s; }
+.loader-text span:nth-child(6) { animation-delay: 0.6s; }
+.loader-text span:nth-child(7) { animation-delay: 0.7s; }
+.loader-text span:nth-child(8) { animation-delay: 0.8s; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loader = document.getElementById('loader-wrapper');
+    loader.style.display = 'flex';
+    
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+        
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 500);
+    }, 2000);
+    
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+        document.body.style.overflow = '';
+    }, 2000);
+});
+</script>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">

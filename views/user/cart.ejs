@@ -209,9 +209,23 @@ body {
 .continue-shopping:hover {
     background-color: #1d4ed8;
 }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
 
 </style>
-<div class="cart-container">
+<div class="cart-container page-animation">
     <h1 class="cart-title">Your Shopping Cart</h1>
 
     <% if (cart && cart.item && cart.item.length > 0) { %>

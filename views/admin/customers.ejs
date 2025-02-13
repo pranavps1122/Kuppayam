@@ -187,6 +187,56 @@
             background-color: #e9ecef; /* Standard secondary button color */
             color: #2d3436;
         }
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-btn {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-btn:hover:not(:disabled) {
+            background-color: #2980b9;
+        }
+
+        .search-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -202,9 +252,20 @@
             <div class="table-header">
                 <h2 class="table-title">Users List</h2>
                 <div class="search-bar">
-                    <form action="/admin/customers" method="GET">
-                        <input type="text" class="search-input" name="search" placeholder="Search users..." value="<%= search %>">
-                        <button type="submit" class="btn">Search</button>
+                    <form action="/admin/customers" method="GET" id="searchForm">
+                        <div class="search-container">
+                            <input 
+                                type="text" 
+                                class="search-input" 
+                                name="search" 
+                                placeholder="Search by name or email..." 
+                                value="<%= typeof search !== 'undefined' ? search : '' %>"
+                                autocomplete="off"
+                            >
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -242,14 +303,35 @@
             </table>
 
             <div class="pagination">
-                <% if (currentPage > 1) { %>
-                    <a href="/admin/customers?page=<%= currentPage - 1 %>&search=<%= search %>">Previous</a>
-                <% } %>
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <a href="/admin/customers?page=<%= i %>&search=<%= search %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-                <% } %>
-                <% if (currentPage < totalPages) { %>
-                    <a href="/admin/customers?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
+                <% if (totalPages > 1) { %>
+                    <% if (currentPage > 1) { %>
+                        <a href="/admin/customers?page=1&search=<%= search %>" class="btn">First</a>
+                        <a href="/admin/customers?page=<%= currentPage - 1 %>&search=<%= search %>" class="btn">Previous</a>
+                    <% } %>
+
+                    <% let startPage = Math.max(1, currentPage - 2);
+                       let endPage = Math.min(totalPages, currentPage + 2);
+                    %>
+
+                    <% if (startPage > 1) { %>
+                        <span class="pagination-ellipsis">...</span>
+                    <% } %>
+
+                    <% for (let i = startPage; i <= endPage; i++) { %>
+                        <a href="/admin/customers?page=<%= i %>&search=<%= search %>" 
+                           class="btn <%= i === currentPage ? 'btn-active' : '' %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+
+                    <% if (endPage < totalPages) { %>
+                        <span class="pagination-ellipsis">...</span>
+                    <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/admin/customers?page=<%= currentPage + 1 %>&search=<%= search %>" class="btn">Next</a>
+                        <a href="/admin/customers?page=<%= totalPages %>&search=<%= search %>" class="btn">Last</a>
+                    <% } %>
                 <% } %>
             </div>
         </div>
@@ -263,7 +345,7 @@
                 text: `Do you want to ${action} this user?`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: action === 'block' ? '#d33' : '#22c55e',
+                confirmButtonColor: action === 'Block' ? '#d33' : '#22c55e',
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: `Yes, ${action}!`
             }).then((result) => {
@@ -272,6 +354,27 @@
                 }
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = searchForm.querySelector('input[name="search"]');
+            let searchTimeout;
+
+            // Real-time search with debounce
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchForm.submit();
+                }, 500);
+            });
+
+            // Add loading state to search button
+            searchForm.addEventListener('submit', function() {
+                const button = this.querySelector('.search-btn');
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                button.disabled = true;
+            });
+        });
     </script>
 </body>
 </html>

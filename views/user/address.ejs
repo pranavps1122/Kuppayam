@@ -51,6 +51,24 @@
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
+
+        .page-animation {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
     </style>
 </head>
 
@@ -62,7 +80,7 @@
         <%- include('../partials/user/sidebar', { user, active: 'address' }) %>
         
         <main class="main-content">
-            <div id="address-section" class="content-section">
+            <div id="address-section" class="content-section page-animation">
                 <h2>Add New Address</h2>
                 <form action="/Address" method="POST" id="add-address-form" class="address-form">
                     <div class="form-group">

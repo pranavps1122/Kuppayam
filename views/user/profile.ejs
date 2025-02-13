@@ -94,13 +94,27 @@
         font-size: 1.2rem;
         margin-bottom: 1rem;
     }
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
 </style>
 
 <div class="page-container">
     <%- include('../partials/user/sidebar', { user, active: 'profile' }) %>
     
     <main class="main-content">
-        <div id="profile-section" class="content-section">
+        <div id="profile-section" class="content-section page-animation">
             <h2>Profile</h2>
             <div class="profile-details">
                 <div class="detail-section">
@@ -125,7 +139,7 @@
             </div>
         </div>
 
-        <div id="addresses-section" class="content-section">
+        <div id="addresses-section" class="content-section page-animation">
             <h2>Addresses</h2>
             <% if (address && address.length > 0) { %>
                 <ul class="address-list">

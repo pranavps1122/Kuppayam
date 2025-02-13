@@ -143,10 +143,24 @@
             height: 180px;
         }
     }
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
 </style>
 <!-- views/wishlist.ejs -->
 <div class="container-fluid">
-    <div class="wishlist-container">
+    <div class="wishlist-container page-animation">
         <h1 class="wishlist-title">My Wishlist</h1>
 
         <% if (wishlistItems && wishlistItems.length > 0) { %>

@@ -7,43 +7,61 @@ const Offer = require('../../model/offerSchema');
 const Category = require('../../model/categorySchema');
 const { Status } = require('./productController');
 
-const customerInfo = async (req,res)=>{
+const customerInfo = async (req, res) => {
     try {
-        const userId = req.session.userId; // Assuming you have user ID in session
+        if (!req.session.admin) {
+            return res.redirect('/admin/login');
+        }
+
+        // Get search and pagination parameters
         const search = req.query.search || '';
         const page = parseInt(req.query.page) || 1;
-        const limit = 5; // Number of orders per page
+        const limit = 5; // Number of users per page
 
-        // Fetch orders for the user, sorted by createdAt in descending order
-        const users = await User.find({ /* your query here */ }); // Ensure you are fetching users correctly
+        // Build search query for users (not admin)
+        let query = { isAdmin: false };
+        if (search) {
+            query = {
+                isAdmin: false,
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } }
+                ]
+            };
+        }
 
-        // Log the users to check if it's an array
-        console.log('Fetched users:', users);
+        // Count total users matching the search criteria
+        const totalUsers = await User.countDocuments(query);
+        const totalPages = Math.ceil(totalUsers / limit);
 
-        const orders = await Order.find({ userId: userId, $or: [{ orderId: { $regex: search, $options: 'i' } }] })
-            .sort({ createdAt: -1 }) // Sort by creation date, latest first
+        // Fetch users with pagination
+        const users = await User.find(query)
+            .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(limit)
-            .populate('orderedItem.productId'); // Populate product details if needed
+            .select('_id name email Status'); // Select only needed fields
 
-        const count = await Order.countDocuments({ userId: userId, $or: [{ orderId: { $regex: search, $options: 'i' } }] });
-        const totalPages = Math.ceil(count / limit);
+        // Log for debugging
+        console.log('Search Query:', search);
+        console.log('Total Users Found:', totalUsers);
+        console.log('Users:', users);
 
         res.render('customers', {
             user: req.session.admin,
-            users: users, // Pass the users array to the template
-            orders: orders,
-            search: search,
-            totalPages: totalPages,
+            users,
             currentPage: page,
-            admin: req.session.admin, // Ensure admin data is passed correctly
-            active: 'users'  
+            totalPages,
+            search,
+            totalUsers,
+            admin: req.session.admin,
+            active: 'users'
         });
+
     } catch (error) {
-        console.error('Error fetching customer orders:', error);
+        console.error('Error in customerInfo:', error);
         res.redirect('/adminError');
     }
-}
+};
 
 const loadOrderManagement = async (req, res) => {
     const page = parseInt(req.query.page) || 1; 
@@ -582,7 +600,6 @@ const editProductOffer = async (req,res)=>{
         console.log('error while editing productOffer',errror)
     }
 }
-
 
 
 

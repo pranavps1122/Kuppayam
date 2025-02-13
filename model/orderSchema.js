@@ -52,6 +52,11 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    profit: {
+        type: Number,
+        default: 0,
+        required: true
+    },
     orginalPrice: {
         type: Number,
         default: 0
@@ -96,8 +101,9 @@ orderSchema.index({ userId: 1, date: -1 });
 
 // Virtual for calculating total amount with discount
 orderSchema.virtual('discountedAmount').get(function() {
-    return this.orderAmount - this.totalDiscount;
+    return this.orderAmount - this.couponDiscount; // Use couponDiscount instead
 });
+
 
 const Order = mongoose.model("orders", orderSchema);
 

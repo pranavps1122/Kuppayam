@@ -37,10 +37,12 @@ const upload = multer({
 router.get('/adminError',adminController.adminError)
 router.get('/login',adminController.loadLogin)
 router.post('/login',adminController.login)
-router.get('/',adminAuth,adminController.loadDashboard)
-router.get('/dashboard',adminAuth ,adminController.loadDashboard);
+
+router.get('/dashboard', adminAuth, adminController.loadDashboard);
+router.get('/dashboard-stats', adminAuth, adminController.loadDashboard);
+
 router.get('/logout',adminAuth,adminController.logout)
-router.get('/customers',adminAuth, customerController.customerInfo);
+router.get('/customers', adminAuth, customerController.customerInfo);
 router.get('/blockUser',adminAuth,adminController.blockCustomer);
 router.get('/category',adminAuth,categoryController.categoryInfo)
 router.get('/addCategory',adminAuth,categoryController.loadAddCategory)
@@ -101,5 +103,7 @@ router.post('/export-sales-pdf', salesController.exportSalesPDF);
 
 // Route to export sales report to Excel
 router.post('/export-sales-excel', salesController.exportSalesExcel);
+
+
 
 module.exports=router

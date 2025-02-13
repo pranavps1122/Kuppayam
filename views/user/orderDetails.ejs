@@ -85,13 +85,27 @@
         font-size: 12px;
         padding: 6px 8px;
     }
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
 </style>
 
 <div class="page-container">
     <%- include('../partials/user/sidebar', { user: user, active: 'orders' }) %>
     
     <main class="main-content">
-        <div class="orders-container">
+        <div class="orders-container page-animation">
             <h1>My Orders</h1>
             <% if (orders && orders.length > 0) { %>
                 <% orders.forEach(function(order) { %>

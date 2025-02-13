@@ -603,6 +603,20 @@ body {
     .search-input:not(:placeholder-shown) ~ .clear-search {
         display: block;
     }
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
     </style>
 
     <%-include('../../views/partials/user/header')%>
@@ -614,7 +628,7 @@ body {
         <span><%= product.productName %></span>
     </div>
 
-    <div class="container">
+    <div class="container page-animation">
         <!-- Product Section -->
         <div class="product-grid1">
             <!-- Thumbnails -->

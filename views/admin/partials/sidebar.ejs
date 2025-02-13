@@ -3,7 +3,7 @@
         <div class="user-avatar">👤</div>
         <div class="user-name">Admin</div>
     </div>
-    <a href="/admin/dashboard" class="menu-item <%= active === 'dashboard' ? 'active' : '' %>">
+    <a href="/admin/dashboard-stats" class="menu-item <%= active === 'dashboard' ? 'active' : '' %>">
         <span class="menu-icon">📊</span> Dashboard
     </a>
     <a href="/admin/products" class="menu-item <%= active === 'products' ? 'active' : '' %>">
@@ -84,7 +84,8 @@
     .main-content {
         margin-left: var(--sidebar-width);
         padding: 4rem;
-        width: calc(100% - var(--sidebar-width));
+        width: calc(90% - var(--sidebar-width));
+      
     }
 
     .sidebar-profile {

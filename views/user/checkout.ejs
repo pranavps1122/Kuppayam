@@ -442,7 +442,7 @@ h2 {
 
 <div class="page-wrapper">
     <div class="content-wrapper">
-        <div class="checkout-container">
+        <div class="checkout-container page-animation">
             <h1>Checkout</h1>
     
             <!-- Order Summary Section -->
@@ -617,11 +617,11 @@ function initializeRazorpay(orderId, amount) {
 
     const rzp = new Razorpay(options);
 
-    // Add event listener for payment failure
+    
     rzp.on('payment.failed', function(response) {
         console.error('Payment failed:', response.error);
 
-        // Send payment failure data to the server
+        
         fetch('/payment-failed', {
             method: 'POST',
             headers: {

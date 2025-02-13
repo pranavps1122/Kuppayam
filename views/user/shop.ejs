@@ -501,14 +501,27 @@ body {
     color: rgb(255, 0, 0);
     font-size: 1em;
 }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
+.page-animation {
+    animation: fadeIn 0.5s ease-out forwards;
+}
 
 </style>
 
 
 
     <%-include('../../views/partials/user/header')%>
-    <main class="shop-container">
+    <main class="shop-container page-animation">
         <!-- Sidebar Filters -->
         <aside class="filters">
             <section class="filter-group">
