@@ -134,7 +134,9 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
 
         res.render('editCategory', {
             category,
-            message:null
+            message:null,
+            admin: req.session.admin, 
+            active: 'category'  
         })
    
         
@@ -160,7 +162,9 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
        if(categoryName==''){
         return res.render('editCategory',{
             message:'Enter a valid name',
-            category
+            category,
+            admin: req.session.admin, 
+            active: 'category'  
             
         
         })
@@ -170,7 +174,9 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
 
         return res.render('editCategory',{
             message:'Space not allowed',
-            category
+            category,
+            admin: req.session.admin, 
+            active: 'category'  
             
         
         })
@@ -182,14 +188,17 @@ const { findOneAndUpdate, exists } = require('../../model/userSchema')
         if(exist){
             return res.render('editCategory',{
                 message:'Category Already Exists',
-                category
+                category,
+                admin: req.session.admin, 
+                active: 'category'  
             })
         }
         if(!categoryName.length===0){
             return res.render('editCategory',{
                 message:'Enter A Name',
-                category
-                
+                category,
+                admin: req.session.admin, 
+                active: 'category'  
             
             })
         }

@@ -233,29 +233,31 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
     
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', () => {
+                    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                });
+            }
+    
+            // Server-side error message handling
+            <% if (message) { %>
+                Swal.fire({
+                    text: "<%= message %>",
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            <% } %>
         });
-    
-        // Server-side error message handling
-        <% if (typeof message !== 'undefined' && message) { %>
-            Swal.fire({
-                text: '<%= message %>',
-                icon: 'error',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-        <% } %>
-    });
     </script>
+    
     
 </body>
 </html>

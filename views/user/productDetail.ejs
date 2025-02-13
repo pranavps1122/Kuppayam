@@ -301,26 +301,86 @@
         }
 
         .related-products h2 {
-            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .related-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: -15px;
-    padding-top: 10px;
-}
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-.related-product {
-    text-align: center;
-    padding-top: 20px;
-}
+        .related-product {
+            transition: all 0.3s ease;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 0 auto;
+        }
 
-.related-product img {
-    width: 83%;
-    height: 84%; /* Reduced from 89% to 70% */
-    object-fit: cover;
-}
+        .related-product:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .related-product img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .related-product h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .price-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .original-price {
+            color: #999;
+            font-size: 0.8rem;
+            text-decoration: line-through;
+        }
+
+        .discount-percent {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .current-price {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
 
         /* Newsletter */
         .newsletter {
@@ -617,6 +677,25 @@ body {
 .page-animation {
     animation: fadeIn 0.5s ease-out forwards;
 }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .related-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 
     <%-include('../../views/partials/user/header')%>
@@ -758,8 +837,11 @@ body {
             <h2>YOU MIGHT ALSO LIKE</h2>
             <div class="related-grid">
                 <% relatedProducts.forEach(products => { %>
+                  
                     <div class="related-product">
-                        <img src="/<%= products.productImage[0] %>" alt="<%= products.productName %>">
+                        <a href="/productDetail/<%= products._id %>/<%= products.category._id %>">
+                            <img src="/<%= products.productImage[0] %>" alt="<%= products.productName %>">
+                        </a>
                         <h3><%= products.productName %></h3>
                         <div class="price-section">
                             

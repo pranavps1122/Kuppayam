@@ -45,7 +45,13 @@
                     ];
                 }
 
-                return Product.find(query).where(filter).sort(sortOptions[sortCriteria] || { productName: 1 }).skip(skip).limit(limit);
+                return Product.find(query)
+                .where(filter)
+                .populate('category') // ✅ This ensures category details are included
+                .sort(sortOptions[sortCriteria] || { productName: 1 })
+                .skip(skip)
+                .limit(limit);
+            
             };
             const loadShop = async (req, res) => {
                 const page = parseInt(req.query.page) || 1;
@@ -53,53 +59,38 @@
                 const skip = (page - 1) * limit;
             
                 try {
-                    const offer=await Offer.find();
-                  
-                  
                     const searchTerm = req.query.search || '';
                     const categories = await Category.find();
                     const sortCriteria = req.query.sort || 'Az';
                     const categoryFilter = req.query.category || 'all';
             
                     const products = await fetchProducts(sortCriteria, categoryFilter, searchTerm, skip, limit);
-                    
-                 
+            
+                    // Fetch only the category IDs related to products on the page
                     const productIds = products.map(product => product._id);
-                    const categoryIds = categories.map(category => category._id);
-                    
-                    const productOffers = await Offer.find({ productId: { $in: productIds } ,status:true});
-                    const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds } ,status:true});
+                    const categoryIds = products.map(product => product.category?._id).filter(id => id);
+            
+                    // Fetch active offers for these products and categories
+                    const productOffers = await Offer.find({ productId: { $in: productIds }, status: true });
+                    const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds }, status: true });
             
                     const productsWithOffers = products.map(product => {
-                       
                         const productOffer = productOffers.find(o => 
                             o.productId.toString() === product._id.toString()
                         );
-                      
+            
                         const categoryOffer = categoryOffers.find(o => 
-                            o.categoryId.toString() === product.category.toString()
+                            o.categoryId.toString() === product.category?._id?.toString()
                         );
             
-                    
-                        let productDiscount = 0;
-                        let categoryDiscount = 0;
-                 
-                        if (productOffer) {
-                            productDiscount = Math.round(product.Price * productOffer.discount / 100);
-                        }
-                        
-                        if (categoryOffer) {
-                            categoryDiscount = Math.round(product.Price * categoryOffer.discount / 100);
-                        }
-                    
+                        let productDiscount = productOffer ? Math.round(product.Price * productOffer.discount / 100) : 0;
+                        let categoryDiscount = categoryOffer ? Math.round(product.Price * categoryOffer.discount / 100) : 0;
             
-             
                         const bestDiscount = Math.max(productDiscount, categoryDiscount);
                         const bestDiscountPercentage = bestDiscount === productDiscount 
                             ? productOffer?.discount 
                             : categoryOffer?.discount;
             
-
                         return {
                             ...product.toObject(),
                             discountAmount: bestDiscount,
@@ -109,7 +100,6 @@
                             originalPrice: product.Price
                         };
                     });
-            
             
                     const query = {};
                     const filter = {};
@@ -137,7 +127,6 @@
                     });
             
                     const totalPages = Math.ceil(totalProduct / limit);
-                    const searchVisible = req.query.searchVisible === 'true';
                     res.render('shop', {
                         categories,
                         products: productsWithOffers,
@@ -146,7 +135,6 @@
                         search: searchTerm,
                         currentPage: page,
                         totalPages: totalPages,
-             
                     });
             
                 } catch (error) {
@@ -154,6 +142,7 @@
                     res.status(500).send('Internal Server Error');
                 }
             };
+            
             
             const loadCheckout = async (req, res) => {
                 try {

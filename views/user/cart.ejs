@@ -323,37 +323,52 @@ body {
         </div>
     <% } %>
 </div>
+
+<!-- Load jQuery and SweetAlert -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
+        // Handle form submission for quantity update
         $(".quantity-form").on("submit", function (event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
             var form = $(this);
             $.post(form.attr("action"), form.serialize(), function (data) {
                 if (data.success) {
-                    location.reload();
+                    location.reload(); // Reload the page on success
                 } else {
                     Swal.fire({
                         title: 'Error',
-                        text: data.message,
+                        text: data.message || 'Unknown error occurred.',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                 }
-            }).fail(function () {
+            }).fail(function (xhr) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Something went wrong!',
+                    text: xhr.responseJSON?.message || 'Something went wrong!',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             });
         });
+
+        // Show SweetAlert for server-side messages
+        <% if (message && message.length > 0) { %>
+            Swal.fire({
+                text: '<%= message.replace(/'/g, "\\'").replace(/"/g, '\\"') %>',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        <% } %>
     });
-
-
 </script>
 
 

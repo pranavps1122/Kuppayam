@@ -11,16 +11,18 @@ const Category = require('../../model/categorySchema');
         const loadHomepage = async (req, res) => {
             try {
                 const products = await Product.find({}).limit(8).populate('category');
+                
         
-                // Get all relevant product and category IDs
+              
                 const productIds = products.map(p => p._id);
-                const categoryIds = products.map(p => p.category?._id).filter(id => id); // Avoid undefined
+                const categoryIds = products.map(p => p.category?._id).filter(id => id); 
         
-                // Fetch offers for products and categories
-                const productOffers = await Offer.find({ productId: { $in: productIds } });
-                const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds } });
+              
+                const productOffers = await Offer.find({ productId: { $in: productIds }, status: true });
+                const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds }, status: true });
+
         
-                // Process products with offers
+              
                 const processedProducts = products.map(product => {
                     const productOffer = productOffers.find(o => o.productId.toString() === product._id.toString());
                     const categoryOffer = categoryOffers.find(o => o.categoryId.toString() === product.category?._id.toString());
@@ -365,7 +367,8 @@ const Category = require('../../model/categorySchema');
                     relatedProducts,
                     productId,
                     user,
-                    categories
+                    categories,
+                    isAuth: req.session.isAuth
                 });
             } catch (error) {
                 console.error('Error while loading product details:', error);
@@ -416,6 +419,24 @@ const Category = require('../../model/categorySchema');
             }
         };
 
+        const loadAbout = async (req,res)=>{
+
+            try {
+                res.render('about')
+            } catch (error) {
+                console.log('error while loading about page',error)
+            }
+        }
+
+        const loadContact = async (req,res)=>{
+
+            try {
+              res.render('contact')  
+            } catch (error) {
+                console.log('error while loading conatct',error)
+            }
+        }
+
         module.exports={
             loadHomepage,
             pageNotFound,
@@ -430,6 +451,8 @@ const Category = require('../../model/categorySchema');
             handleGoogleCallback,
             loadForgotPassword,
             forgotPassword,
+            loadAbout,
+            loadContact
           
             
         }

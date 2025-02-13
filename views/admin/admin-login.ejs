@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>KUPPAYAM Admin Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #333333;
+            --accent: #e63946;
+            --text: #333333;
+            --text-secondary: #666666;
+            --background: #ffffff;
+            --border: #e1e1e1;
+            --hover: #f8f9fa;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,289 +23,262 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #4dabf7;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            position: relative;
+            color: var(--text);
+        }
+
+        .background-pattern {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, #f8f9fa 2px, transparent 2px) 0 0,
+                linear-gradient(180deg, #f8f9fa 2px, transparent 2px) 0 0;
+            background-size: 50px 50px;
+            opacity: 0.4;
         }
 
         .login-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--background);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-        }
-
-        .character {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
             position: relative;
+            z-index: 1;
         }
 
-        .head {
-            width: 50px;
-            height: 50px;
-            background: #ff6b6b;
-            border-radius: 50%;
-            position: relative;
-            margin: 0 auto;
-        }
-
-        .eyes {
-            position: absolute;
-            top: 20px;
-            width: 100%;
+        .brand-side {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 40px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
+            position: relative;
+            border-right: 1px solid var(--border);
         }
 
-        .eye {
-            width: 8px;
-            height: 8px;
-            background: rgb(255, 255, 255);
-            border-radius: 50%;
-            animation: blink 3s infinite;
+        .logo {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
         }
 
-        @keyframes blink {
-            0%, 95%, 98% {
-                transform: scaleY(1);
-            }
-            96%, 97% {
-                transform: scaleY(0.1);
-            }
-        }
-        
-
-        body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom right, #ffffff, #e6f7ff);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    color: #333;
-}
-
-        .welcome-text {
+        .brand-tagline {
+            color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 30px;
-            color: #333;
+            font-size: 1.1em;
+            margin-top: 20px;
         }
 
-        .welcome-text h1 {
-            font-size: 24px;
+        .login-side {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--background);
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            color: var(--text);
+            font-size: 2em;
             margin-bottom: 10px;
-            color: #4dabf7;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #666;
-            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 15px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
             transition: all 0.3s ease;
+            background: var(--background);
+            color: var(--text);
         }
 
         .form-group input:focus {
-            border-color: #4dabf7;
+            border-color: var(--accent);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
         }
 
-        .login-button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, #76e4f7, #4dd4e1);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
+        .form-group label {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
             transition: all 0.3s ease;
         }
 
-        .login-button:hover {
-            background: linear-gradient(to right, #4dd4e1, #4dc0e1);
-            transform: translateY(-2px);
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: 0;
+            left: 15px;
+            font-size: 0.8em;
+            padding: 0 5px;
+            background: var(--background);
+            color: var(--accent);
         }
 
-        .leaves {
-            position: absolute;
-            color: #76e4f7;
-            font-size: 24px;
-        }
-
-        .leaves.top-left {
-            top: 20px;
-            left: 20px;
-            transform: rotate(-45deg);
-        }
-
-        .leaves.top-right {
-            top: 20px;
-            right: 20px;
-            transform: rotate(45deg);
-        }
-
-        .leaves.bottom-left {
-            bottom: 20px;
-            left: 20px;
-            transform: rotate(-135deg);
-        }
-
-        .leaves.bottom-right {
-            bottom: 20px;
-            right: 20px;
-            transform: rotate(135deg);
-        }
-
-        .speech-bubble {
-            position: absolute;
-            background: #4dabf7;
-            padding: 10px 15px;
-            border-radius: 15px;
+        .login-button {
+            background: var(--accent);
             color: white;
-            font-size: 14px;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .speech-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #4dabf7;
-        }
-
-        .character:hover .speech-bubble {
-            opacity: 1;
-        }
-
-        .error-message {
-            background: #ffe5e5;
-            color: #ff4040;
-            padding: 12px;
+            border: none;
+            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
+        .login-button:hover {
+            background: #d63140;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 20px;
             }
-            50% {
-                transform: translateY(-10px);
+
+            .brand-side {
+                padding: 30px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
             }
         }
 
-        .character {
-            animation: float 3s ease-in-out infinite;
+        .fashion-icon {
+            color: var(--text-secondary);
+            margin: 10px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .fashion-icon:hover {
+            color: var(--accent);
+        }
+
+        .brand-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .decorative-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .circle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .circle-1 {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: -50px;
+        }
+
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            bottom: -75px;
+            right: -75px;
         }
     </style>
 </head>
 <body>
+    <div class="background-pattern"></div>
     <div class="login-container">
-        <span class="leaves top-left">❋</span>
-        <span class="leaves top-right">❋</span>
-        <span class="leaves bottom-left">❋</span>
-        <span class="leaves bottom-right">❋</span>
-
-        <div class="character">
-            <div class="speech-bubble">Welcome back!</div>
-            <div class="head">
-                <div class="eyes">
-                    <div class="eye"></div>
-                    <div class="eye"></div>
+        <div class="brand-side">
+            <div class="decorative-circles">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+            </div>
+            <div class="logo">KUPPAYAM</div>
+            <p class="brand-tagline">Fashion Forward Admin Portal</p>
+            <div class="brand-icons">
+                <i class="fas fa-tshirt fashion-icon"></i>
+                <i class="fas fa-hat-cowboy fashion-icon"></i>
+                <i class="fas fa-socks fashion-icon"></i>
+            </div>
+        </div>
+        <div class="login-side">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>Please sign in to continue</p>
+            </div>
+            <form action="/admin/login" method="POST">
+                <div class="form-group">
+                    <input type="text" id="username" name="email" required placeholder=" ">
+                    <label for="username">Username or Email</label>
                 </div>
-            </div>
-            <div class="body"></div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder=" ">
+                    <label for="password">Password</label>
+                </div>
+                <button type="submit" class="login-button">
+                    Login to Dashboard
+                </button>
+            </form>
         </div>
-
-        <div class="welcome-text">
-            <h1>Admin Portal</h1>
-            <p>Please enter your credentials to continue</p>
-        </div>
-
-        <form action="/admin/login" method="POST">
-            <div class="form-group">
-                <label for="username">Username or Email</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="email" 
-                    required 
-                    placeholder="Enter your username"
-                    autocomplete="username"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                >
-            </div>
-
-            <button type="submit" class="login-button">Login to Dashboard</button>
-        </form>
     </div>
-    
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-<% if (message) { %>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                text: '<%= message %>',
-                icon: 'error',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% if (message) { %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    text: '<%= message %>',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: '#ffffff',
+                    color: '#333333'
+                });
             });
-        });
-    </script>
-<% } %>
+        </script>
+    <% } %>
 </body>
 </html>

@@ -1,0 +1,182 @@
+@font-face {
+  font-family: 'HM Sans Light';
+  src: url("../font/HMSans-Light.eot");
+  src: url("../font/HMSans-Light.eot?#iefix") format('eot'), url("../font/HMSans-Light.woff2") format('woff2'), url("../font/HMSans-Light.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Light Italic';
+  src: url("../font/HMSans-LightItalic.eot");
+  src: url("../font/HMSans-LightItalic.eot?#iefix") format('eot'), url("../font/HMSans-LightItalic.woff2") format('woff2'), url("../font/HMSans-LightItalic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Regular';
+  src: url("../font/HMSans-Regular.eot");
+  src: url("../font/HMSans-Regular.eot?#iefix") format('eot'), url("../font/HMSans-Regular.woff2") format('woff2'), url("../font/HMSans-Regular.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Italic';
+  src: url("../font/HMSans-Italic.eot");
+  src: url("../font/HMSans-Italic.eot?#iefix") format('eot'), url("../font/HMSans-Italic.woff2") format('woff2'), url("../font/HMSans-Italic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Semi Bold';
+  src: url("../font/HMSans-SemiBold.eot");
+  src: url("../font/HMSans-SemiBold.eot?#iefix") format('eot'), url("../font/HMSans-SemiBold.woff2") format('woff2'), url("../font/HMSans-SemiBold.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Semi Bold Italic';
+  src: url("../font/HMSans-SemiBoldItalic.eot");
+  src: url("../font/HMSans-SemiBoldItalic.eot?#iefix") format('eot'), url("../font/HMSans-SemiBoldItalic.woff2") format('woff2'), url("../font/HMSans-SemiBoldItalic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Bold';
+  src: url("../font/HMSans-Bold.eot");
+  src: url("../font/HMSans-Bold.eot?#iefix") format('eot'), url("../font/HMSans-Bold.woff2") format('woff2'), url("../font/HMSans-Bold.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Bold Italic';
+  src: url("../font/HMSans-BoldItalic.eot");
+  src: url("../font/HMSans-BoldItalic.eot?#iefix") format('eot'), url("../font/HMSans-BoldItalic.woff2") format('woff2'), url("../font/HMSans-BoldItalic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans Condensed Black';
+  src: url("../font/HMSans-CondBlack.eot");
+  src: url("../font/HMSans-CondBlack.eot?#iefix") format('eot'), url("../font/HMSans-CondBlack.woff2") format('woff2'), url("../font/HMSans-CondBlack.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-Light.eot");
+  src: url("../font/HMSans-Light.eot?#iefix") format('eot'), url("../font/HMSans-Light.woff2") format('woff2'), url("../font/HMSans-Light.woff") format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-LightItalic.eot");
+  src: url("../font/HMSans-LightItalic.eot?#iefix") format('eot'), url("../font/HMSans-LightItalic.woff2") format('woff2'), url("../font/HMSans-LightItalic.woff") format('woff');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-Regular.eot");
+  src: url("../font/HMSans-Regular.eot?#iefix") format('eot'), url("../font/HMSans-Regular.woff2") format('woff2'), url("../font/HMSans-Regular.woff") format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-Italic.eot");
+  src: url("../font/HMSans-Italic.eot?#iefix") format('eot'), url("../font/HMSans-Italic.woff2") format('woff2'), url("../font/HMSans-Italic.woff") format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-SemiBold.eot");
+  src: url("../font/HMSans-SemiBold.eot?#iefix") format('eot'), url("../font/HMSans-SemiBold.woff2") format('woff2'), url("../font/HMSans-SemiBold.woff") format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-SemiBoldItalic.eot");
+  src: url("../font/HMSans-SemiBoldItalic.eot?#iefix") format('eot'), url("../font/HMSans-SemiBoldItalic.woff2") format('woff2'), url("../font/HMSans-SemiBoldItalic.woff") format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-Bold.eot");
+  src: url("../font/HMSans-Bold.eot?#iefix") format('eot'), url("../font/HMSans-Bold.woff2") format('woff2'), url("../font/HMSans-Bold.woff") format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-BoldItalic.eot");
+  src: url("../font/HMSans-BoldItalic.eot?#iefix") format('eot'), url("../font/HMSans-BoldItalic.woff2") format('woff2'), url("../font/HMSans-BoldItalic.woff") format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Sans';
+  src: url("../font/HMSans-CondBlack.eot");
+  src: url("../font/HMSans-CondBlack.eot?#iefix") format('eot'), url("../font/HMSans-CondBlack.woff2") format('woff2'), url("../font/HMSans-CondBlack.woff") format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif Regular';
+  src: url("../font/HMSerif-Regular.eot");
+  src: url("../font/HMSerif-Regular.eot?#iefix") format('eot'), url("../font/HMSerif-Regular.woff2") format('woff2'), url("../font/HMSerif-Regular.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif Italic';
+  src: url("../font/HMSerif-Italic.eot");
+  src: url("../font/HMSerif-Italic.eot?#iefix") format('eot'), url("../font/HMSerif-Italic.woff2") format('woff2'), url("../font/HMSerif-Italic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif Semi Bold';
+  src: url("../font/HMSerif-SemiBold.eot");
+  src: url("../font/HMSerif-SemiBold.eot?#iefix") format('eot'), url("../font/HMSerif-SemiBold.woff2") format('woff2'), url("../font/HMSerif-SemiBold.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif Semi Bold Italic';
+  src: url("../font/HMSerif-SemiBoldItalic.eot");
+  src: url("../font/HMSerif-SemiBoldItalic.eot?#iefix") format('eot'), url("../font/HMSerif-SemiBoldItalic.woff2") format('woff2'), url("../font/HMSerif-SemiBoldItalic.woff") format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif';
+  src: url("../font/HMSerif-Regular.eot");
+  src: url("../font/HMSerif-Regular.eot?#iefix") format('eot'), url("../font/HMSerif-Regular.woff2") format('woff2'), url("../font/HMSerif-Regular.woff") format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif';
+  src: url("../font/HMSerif-Italic.eot");
+  src: url("../font/HMSerif-Italic.eot?#iefix") format('eot'), url("../font/HMSerif-Italic.woff2") format('woff2'), url("../font/HMSerif-Italic.woff") format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif';
+  src: url("../font/HMSerif-SemiBold.eot");
+  src: url("../font/HMSerif-SemiBold.eot?#iefix") format('eot'), url("../font/HMSerif-SemiBold.woff2") format('woff2'), url("../font/HMSerif-SemiBold.woff") format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HM Serif';
+  src: url("../font/HMSerif-SemiBoldItalic.eot");
+  src: url("../font/HMSerif-SemiBoldItalic.eot?#iefix") format('eot'), url("../font/HMSerif-SemiBoldItalic.woff2") format('woff2'), url("../font/HMSerif-SemiBoldItalic.woff") format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}

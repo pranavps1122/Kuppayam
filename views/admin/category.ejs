@@ -224,10 +224,7 @@
                             </td>
                             <td>
                                 <a href="/admin/editCategory/<%= cat._id %>" class="btn btn-edit">Edit</a>
-                                <form action="/admin/deleteCategory" method="POST" style="display: inline;">
-                                    <input type="hidden" name="name" value="<%= cat.categoryName %>">
-                                    <button type="submit" class="btn btn-delete">Delete</button>
-                                </form>
+                               
                             </td>
                         </tr>
                     <% }); %>

@@ -47,7 +47,7 @@
         try {
             console.log("Starting dashboard data fetch...");
     
-            // Calculate total revenue from delivered orders
+        
             const totalRevenueData = await Order.aggregate([
                 { $unwind: "$orderedItem" },
                 { $match: { "orderedItem.productStatus": "delivered" } },
@@ -64,7 +64,7 @@
             const totalRevenue = totalRevenueData.length ? totalRevenueData[0].totalRevenue : 0;
             const totalProfit = totalRevenueData.length ? totalRevenueData[0].totalProfit : 0;
     
-            // Get monthly sales data for the current year
+         
             const currentYear = new Date().getFullYear();
             const salesData = await Order.aggregate([
                 { $unwind: "$orderedItem" },
@@ -85,7 +85,7 @@
                 { $sort: { "_id.month": 1 } }
             ]);
     
-            // Format sales data with all months
+         
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             const formattedSalesData = {
                 labels: monthNames,
@@ -93,14 +93,14 @@
                 profits: new Array(12).fill(0)
             };
     
-            // Fill in actual values
+        
             salesData.forEach(item => {
                 const monthIndex = item._id.month - 1;
                 formattedSalesData.values[monthIndex] = item.revenue;
                 formattedSalesData.profits[monthIndex] = item.profit;
             });
     
-            // Get top selling products with proper lookup
+       
             const topProducts = await Order.aggregate([
                 { $unwind: "$orderedItem" },
                 { $match: { "orderedItem.productStatus": "delivered" } },

@@ -156,6 +156,344 @@
 .loader-text span:nth-child(6) { animation-delay: 0.6s; }
 .loader-text span:nth-child(7) { animation-delay: 0.7s; }
 .loader-text span:nth-child(8) { animation-delay: 0.8s; }
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 90vh; /* Increased height for better visibility */
+    overflow: hidden;
+    margin-top: 0;
+    background: #f8f8f8;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-content {
+    width: 50%;
+    text-align: left;
+    color: #333;
+    padding: 40px;
+    border-radius: 10px;
+    animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.carousel-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: #222;
+    line-height: 1.2;
+}
+
+.carousel-content p {
+    font-size: 1.4em;
+    margin-bottom: 30px;
+    color: #666;
+    line-height: 1.6;
+    max-width: 80%;
+}
+
+.shop-now-btn {
+    padding: 15px 40px;
+    font-size: 1.1em;
+    background-color: #222;
+    color: #fff;
+    border: 2px solid #222;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.shop-now-btn:hover {
+    background-color: transparent;
+    color: #222;
+}
+
+.carousel-nav {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: #222;
+    transform: scale(1.2);
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    color: #222;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.carousel-arrow:hover {
+    background: #222;
+    color: #fff;
+}
+
+.carousel-arrow.prev {
+    left: 30px;
+}
+
+.carousel-arrow.next {
+    right: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .carousel-container {
+        height: 60vh;
+    }
+
+    .carousel-content {
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .carousel-content h1 {
+        font-size: 2.5em;
+    }
+
+    .carousel-content p {
+        font-size: 1.2em;
+        max-width: 100%;
+    }
+
+    .carousel-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+}
+
+.slide-images {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    
+}
+
+.slide-img {
+    position: absolute;
+    width: 100%;
+    height: 110%;
+    margin-top: 100px;
+    object-fit: cover;
+    opacity: 0;
+    
+    transition: opacity 0.8s ease-in-out;
+}
+
+.slide-img.active {
+    opacity: 1;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px; /* Increased gap for better spacing */
+    padding: 14px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    padding: 20px;
+    background: white;
+    border-radius: 12px; /* Added rounded corners */
+    border: 1px solid #eee;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.product-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px); /* Subtle lift effect */
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+    padding-top: 100%; /* 1:1 aspect ratio */
+    width: 100%;
+    border-radius: 8px; /* Rounded corners for image container */
+    background: #f8f8f8;
+    margin-bottom: 15px;
+}
+
+.product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Changed to cover for better image fitting */
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-card h3 {
+    margin: 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: auto; /* Pushes price to bottom */
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0; /* Subtle separator */
+}
+
+.original-price {
+    color: #999;
+    font-size: 0.9rem;
+    text-decoration: line-through;
+}
+
+.sale-price {
+    color: #111;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.discount-percentage {
+    background: #f0f9f0;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Stock status badge */
+.stock-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.out-of-stock {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+}
+
+.not-available {
+    background: rgba(97, 97, 97, 0.1);
+    color: #616161;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 30px;
+    }
+}
+
+@media (max-width: 900px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(1, 1fr);
+        padding: 15px;
+    }
+    
+    .product-card {
+        padding: 15px;
+    }
+}
 </style>
 
 <script>
@@ -176,21 +514,158 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         document.body.style.overflow = '';
     }, 2000);
+
+    // Modified image rotation functionality
+    const slides = document.querySelectorAll('.carousel-slide');
+    
+    slides.forEach(slide => {
+        const images = slide.querySelectorAll('.slide-img');
+        if (images.length > 1) {  // Only rotate if there are multiple images
+            let currentImage = 0;
+            
+            function rotateImages() {
+                images.forEach(img => {
+                    img.classList.remove('active');
+                    img.style.opacity = '0';
+                });
+                currentImage = (currentImage + 1) % images.length;
+                images[currentImage].classList.add('active');
+                images[currentImage].style.opacity = '1';
+            }
+            
+            // Rotate images every 3 seconds
+            setInterval(rotateImages, 3000);
+        }
+    });
 });
 </script>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>FIND CLOTHES THAT MATCH YOUR STYLE</h1>
-            <button class="shop-now">Shop Now</button>
+<!-- Replace the hero section HTML with this carousel -->
+<section class="carousel-container">
+    <!-- Men's Slide -->
+    <div class="carousel-slide" style="background: #f8f8f8;">
+        <div class="carousel-content">
+            <h1>Men's Fashion<br>Collection</h1>
+            <p>Discover our curated selection of premium menswear. From casual essentials to formal attire.</p>
+            <a href="/shop?category=Mens&sort=Az" class="shop-now-btn">Explore Men's</a>
         </div>
-        <div class="stats">
-            <div class="stat-item">200+ International Brands</div>
-            <div class="stat-item">2,000+ High-Quality Products</div>
-            <div class="stat-item">10,000+ Happy Customers</div>
+        <div class="slide-images">
+            <img src="/assets/mens/99.png" class="slide-img active">
+            <img src="/assets/mens/1000.png" class="slide-img">
+           
         </div>
-    </section>
+    </div>
+
+    <!-- Women's Slide -->
+    <div class="carousel-slide" style="background: #f8f8f8;">
+        <div class="carousel-content">
+            <h1>Women's Elegant<br>Style</h1>
+            <p>Elevate your wardrobe with our latest women's collection. Trendy, sophisticated, and uniquely you.</p>
+            <a href="/shop?category=Mens&sort=Az" class="shop-now-btn">Shop Women's</a>
+        </div>
+        <div class="slide-images">
+            <img src="/assets/mens/1111.png" class="slide-img active">
+          
+            
+        </div>
+    </div>
+
+    <!-- Kids' Slide -->
+    <div class="carousel-slide" style="background: #f8f8f8;">
+        <div class="carousel-content">
+            <h1>Kids Playful<br>Fashion</h1>
+            <p>Comfortable and stylish clothing for your little ones. Because kids deserve to look amazing too.</p>
+            <a href="/shop?category=Mens&sort=Az"" class="shop-now-btn">View Kids'</a>
+        </div>
+        <div class="slide-images">
+            <img src="/assets/mens/981.png" class="slide-img active">
+            
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <button class="carousel-arrow prev">❮</button>
+    <button class="carousel-arrow next">❯</button>
+
+    <div class="carousel-nav">
+        <div class="carousel-dot active"></div>
+        <div class="carousel-dot"></div>
+        <div class="carousel-dot"></div>
+    </div>
+</section>
+
+<!-- Add this JavaScript for carousel functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.querySelector('.carousel-arrow.prev');
+    const nextBtn = document.querySelector('.carousel-arrow.next');
+    let currentSlide = 0;
+    let autoSlideInterval;
+
+    // Show first slide immediately
+    slides[0].classList.add('active');
+
+    function showSlide(index) {
+        slides.forEach(slide => {
+            slide.style.opacity = '0';
+            slide.classList.remove('active');
+        });
+        dots.forEach(dot => dot.classList.remove('active'));
+        
+        slides[index].style.opacity = '1';
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+
+    // Event Listeners
+    prevBtn.addEventListener('click', () => {
+        prevSlide();
+        resetAutoSlide();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        nextSlide();
+        resetAutoSlide();
+    });
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            resetAutoSlide();
+        });
+    });
+
+    // Start auto sliding
+    startAutoSlide();
+
+    // Pause on hover
+    const carousel = document.querySelector('.carousel-container');
+    carousel.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    carousel.addEventListener('mouseleave', startAutoSlide);
+});
+</script>
 
     <section class="product-section">
         <h2>NEW ARRIVALS</h2>
@@ -200,9 +675,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="product-card">
                         <div class="product-image">
                             <img src="<%= product.productImage[0] %>" 
-                                style='<% if (product.quantity <= 0 || product.isActive == false) { %>opacity: 0.5;<% } %>'
+                                style='<% if (product.quantity <= 0 || product.isActive == false ||product.category.isActive==false) { %>opacity: 0.5;<% } %>'
                                 onerror="this.onerror=null;this.src='https://th.bing.com/th/id/OIP.7cRYFyLoDEDh4sRtM73vvwHaDg?rs=1&pid=ImgDetMain';">
-                            <button class="quick-add" data-product-id="<%= product._id %>">Quick Add</button>
                         </div>
     
                         <h3>
@@ -211,14 +685,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span style="color: red;">(Out of Stock)</span>
                             <% } else if (product.isActive == false) { %>
                                 <span style="color: red; font-size: 15px;">(Not Available)</span>
+                            <% } else if (product.category && product.category.isActive == false) { %>
+                                <span style="color: red; font-size: 15px;">(Not Available)</span>
                             <% } %>
+                            
                         </h3>
     
                         <div class="price">
-                            <% if (product.discountAmount > 0) { %>
+                            <% if (product.discountAmount|| product.category.discountAmount) { %>
                                 <span class="original-price" style="text-decoration: line-through; color: gray;">₹<%= product.originalPrice %></span>
                                 <span class="sale-price" style="color: red; font-weight: bold;">₹<%= product.finalPrice %></span>
-                                <span class="discount-percentage" style="color: green; font-size: 14px;">(<%= product.discountPercentage %>% OFF)</span>
+                                <span class="discount-percentage" style="color: green; font-size: 14px;">(<%=  product.discountPercentage || product.category.discountPercentage %>% OFF)</span>
                             <% } else { %>
                                 <span class="sale-price" style="color: black;">₹<%= product.originalPrice %></span>
                             <% } %>

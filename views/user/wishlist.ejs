@@ -215,22 +215,84 @@
             </div>
         <% } %>
     </div>
-</div>
+</div><!-- Load jQuery and SweetAlert -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<% if (message) { %>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+
+
+<script>
+    $(document).ready(function () {
+        // Handle form submission for adding to wishlist
+        $(".add-to-wishlist-form").on("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var form = $(this);
+            $.post(form.attr("action"), form.serialize(), function (data) {
+                console.log("Response from server:", data); // Debugging: Check server response
+
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product added to wishlist.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload(); // Reload the page on success
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.message || 'You need to be logged in to add items to your wishlist.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }).fail(function (xhr, status, error) {
+                console.error("AJAX error:", xhr.responseText); // Debugging: Log errors
+                Swal.fire({
+                    title: 'Error',
+                    text: xhr.responseJSON?.message || 'Something went wrong!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+
+        
+        // Show SweetAlert for server-side messages
+        <% if (message && message.length > 0) { %>
             Swal.fire({
-                text: '<%= message %>',
-                icon: 'error',
+                text: '<%= message.replace(/'/g, "\\'").replace(/"/g, '\\"') %>',
+                icon: 'info',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true
             });
-        });
-    </script>
-<% } %>
+        <% } %>
+    });
+    $(document).ready(function () {
+        // Show SweetAlert for session message (set in Express)
+        <% if (session.alertMessage) { %>
+            Swal.fire({
+                text: "<%= session.alertMessage.text %>",
+                icon: "<%= session.alertMessage.icon %>",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            // Remove the session alert message after displaying it
+            <%
+                delete session.alertMessage;
+            %>
+        <% } %>
+    });
+</script>
+
 
 <%- include('../../views/partials/user/footer') %>

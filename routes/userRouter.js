@@ -87,7 +87,7 @@ router.post('/returnorder/:orderid/:productid', logged, shopController.returnOrd
 
 router.get('/wishlist',logged,profileController.loadWishlist)
 
-router.post('/wishlist/:id',profileController.wishlist)
+router.post('/wishlist/:id',logged,profileController.wishlist)
 
 router.post('/removeWishlist/:product_id/:productSize', profileController.removeWishlist);
 
@@ -113,5 +113,8 @@ router.post('/remove-coupon',profileController.removeCoupon)
 
 
 router.get('/downloadInvoice/:orderId', invoiceController.generateAndDownload);
+
+router.get('/about',userController.loadAbout)
+router.get('/contact',userController.loadContact)
 
 module.exports=router

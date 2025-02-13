@@ -1,0 +1,254 @@
+<%-include('../../views/partials/user/header')%>
+
+<section class="about-section">
+    <div class="hero-banner">
+        <div class="hero-content">
+            <h1>Our Story</h1>
+            <div class="subtitle">Crafting Fashion Excellence Since 2024</div>
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <div class="intro-card card-hover">
+            <span class="icon-wrapper">✨</span>
+            <p>Welcome to KUPPAYAM, your premier destination for all things fashion. We are committed to providing you with the highest quality clothing, emphasizing dependability, exceptional customer service, and unique styles that set you apart.</p>
+        </div>
+
+        <div class="mission-card card-hover">
+            <h2>Our Mission</h2>
+            <div class="card-content">
+                <span class="icon-wrapper">🎯</span>
+                <p>At KUPPAYAM, our mission is to deliver high-quality, stylish clothing at affordable prices while ensuring a seamless and enjoyable shopping experience for our customers.</p>
+            </div>
+        </div>
+
+        <div class="values-card card-hover">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <span class="icon-wrapper">💎</span>
+                    <h3>Quality</h3>
+                    <p>We believe in offering only the best products to our customers, ensuring durability and style.</p>
+                </div>
+                <div class="value-item">
+                    <span class="icon-wrapper">🤝</span>
+                    <h3>Integrity</h3>
+                    <p>We conduct our business with honesty and transparency, building trust with our customers.</p>
+                </div>
+                <div class="value-item">
+                    <span class="icon-wrapper">⭐</span>
+                    <h3>Customer Satisfaction</h3>
+                    <p>Our customers are our top priority, and we strive to meet and exceed their expectations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-card card-hover">
+            <h2>The KUPPAYAM Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="date">2024</span>
+                    <p>Founded by Pranav with a vision to revolutionize fashion retail</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="date">Today</span>
+                    <p>A thriving business serving customers worldwide with the latest trends and styles</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card card-hover">
+            <h2>Meet Our Team</h2>
+            <p>Our dedicated team is composed of fashion enthusiasts and industry experts who work tirelessly to bring you the latest styles and trends. We are committed to fostering a culture of collaboration and innovation, ensuring that we remain at the forefront of the fashion industry.</p>
+        </div>
+
+        <div class="contact-card card-hover">
+            <h2>Get in Touch</h2>
+            <p>Have questions? We'd love to hear from you! Reach out to us at <a href="mailto:info@kuppayam.com" class="email-link">info@kuppayam.com</a></p>
+        </div>
+    </div>
+</section>
+
+<style>
+:root {
+    --primary: #2d3436;
+    --secondary: #6c5ce7;
+    --accent: #a29bfe;
+    --background: #f9f9f9;
+    --card-bg: #ffffff;
+    --text: #2d3436;
+}
+
+.about-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text);
+    background: var(--background);
+}
+
+.hero-banner {
+    background: linear-gradient(135deg, var(--secondary), var(--accent));
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/api/placeholder/1200/400') center/cover;
+    opacity: 0.1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 1s ease-out;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.card-hover {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.icon-wrapper {
+    font-size: 2rem;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.value-item {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(108, 92, 231, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+    transform: scale(1.05);
+}
+
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-item {
+    margin-bottom: 20px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: var(--secondary);
+}
+
+.date {
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.email-link {
+    color: var(--secondary);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    transition: color 0.3s ease;
+}
+
+.email-link:hover {
+    color: var(--accent);
+}
+
+h2 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+p {
+    line-height: 1.8;
+    color: var(--text);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<%-include('../../views/partials/user/footer')%>
