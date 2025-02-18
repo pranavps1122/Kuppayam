@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuppayam - Sign Up</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -172,6 +173,31 @@
         .login-link a:hover {
             text-decoration: underline;
         }
+
+        /* Password toggle styles */
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #333;
+        }
+
+        .password-field input[type="password"],
+        .password-field input[type="text"] {
+            padding-right: 40px;
+        }
     </style>
 </head>
 <body>
@@ -202,13 +228,19 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password">
+                <div class="password-field">
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                    <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('password')"></i>
+                </div>
                 <div id="error4" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password">
+                <div class="password-field">
+                    <input type="password" id="confirm-password" name="cPassword" placeholder="Confirm your password">
+                    <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('confirm-password')"></i>
+                </div>
                 <div id="error5" class="error-message"></div>
             </div>
 
@@ -335,6 +367,21 @@
             return phoneRegex.test(phone.replace(/[- )(]/g, ''));
         }
     });
+
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.parentElement.querySelector('.password-toggle');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
     </script>
 </body>
 </html>

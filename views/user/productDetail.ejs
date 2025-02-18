@@ -708,9 +708,9 @@ body {
     </div>
 
     <div class="container page-animation">
-        <!-- Product Section -->
+      
         <div class="product-grid1">
-            <!-- Thumbnails -->
+         
             <div class="thumbnail-column">
                 <% product.productImage.forEach((image, index) => { %>
                     <img 
@@ -722,7 +722,6 @@ body {
                 <% }); %>
             </div>
 
-            <!-- Main Image -->
             <div class="main-image-container">
                 <img 
                     src="/<%= product.productImage[0] %>" 
@@ -757,18 +756,9 @@ body {
                         <span class="current-price">₹<%= product.Price %></span>
                     <% } %>
                 </div>
-                
-                
-               
-                <div class="stars">
-                    <span class="star filled">★</span>
-                    <span class="star filled">★</span>
-                    <span class="star filled">★</span>
-                    <span class="star filled">★</span>
-                    <span class="star filled">★</span>
-                </div>
-               
-              
+       
+               <h3>Description</h2>
+                <p><%= product.description %></p>
             
              
                 <form class="size-options" method="POST" action="/cart/<%= product._id %>/<%= product.category._id %>">
@@ -796,7 +786,7 @@ body {
                 </form>
                 
                 <form method="POST" action="/wishlist/<%= product._id %>" style="display: inline;">
-                    <!-- Hidden field to pass the selected size -->
+                  
                     <input type="hidden" id="wishlist-size" name="size" value="M">
                     
                     <button style="background-color: black; color: white; width: 120px; height: 30px;" type="submit" class="add-to-wishlist">
@@ -804,11 +794,7 @@ body {
                     </button>
                 </form>
                 
-                <div class="tabs">
-                    <button class="tab active">Rating & Reviews</button>
-                    <button class="tab">Shipping & Returns</button>
-                </div>
-            
+      
                 <div class="reviews-grid">
                     <% if (product.reviews && product.reviews.length > 0) { %>
                         <% product.reviews.forEach(review => { %>
@@ -842,6 +828,7 @@ body {
                         <a href="/productDetail/<%= products._id %>/<%= products.category._id %>">
                             <img src="/<%= products.productImage[0] %>" alt="<%= products.productName %>">
                         </a>
+                       
                         <h3><%= products.productName %></h3>
                         <div class="price-section">
                             
@@ -863,78 +850,8 @@ body {
             </div>
         </section>
 
-        <div class="reviews-container">
-          
-            <div class="reviews-header">
-                <h2>All Reviews <span class="review-count">(451)</span></h2>
-                <div class="header-controls">
-                    <button class="sort-button">
-                        <span class="sort-icon">↕</span>
-                        Latest
-                    </button>
-                    <button class="write-review-button">Write a Review</button>
-                </div>
-            </div>
-    
-            
-            <div class="reviews-grid">
-         
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="reviewer-info">
-                            <div class="stars">
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                            </div>
-                            <div class="reviewer-name">
-                                Samantha D.
-                                <span class="verified-badge">✓</span>
-                            </div>
-                        </div>
-                        <button class="more-options">⋯</button>
-                    </div>
-                    <p class="review-text">I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt.</p>
-                    <div class="review-footer">
-                        <span class="post-date">Posted on August 14, 2023</span>
-                    </div>
-                </div>
-    
-                
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="reviewer-info">
-                            <div class="stars">
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star filled">★</span>
-                                <span class="star">★</span>
-                            </div>
-                            <div class="reviewer-name">
-                                Alex M.
-                                <span class="verified-badge">✓</span>
-                            </div>
-                        </div>
-                        <button class="more-options">⋯</button>
-                    </div>
-                    <p class="review-text">The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.</p>
-                    <div class="review-footer">
-                        <span class="post-date">Posted on August 15, 2023</span>
-                    </div>
-                </div>
-    
-               
-            </div>
-    
-            <button class="load-more">Load More Reviews</button>
-        </div>
 
-        <div class="newsletter" style="background-color: #000; color: white;">
-            <h2 >STAY UP TO DATE ABOUT OUR LATEST OFFERS</h2>
-        </div>
+
 
        
     </div>
@@ -954,18 +871,18 @@ body {
         }
 
         function selectSize(button) {
-    // Remove 'selected' class from all size buttons
+  
     document.querySelectorAll('.size-button').forEach(b => 
         b.classList.remove('selected')
     );
     
-    // Add 'selected' class to the clicked button
+
     button.classList.add('selected');
 
-    // Get the size value from the button text (S, M, L, XL)
+ 
     var selectedSize = button.innerText;
 
-    // Set the value of the hidden input field for the wishlist (or cart) form
+   
     document.getElementById('wishlist-size').value = selectedSize;
 }
 
@@ -988,23 +905,20 @@ body {
         const searchInput = document.getElementById('searchInput');
         const clearButton = document.getElementById('clearSearch');
 
-        // Show/hide clear button based on input content
         searchInput.addEventListener('input', function() {
             clearButton.style.display = this.value ? 'block' : 'none';
         });
 
-        // Clear search function
         function clearSearch() {
             searchInput.value = '';
             clearButton.style.display = 'none';
             searchInput.focus();
-            // If you need to trigger search on clear
+ 
             if (searchInput.form) {
                 searchInput.form.submit();
             }
         }
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             clearButton.style.display = searchInput.value ? 'block' : 'none';
         });

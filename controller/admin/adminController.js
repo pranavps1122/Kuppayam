@@ -130,12 +130,12 @@
                 }
             ]);
     
-            // Get basic stats
+            
             const totalOrders = await Order.countDocuments();
             const totalProducts = await Product.countDocuments();
             const activeProducts = await Product.countDocuments({ isActive: true });
     
-            // Get category distribution
+          
             const categoryData = await Category.aggregate([
                 {
                     $lookup: {
@@ -158,7 +158,7 @@
                 values: categoryData.map(cat => cat.count)
             };
     
-            // Add this new aggregation for top categories
+       
             const topCategories = await Order.aggregate([
                 { $unwind: "$orderedItem" },
                 { $match: { "orderedItem.productStatus": "delivered" } },
@@ -190,7 +190,7 @@
                 },
                 {
                     $addFields: {
-                        growth: 0 // Default growth value, you can calculate this based on your needs
+                        growth: 0 
                     }
                 },
                 { $sort: { totalSales: -1 } },
@@ -210,13 +210,13 @@
             };
             console.log("Final dashboard data:", dashboardData);
     
-            // Check if it's an AJAX request
+          
             if (req.xhr || req.headers.accept.includes('application/json')) {
                 console.log("Sending JSON response");
                 return res.json(dashboardData);
             }
     
-            // For regular requests, render the template
+           
             console.log("Rendering dashboard template");
             return res.render('admin-dashboard', {
                 ...dashboardData,
@@ -282,7 +282,7 @@
                 { new: true } 
             );
     
-            // Redirect to customers page
+           
             res.redirect('/admin/customers');
         } catch (error) {
             console.error('Error blocking/unblocking user:', error);

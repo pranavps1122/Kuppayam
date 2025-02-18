@@ -38,8 +38,7 @@ const walletSchema = new mongoose.Schema({
     transactions: [transactionSchema] // Add transactions field
 }, { timestamps: true });
 
-// Remove any index creation for transactionId
-// walletSchema.index({ 'transactions.transactionId': 1 }); // This line should be removed
+
 
 const Wallet = mongoose.model('Wallet', walletSchema);
 module.exports = Wallet;

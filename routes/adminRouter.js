@@ -38,7 +38,7 @@ router.get('/adminError',adminController.adminError)
 router.get('/login',adminController.loadLogin)
 router.post('/login',adminController.login)
 
-router.get('/dashboard', adminAuth, adminController.loadDashboard);
+
 router.get('/dashboard-stats', adminAuth, adminController.loadDashboard);
 
 router.get('/logout',adminAuth,adminController.logout)
@@ -98,10 +98,9 @@ router.get('/salesreport', salesController.salesreport);
 
 router.post('/generate-sales-report', salesController.generateSalesReport);
 
-// Route to export sales report to PDF
+
 router.post('/export-sales-pdf', salesController.exportSalesPDF);
 
-// Route to export sales report to Excel
 router.post('/export-sales-excel', salesController.exportSalesExcel);
 
 

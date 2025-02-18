@@ -238,10 +238,8 @@ const loadWishlist = async (req, res) => {
                 if (!product) return null;
 
               
-                const [productOffer, categoryOffer] = await Promise.all([
-                    Offer.findOne({ productId: product._id }),
-                    Offer.findOne({ categoryId: product.category._id })
-                ]);
+             const productOffer = await Offer.findOne({ productId:product._id, status: { $eq: true } });
+                    const categoryOffer = await Offer.findOne({ categoryId: product.category._id, status: { $eq: true } });
 
                 const productDiscount = productOffer ? productOffer.discount : 0;
                 const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
@@ -292,11 +290,8 @@ const wishlist = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-
-        const [productOffer, categoryOffer] = await Promise.all([
-            Offer.findOne({ productId }),
-            Offer.findOne({ categoryId: product.category._id })
-        ]);
+        const productOffer = await Offer.findOne({ productId, status: { $eq: true } });
+        const categoryOffer = await Offer.findOne({ categoryId: product.category._id, status: { $eq: true } });
 
         const productDiscount = productOffer ? productOffer.discount : 0;
         const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
@@ -334,11 +329,9 @@ const wishlist = async (req, res) => {
                     const product = item.productId;
                     if (!product) return null;
 
-                   
-                    const [productOffer, categoryOffer] = await Promise.all([
-                        Offer.findOne({ productId: product._id }),
-                        Offer.findOne({ categoryId: product.category._id })
-                    ]);
+                    const productOffer = await Offer.findOne({ productId, status: { $eq: true } });
+                    const categoryOffer = await Offer.findOne({ categoryId: product.category._id, status: { $eq: true } });
+                    
 
             
                     const productDiscount = productOffer ? productOffer.discount : 0;
@@ -457,11 +450,9 @@ const wishlist = async (req, res) => {
                     return res.redirect("/wishlist");
                 }
         
-                const [productOffer, categoryOffer] = await Promise.all([
-                    Offer.findOne({ productId: product._id }),
-                    Offer.findOne({ categoryId: product.category._id }),
-                ]);
-        
+                const productOffer = await Offer.findOne({ productId, status: { $eq: true } });
+                const categoryOffer = await Offer.findOne({ categoryId: product.category._id, status: { $eq: true } });
+                
                 const productDiscount = productOffer ? productOffer.discount : 0;
                 const categoryDiscount = categoryOffer ? categoryOffer.discount : 0;
         
@@ -545,22 +536,19 @@ const wishlist = async (req, res) => {
                     return res.redirect('/login');
                 }
         
-                // Find the user
+             
                 const user = await User.findById(userId);
                 
-                // Find the user's wallet (if exists)
                 let wallet = await Wallet.findOne({ userId });
         
-                // If no wallet exists, initialize with default values
                 const walletBalance = wallet ? wallet.balance : 0;
 
-                // Pagination logic
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 5; 
                 const skip = (page - 1) * limit;
 
              
-                const transactions = wallet ? wallet.transactions.slice().reverse().slice(skip, skip + limit) : []; // Get transactions for the current page
+                const transactions = wallet ? wallet.transactions.slice().reverse().slice(skip, skip + limit) : []; 
 
                
                 const totalTransactions = wallet ? wallet.transactions.length : 0; 
@@ -590,7 +578,7 @@ const wishlist = async (req, res) => {
                     });
                 }
         
-                // Check if the wallet already exists
+               
                 let wallet = await Wallet.findOne({ userId });
                 if (wallet) {
                     return res.status(400).json({
@@ -599,17 +587,16 @@ const wishlist = async (req, res) => {
                     });
                 }
         
-                // Create new wallet
+          
                 wallet = new Wallet({
                     userId,
-                    balance: 0,  // Initialize balance to 0 or a default amount
-                    transactions: []  // Initialize with an empty array for transactions
+                    balance: 0,  
+                    transactions: []  
                 });
         
-                // Save the wallet to the database
+              
                 await wallet.save();
         
-                // Respond with success message
                 res.status(200).json({
                     success: true,
                     message: 'Wallet created successfully'
@@ -643,9 +630,9 @@ const wishlist = async (req, res) => {
                     return res.status(400).json({ message: 'Wallet not found' });
                 }
         
-                // Create a Razorpay order
+               
                 const options = {
-                    amount: amount * 100, // Convert ₹ to paise
+                    amount: amount * 100, 
                     currency: 'INR',
                     receipt: `wallet_${Date.now()}`,
                     payment_capture: 1,
@@ -667,7 +654,7 @@ const wishlist = async (req, res) => {
 
         const VerifyPayment = async (req, res) => {
             try {
-                console.log("Received payment verification request:", req.body); // Debugging log
+              
         
                 const { razorpay_payment_id, razorpay_order_id, razorpay_signature, amount } = req.body;
                 console.log(req.body)

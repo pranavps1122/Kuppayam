@@ -330,14 +330,14 @@ body {
 
 <script>
     $(document).ready(function () {
-        // Handle form submission for quantity update
+       
         $(".quantity-form").on("submit", function (event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
             var form = $(this);
             $.post(form.attr("action"), form.serialize(), function (data) {
                 if (data.success) {
-                    location.reload(); // Reload the page on success
+                    location.reload();
                 } else {
                     Swal.fire({
                         title: 'Error',

@@ -12,6 +12,7 @@ const customerController = require('../controller/admin/customerController')
 const invoiceController=require('../controller/user/invoiceController')
 
 
+
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', 
@@ -38,7 +39,7 @@ router.get('/productDetail/:productId/:categoryId', userController.LoadproductDe
 
 router.get('/logout',logged,userController.logout)
 
-router.get('/profile',logged,profileController.loadprofile)
+router.get('/profile',logged,profileController.loadprofile);
 router.get('/editprofile',logged,profileController.loadeditProfile)
 router.post('/editprofile',logged,profileController.editprofile)
 router.get('/address',logged,addressController.loadAddress)
@@ -53,6 +54,7 @@ router.post('/resetpassword',logged,profileController.resetpassword)
 
 
 router.get('/cart',logged,cartController.loadCart)
+
 router.post('/cart/:productId/:categoryId',logged,cartController.addtoCart)
 
 router.get('/removeproduct/:id',cartController.removeProduct)

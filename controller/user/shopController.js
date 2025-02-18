@@ -12,47 +12,45 @@
             const Offer =require('../../model/offerSchema')
             const { cp } = require('fs/promises');
 
-            // Initialize Razorpay
+           
             const razorpay = new Razorpay({
                 key_id: process.env.key_id,
                 key_secret: process.env.key_secret
             });
 
-            const fetchProducts = async (sortCriteria, categoryFilter,searchTerm,skip,limit) => {
+            const fetchProducts = async (sortCriteria, categoryFilter, searchTerm, skip, limit) => {
                 let query = {};
+                
+            
                 const sortOptions = {
                     Az: { productName: 1 },
                     Za: { productName: -1 },
                     hightolow: { Price: -1 },
                     lowtohigh: { Price: 1 },
                 };
-
-                const filter = {};
-                if (categoryFilter && categoryFilter !== 'all') {
             
+                if (categoryFilter && categoryFilter !== 'all') {
                     const category = await Category.findOne({ categoryName: new RegExp(`^${categoryFilter}$`, 'i') });
                     if (!category) {
                         throw new Error(`Category "${categoryFilter}" not found`);
                     }
-                    filter.category = category._id;
+                    query.category = category._id;
                 }
+            
                 if (searchTerm) {
-                
                     query.$or = [
-                    { productName: { $regex: searchTerm, $options: 'i' } },
-                    { description: { $regex: searchTerm, $options: 'i' } },
-                    
+                        { productName: { $regex: searchTerm, $options: 'i' } },
+                        { description: { $regex: searchTerm, $options: 'i' } },
                     ];
                 }
-
-                return Product.find(query)
-                .where(filter)
-                .populate('category') // ✅ This ensures category details are included
-                .sort(sortOptions[sortCriteria] || { productName: 1 })
-                .skip(skip)
-                .limit(limit);
             
+                return Product.find(query)
+                    .populate('category')
+                    .sort(sortOptions[sortCriteria] || { productName: 1 })
+                    .skip(skip)
+                    .limit(limit);
             };
+            
             const loadShop = async (req, res) => {
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 8;
@@ -66,11 +64,11 @@
             
                     const products = await fetchProducts(sortCriteria, categoryFilter, searchTerm, skip, limit);
             
-                    // Fetch only the category IDs related to products on the page
+                 
                     const productIds = products.map(product => product._id);
                     const categoryIds = products.map(product => product.category?._id).filter(id => id);
             
-                    // Fetch active offers for these products and categories
+                  
                     const productOffers = await Offer.find({ productId: { $in: productIds }, status: true });
                     const categoryOffers = await Offer.find({ categoryId: { $in: categoryIds }, status: true });
             

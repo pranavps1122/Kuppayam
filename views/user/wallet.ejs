@@ -252,7 +252,7 @@
 }
 
 #add-money-btn {
-    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient blue */
+    background: linear-gradient(135deg, #007bff, #0056b3); 
     color: white;
     font-size: 13px;
     font-weight: 600;
@@ -269,7 +269,7 @@
 }
 
 #add-money-btn:hover {
-    background: linear-gradient(135deg, #0056b3, #003f7f); /* Darker blue */
+    background: linear-gradient(135deg, #0056b3, #003f7f); 
     transform: scale(1.05);
 
 }
@@ -308,7 +308,7 @@
                 </div>
 
 
-                <!-- Transactions section -->
+              
                 <div class="transactions-container">
                     <h3 class="transactions-title">Recent Transactions</h3>
                     <% if (transactions && transactions.length > 0) { %>
@@ -339,7 +339,7 @@
                     <% } %>
                 </div>
 
-                <!-- Pagination Controls -->
+              
                 <% if (totalPages > 1) { %>
                     <div class="pagination">
                         <% if (currentPage > 1) { %>
@@ -363,7 +363,7 @@
     </div>
 
     <%- include('../partials/user/footer') %>
-    <!-- SweetAlert2 CDN -->
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -400,8 +400,8 @@
         }
 
         const options = {
-            key: '<%= process.env.key_id %>', // Replace with your Razorpay key
-            amount: result.order.amount, // Amount in paise
+            key: '<%= process.env.key_id %>',
+            amount: result.order.amount, 
             currency: 'INR',
             name: 'Kuppayam',
             description: 'Add Money to Wallet',
@@ -471,6 +471,40 @@ async function verifyPayment(paymentResponse, amount) {
     }
 }
 
+async function createWallet() {
+    try {
+        const response = await fetch('/create-wallet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || 'Failed to create wallet.');
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Wallet Created!',
+            text: 'Your wallet has been created with a balance of ₹0.',
+            timer: 3000,
+            showConfirmButton: true,
+        });
+
+        
+        location.reload();
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,
+            timer: 3000,
+            showConfirmButton: true,
+        });
+    }
+}
 
     </script>
     

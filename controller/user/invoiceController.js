@@ -6,7 +6,6 @@ const invoiceController = {
         try {
             const { orderId } = req.params;
 
-            // Validate orderId format
             if (!orderId || !orderId.match(/^[0-9a-fA-F]{24}$/)) {
                 return res.status(400).json({
                     success: false,
@@ -14,7 +13,7 @@ const invoiceController = {
                 });
             }
 
-            // Fetch order details
+        
             const order = await Order.findById(orderId)
                 .populate('orderedItem.productId')
                 .populate('userId');
@@ -26,7 +25,7 @@ const invoiceController = {
                 });
             }
 
-            // Prepare invoice data
+            
             const invoiceData = {
                 orderId: order._id.toString(),
                 customerDetails: {
@@ -61,10 +60,9 @@ const invoiceController = {
                 }
             };
 
-            // Generate HTML
             const html = generateInvoiceHTML(invoiceData);
 
-            // Convert HTML to PDF
+           
             pdf.create(html, { format: 'A4' }).toBuffer((err, buffer) => {
                 if (err) {
                     console.error('Error generating PDF:', err);
@@ -74,7 +72,7 @@ const invoiceController = {
                     });
                 }
 
-                // Send PDF as response
+            
                 res.set({
                     'Content-Type': 'application/pdf',
                     'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
@@ -93,7 +91,7 @@ const invoiceController = {
     }
 };
 
-// Function to generate HTML template
+
 function generateInvoiceHTML(data) {
     const productRows = data.products.map(product => `
         <tr>

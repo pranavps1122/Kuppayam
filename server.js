@@ -7,8 +7,7 @@ const passport=require('./config/passport')
 const connectDB=require('./config/db')
 const userRoute=require('./routes/userRouter')
 const adminRoute=require('./routes/adminRouter')
-const mongoose = require('mongoose')
-const expressLayouts = require('express-ejs-layouts')
+
 const nocache = require("nocache");
 
 
@@ -20,7 +19,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 const PORT = process.env.PORT;
 

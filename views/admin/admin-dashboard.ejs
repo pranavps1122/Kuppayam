@@ -308,7 +308,7 @@
                 </div>
             </div>
 
-            <!-- Total Orders Card -->
+      
             <div class="card bg-white hover:shadow-lg">
                 <div class="card-content p-6">
                     <div class="flex justify-between items-start">
@@ -405,7 +405,7 @@
                 </div>
             </div>
 
-            <!-- Best Selling Categories -->
+           
             <div class="card bg-white mt-6">
                 <div class="card-header p-6 border-b">
                     <h2 class="text-xl font-semibold text-gray-800">Best Selling Categories</h2>
@@ -476,7 +476,7 @@ async function updateDashboard(timeRange = 'yearly') {
         const data = await response.json();
         console.log("Received dashboard data:", data);
 
-        // Update stats cards
+      
         if (document.getElementById('totalRevenue')) {
             document.getElementById('totalRevenue').textContent = 
                 `₹${((data.totalRevenue || 0)).toFixed(2)}`;
@@ -488,7 +488,7 @@ async function updateDashboard(timeRange = 'yearly') {
             document.getElementById('totalProducts').textContent = data.totalProducts || 0;
         }
 
-        // Update charts
+  
         if (data.salesData && typeof data.salesData === 'object') {
             updateRevenueChart(data.salesData);
         }
@@ -496,7 +496,7 @@ async function updateDashboard(timeRange = 'yearly') {
             updateCategoryChart(data.categoryData);
         }
 
-        // Update top products
+        
         const topProductsContainer = document.querySelector('.space-y-4');
         if (topProductsContainer && data.topProducts && Array.isArray(data.topProducts)) {
             const topProductsHTML = data.topProducts.map((product, index) => `
@@ -519,7 +519,7 @@ async function updateDashboard(timeRange = 'yearly') {
             topProductsContainer.innerHTML = topProductsHTML || '<p class="text-gray-500">No products data available</p>';
         }
 
-        // Update categories table
+       
         updateTopCategories(data);
 
     } catch (error) {
@@ -539,7 +539,7 @@ function setTimeRange(range) {
     updateDashboard(range);
 }
 
-// Function to update Revenue Chart
+
 function updateRevenueChart(salesData) {
     try {
         const ctx = document.getElementById("revenueChart");
@@ -548,17 +548,17 @@ function updateRevenueChart(salesData) {
             return;
         }
 
-        // Destroy existing chart if it exists
+        
         if (window.revenueChart instanceof Chart) {
             window.revenueChart.destroy();
         }
 
-        // Create gradient
+      
         const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
         gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
-        // Create new chart
+      
         window.revenueChart = new Chart(ctx, {
             type: "line",
             data: {
@@ -647,7 +647,7 @@ function updateRevenueChart(salesData) {
     }
 }
 
-// Function to update Category Chart
+
 function updateCategoryChart(categoryData) {
     try {
         const ctx = document.getElementById("categoryChart");
@@ -656,12 +656,12 @@ function updateCategoryChart(categoryData) {
             return;
         }
 
-        // Destroy existing chart if it exists
+     
         if (window.categoryChart instanceof Chart) {
             window.categoryChart.destroy();
         }
 
-        // Create new chart
+   
         window.categoryChart = new Chart(ctx, {
             type: "doughnut",
             data: {
@@ -693,7 +693,7 @@ function updateCategoryChart(categoryData) {
     }
 }
 
-// Add active class to tabs and handle time range changes
+
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

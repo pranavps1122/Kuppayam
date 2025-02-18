@@ -158,7 +158,7 @@
     animation: fadeIn 0.5s ease-out forwards;
 }
 </style>
-<!-- views/wishlist.ejs -->
+
 <div class="container-fluid">
     <div class="wishlist-container page-animation">
         <h1 class="wishlist-title">My Wishlist</h1>
@@ -215,7 +215,7 @@
             </div>
         <% } %>
     </div>
-</div><!-- Load jQuery and SweetAlert -->
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -223,13 +223,13 @@
 
 <script>
     $(document).ready(function () {
-        // Handle form submission for adding to wishlist
+
         $(".add-to-wishlist-form").on("submit", function (event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
             var form = $(this);
             $.post(form.attr("action"), form.serialize(), function (data) {
-                console.log("Response from server:", data); // Debugging: Check server response
+            
 
                 if (data.success) {
                     Swal.fire({
@@ -238,7 +238,7 @@
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        location.reload(); // Reload the page on success
+                        location.reload(); 
                     });
                 } else {
                     Swal.fire({
@@ -249,7 +249,7 @@
                     });
                 }
             }).fail(function (xhr, status, error) {
-                console.error("AJAX error:", xhr.responseText); // Debugging: Log errors
+                
                 Swal.fire({
                     title: 'Error',
                     text: xhr.responseJSON?.message || 'Something went wrong!',
@@ -260,7 +260,7 @@
         });
 
         
-        // Show SweetAlert for server-side messages
+     
         <% if (message && message.length > 0) { %>
             Swal.fire({
                 text: '<%= message.replace(/'/g, "\\'").replace(/"/g, '\\"') %>',
@@ -274,7 +274,7 @@
         <% } %>
     });
     $(document).ready(function () {
-        // Show SweetAlert for session message (set in Express)
+     
         <% if (session.alertMessage) { %>
             Swal.fire({
                 text: "<%= session.alertMessage.text %>",
@@ -286,7 +286,6 @@
                 timerProgressBar: true
             });
 
-            // Remove the session alert message after displaying it
             <%
                 delete session.alertMessage;
             %>

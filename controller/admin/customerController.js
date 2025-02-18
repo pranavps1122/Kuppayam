@@ -133,7 +133,7 @@ const loadOrderDetails = async (req, res) => {
             return res.status(404).send('Order not found');
         }
 
-        res.render('AdminorderDetails', { order, admin: req.session.admin, // Ensure admin data is passed correctly
+        res.render('AdminorderDetails', { order, admin: req.session.admin, 
             active: 'order'   });
     } catch (error) {
         console.error('Error fetching order details:', error);
@@ -144,9 +144,7 @@ const loadOrderDetails = async (req, res) => {
 const updateProductStatus = async (req, res) => {
     const { orderId, productId, status } = req.body;
 
-    console.log('Received orderId:', orderId);
-    console.log('Received productId:', productId);
-    console.log('Received status:', status);
+
 
     try {
        
@@ -185,7 +183,7 @@ const returnApprove = async (req, res) => {
 
         const totalQuantity = order.orderedItem.reduce((sum, item) => sum + item.quantity, 0);
 
-        // Calculate refund amount for the returned item
+      
         let refundAmount;
         if (order.couponCode) {
             refundAmount = (order.orderAmount / totalQuantity) * itemToReturn.quantity;
@@ -195,7 +193,7 @@ const returnApprove = async (req, res) => {
 
         console.log(`Refund Amount for ${itemToReturn.productId._id}: ${refundAmount}`);
 
-        // Restore product stock
+    
         const product = await Product.findById(productId);
         if (product) {
             const sizeIndex = product.stock.findIndex(stock => stock.size == itemToReturn.size);
@@ -206,7 +204,7 @@ const returnApprove = async (req, res) => {
             }
         }
 
-        // Update wallet balance and transactions
+       
         let wallet = await Wallet.findOne({ userId: order.userId });
         if (!wallet) {
             wallet = new Wallet({ userId: order.userId, balance: 0, transactions: [] });
@@ -220,7 +218,7 @@ const returnApprove = async (req, res) => {
         });
         await wallet.save();
 
-        // Update order status
+     
         itemToReturn.productStatus = 'Returned';
         await order.save();
 
@@ -449,7 +447,7 @@ const LoadOfferManagement = async (req, res) => {
                             });
                         }
 
-                        // Validate referral code
+                      
                         const isCodeValid = await Referral.findOne({ code: referralCode });
 
                         if (!isCodeValid) {

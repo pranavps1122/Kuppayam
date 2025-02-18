@@ -66,8 +66,9 @@
                     });
                 }
              
-                const offerProduct = await Offer.findOne({ productId: productId });
-                const offerCategory = await Offer.findOne({ categoryId: categoryId });
+                const offerProduct = await Offer.findOne({ productId: productId, status: true });
+                const offerCategory = await Offer.findOne({ categoryId: categoryId, status: true });
+                
                 
                 let discountedPrice = product.Price;
                 let discountInfo = {

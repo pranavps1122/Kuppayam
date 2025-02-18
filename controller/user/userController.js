@@ -5,7 +5,7 @@
         const {Product} = require('../../model/productSchema');
         const { block } = require('sharp');
         const Offer = require('../../model/offerSchema');
-const Category = require('../../model/categorySchema');
+        const Category = require('../../model/categorySchema');
 
 
         const loadHomepage = async (req, res) => {
@@ -204,6 +204,7 @@ const Category = require('../../model/categorySchema');
                         email: req.session.userData.email,
                         password: hashedPassword,
                         phone: req.session.userData.phone
+                    
                     });
                     await newUser.save()
         

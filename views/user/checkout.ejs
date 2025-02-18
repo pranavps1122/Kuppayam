@@ -445,7 +445,7 @@ h2 {
         <div class="checkout-container page-animation">
             <h1>Checkout</h1>
     
-            <!-- Order Summary Section -->
+          
             <div class="order-summary">
                 <h2>Order Summary</h2>
                 <% cart.item.forEach(item => { %>
@@ -462,7 +462,7 @@ h2 {
               
                 
                 <div class="coupon-section">
-                    <!-- Coupon form will be injected by JavaScript -->
+                
                     <div class="place-order">
                         <h2>Place Order</h2>
                         <p>Coupon Applied: <span id="appliedCoupon"></span></p>
@@ -534,7 +534,7 @@ h2 {
     </div>
 
         
-                        <!-- Submit Button -->
+                     
                         <div class="checkout-actions">
                             <button type="submit" class="checkout-button">Place order</button>
                         </div>
@@ -574,13 +574,13 @@ function toggleNewAddressForm() {
 function initializeRazorpay(orderId, amount) {
     const options = {
         key: '<%= process.env.key_id %>', 
-        amount: amount * 100, // Convert to paise
+        amount: amount * 100, 
         currency: 'INR',
         name: 'Kuppayam',
         description: 'Purchase Payment',
         order_id: orderId,
         handler: function(response) {
-            // Send payment success data to the server
+         
             fetch('/verify-payment', {
                 method: 'POST',
                 headers: {
@@ -707,18 +707,18 @@ const couponSystem = {
             <p class="coupon-message" id="couponMessage"></p>
         `;
 
-        // Insert the form before the place order section
+        
         const placeOrderSection = document.querySelector('.place-order');
         placeOrderSection.parentNode.insertBefore(couponForm, placeOrderSection);
 
-        // Bind the event handler with the correct context
+      
         couponForm.addEventListener('submit', (e) => this.handleCouponSubmit(e));
     },
 
     setupRemoveCouponButton() {
         const removeCouponForm = document.getElementById('removeCouponForm');
         if (removeCouponForm) {
-            // Bind the event handler with the correct context
+        
             removeCouponForm.addEventListener('submit', (e) => this.handleRemoveCoupon(e));
         }
     },
@@ -793,7 +793,7 @@ const couponSystem = {
             const data = await response.json();
 
             if (data.success) {
-                // Show success message
+             
                 Swal.fire({
                     text: 'Coupon removed successfully',
                     icon: 'success',
@@ -803,7 +803,7 @@ const couponSystem = {
                     timer: 3000
                 });
 
-                // Reset UI
+               
                 document.getElementById('appliedCoupon').textContent = '';
                 document.getElementById('couponMessage').textContent = '';
                 document.getElementById('totalAmount').textContent = data.newTotal;
@@ -823,7 +823,7 @@ const couponSystem = {
     }
 };
 
-// Initialize the coupon system
+
 document.addEventListener('DOMContentLoaded', () => {
     couponSystem.init();
 });
