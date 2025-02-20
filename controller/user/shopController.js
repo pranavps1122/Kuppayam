@@ -264,7 +264,7 @@
                         orginalPrice: cart.cartTotal,
                         orderAmount: cart.cartTotal - cart.discountAmount,
                         paymentMethod: paymentMethod,
-                        couponCode: couponUsed ? couponUsed.couponCode : null,  // Check if couponUsed is valid
+                        couponCode: couponUsed ? couponUsed.couponCode : null, 
                         couponDiscount: discountAmount
                     });
                     
@@ -482,9 +482,8 @@
             
                     const discountedTotal = cart.cartTotal - totalDiscount;
             
-                    // Razorpay requires amount in paise (INR * 100)
                     const options = {
-                        amount: Math.round(discountedTotal * 100), // Convert to paise and round off
+                        amount: Math.round(discountedTotal * 100), 
                         currency: 'INR',
                         receipt: 'order_' + Date.now(),
                     };
@@ -515,18 +514,18 @@
                         payment_id: razorpay_payment_id
                     });
             
-                    let couponDiscount = 0; // Default to 0 if no coupon is applied
+                    let couponDiscount = 0; 
                     if (couponCode) {
                         const cpCode = couponCode.toUpperCase();
                         const couponUsed = await Coupon.findOne({ couponCode: cpCode });
             
                         if (couponUsed) {
-                            couponDiscount = (couponUsed.discount / 100); // Store percentage
+                            couponDiscount = (couponUsed.discount / 100); 
                             console.log('Found coupon details:', couponUsed);
                         }
                     }
             
-                    // Generate signature
+
                     const generated_signature = crypto
                         .createHmac('sha256', process.env.key_secret)
                         .update(razorpay_order_id + '|' + razorpay_payment_id)
@@ -558,7 +557,7 @@
                     }));
             
                     const coupon = cart.appliedCoupon;
-                    let totalDiscount = 0; // Default discount is 0
+                    let totalDiscount = 0; 
             
                     if (coupon) {
                         const couponUsed = await Coupon.findOne({ _id: coupon });
@@ -582,6 +581,7 @@
                             paymentStatus: 'paid',
                             paymentId: razorpay_payment_id,
                             couponCode: coupon || "",
+                            orginalPrice:cart.cartTotal,
                             couponDiscount: totalDiscount,
                             razorpayOrderId: razorpay_order_id
                         };

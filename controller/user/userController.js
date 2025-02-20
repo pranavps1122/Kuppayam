@@ -12,8 +12,9 @@
             try {
                 const products = await Product.find({}).limit(8).populate('category');
                 
-        
-              
+                // Fetch top-selling products
+                const topSellingProducts = await Product.find({}).sort({ sales: -1 }).limit(4).populate('category'); // Assuming 'sales' is a field that tracks sales count
+                
                 const productIds = products.map(p => p._id);
                 const categoryIds = products.map(p => p.category?._id).filter(id => id); 
         
@@ -45,7 +46,30 @@
                     };
                 });
         
-                res.render("home", { products: processedProducts });
+                // Process top-selling products with discounts
+                const processedTopSellingProducts = topSellingProducts.map(product => {
+                    const productOffer = productOffers.find(o => o.productId.toString() === product._id.toString());
+                    const categoryOffer = categoryOffers.find(o => o.categoryId.toString() === product.category?._id.toString());
+        
+                    let productDiscount = productOffer ? Math.round(product.Price * productOffer.discount / 100) : 0;
+                    let categoryDiscount = categoryOffer ? Math.round(product.Price * categoryOffer.discount / 100) : 0;
+        
+                    const bestDiscount = Math.max(productDiscount, categoryDiscount);
+                    const bestDiscountPercentage = bestDiscount === productDiscount 
+                        ? productOffer?.discount 
+                        : categoryOffer?.discount;
+        
+                    return {
+                        ...product.toObject(),
+                        discountAmount: bestDiscount,
+                        finalPrice: product.Price - bestDiscount,
+                        discountPercentage: bestDiscountPercentage || 0,
+                        discountType: bestDiscount === productDiscount ? 'product' : 'category',
+                        originalPrice: product.Price
+                    };
+                });
+        
+                res.render("home", { products: processedProducts, topSelling: processedTopSellingProducts });
         
             } catch (error) {
                 console.log("Error While Running Home Page:", error);

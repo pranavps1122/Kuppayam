@@ -708,32 +708,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     <section class="product-section">
-    <h2>TOP SELLING</h2>
-    <div class="product-grid">
-        <% const topSelling = [
-            { name: 'Green Sport Set', price: 150, sale: 130, image: '/Assets/5.webp.webp' },
-            { name: 'Orange Sports Tee', price: 160, sale: 140, image: '/Assets/5.webp' },
-            { name: 'Denim Shorts', price: 180, sale: 160, image: '/Assets/7.webp.webp' },
-            { name: 'Track Pants', price: 170, sale: 150, image: '/Assets/7.webp' }
-        ]; %>
-        <% topSelling.forEach(product => { %>
-           <a href="/productDetail/<%= product._id %>" style="text-decoration: none; color: black;">
-            <div class="product-card" >
-                <div class="product-image">
-                   
-                    <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.onerror=null;this.src='/assets/fallback-image.webp';">
-                </div>
-                <h3><%= product.name %></h3>
-                <div class="price">
-                    <span class="sale-price">₹<%= product.sale %></span>
-                    <span class="original-price">₹<%= product.price %></span>
-                </div>
-                
-            </div>
-        </a>
-        <% }) %>
-    </div>
-</section>
+        <h2>TOP SELLING</h2>
+        <div class="product-grid">
+            <% topSelling.forEach(product => { %>
+                <a href="/productDetail/<%= product._id %>/<%= product.category._id %>" style="text-decoration: none; color: black;">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" 
+                                onerror="this.onerror=null;this.src='/assets/fallback-image.webp';">
+                        </div>
+                        <h3><%= product.productName %></h3>
+                        <div class="price">
+                            <% if (product.discountAmount || product.category.discountAmount) { %>
+                                <span class="original-price" style="text-decoration: line-through; color: gray;">₹<%= product.originalPrice %></span>
+                                <span class="sale-price" style="color: red; font-weight: bold;">₹<%= product.finalPrice %></span>
+                                <span class="discount-percentage" style="color: green; font-size: 14px;">(<%= product.discountPercentage || product.category.discountPercentage %>% OFF)</span>
+                            <% } else { %>
+                                <span class="sale-price" style="color: black;">₹<%= product.Price %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    </section>
 
     <section class="newsletter">
         <h2>STAY UP TO DATE ABOUT OUR LATEST OFFERS</h2>

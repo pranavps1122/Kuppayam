@@ -40,7 +40,7 @@
                     category,
                     message: null,
                     admin: req.session.admin,
-                    active: 'product',
+                    active: 'products',
                 });
             } catch (error) {
                 res.redirect('/admin/adminError');
@@ -210,7 +210,7 @@
                     product: product,
                     categories: categories,
                     admin: req.session.admin,
-                    active: 'product',
+                    active: 'products',
                 });
             } catch (error) {
                 console.error('Error loading edit product page:', error);

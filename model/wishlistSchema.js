@@ -10,7 +10,7 @@ const wishlistSchema = new mongoose.Schema({
         {
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product', // This will link productId to the Product model
+                ref: 'Product', 
                 required: true
             },
             selectedSize: {
@@ -23,17 +23,17 @@ const wishlistSchema = new mongoose.Schema({
             }
         }
     ],
-    wallet: {
-        balance: {
-            type: Number,
-            required: true
-        },
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        }
-    }
+    // wallet: {
+    //     balance: {
+    //         type: Number,
+    //         required:false
+    //     },
+        // userId: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'User',
+        //     required: true
+        // }
+    // }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Wishlist', wishlistSchema);

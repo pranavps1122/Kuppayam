@@ -519,7 +519,7 @@ const LoadOfferManagement = async (req, res) => {
             const offerId=req.params.id
             console.log('category id',offerId)
         
-            const offer = await Offer.findOneAndUpdate({_id:offerId})
+            const offer = await Offer.findOne({_id:offerId})
             
             const togglestatus=offer.status===true?false:true
 
@@ -595,7 +595,7 @@ const editProductOffer = async (req,res)=>{
 
         
     } catch (error) {
-        console.log('error while editing productOffer',errror)
+        console.log('error while editing productOffer',error)
     }
 }
 

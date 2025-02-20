@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `
                 <td> ${new Date(order.date).toLocaleDateString()}</td>
                 <td>${order.orderId}</td>
-                <td> ₹${order.amount.toFixed(0)}</td>
+                <td>₹${order.amount.toFixed(2)}</td>
                 <td> ₹${order.discount.toFixed(0)}</td>
                 <td> ${order.couponCode ? order.couponCode : "No coupon used"}</td>
                 <td> ₹${order.finalAmount.toFixed(0)}</td>

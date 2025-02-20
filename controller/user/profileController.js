@@ -315,7 +315,7 @@ const wishlist = async (req, res) => {
 
         if (existingItemIndex !== -1) {
     
-            const wishlistData = await Wishlist.findOne({ userId })
+            const wishlistData = await Wishlist.findOne({ userId:userId })
                 .populate({
                     path: 'items.productId',
                     populate: {

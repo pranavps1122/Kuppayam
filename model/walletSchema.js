@@ -15,7 +15,7 @@ const transactionSchema = new mongoose.Schema({
     },
     orderId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order' // Reference to the Order model if needed
+        ref: 'Order' 
     },
     status: {
         type: String,
