@@ -1,30 +1,36 @@
+// config/passport.js
+
 const passport = require("passport");
-const env = require("dotenv").config();
+require("dotenv").config(); // Ensure this is at the top
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../model/userSchema");
+
+// Debug logs to verify environment variables
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
+
+// Verify environment variables before initializing strategy
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error('Google OAuth credentials missing. Check your .env file.');
+}
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID.trim(),
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim(),
       callbackURL: "http://localhost:3000/auth/google/callback",
+      passReqToCallback: true
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
-        console.log("google", user);
-
+        
         if (user) {
           user.name = profile.displayName;
-          console.log("username", user.name);
-
           await user.save();
-          console.log("pranav");
           return done(null, user);
         }
-
-        console.log("nikhil");
 
         user = new User({
           name: profile.displayName,
@@ -32,7 +38,6 @@ passport.use(
           googleId: profile.id,
         });
 
-        console.log("userrr", user);
         await user.save();
         return done(null, user);
       } catch (error) {
@@ -46,14 +51,13 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, null);
-    });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });
 
 module.exports = passport;
