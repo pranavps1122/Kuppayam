@@ -11,9 +11,9 @@ const adminRoute=require('./routes/adminRouter')
 const nocache = require("nocache");
 
 
-
-connectDB()
 env.config();
+connectDB()
+
 app.use(nocache());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
