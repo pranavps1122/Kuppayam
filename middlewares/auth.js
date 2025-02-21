@@ -25,18 +25,28 @@ const logged = async (req, res, next) => {
                 req.session.destroy(err => {
                     if (err) {
                         console.log('Error destroying session:', err);
-                        return res.render('login', {messageType: 'Error logging out blocked user' });
+                        return res.render('login', {
+                             message: 'Error logging out blocked user',
+                             messageType: 'error'
+
+                             });
                     }
-                    res.render('login', { messageType: 'User is Blocked' });
+                    res.render('login', { message: 'User is Blocked',
+                        messageType: 'error'
+
+
+                     });
                 });
             }
         } else {
            
-            res.render('login', { messageType: 'Please log in' });
+            res.render('login', { message: 'Please log in',
+            messageType: 'error'
+             });
         }
     } catch (error) {
         console.log('Error in middleware:', error);
-        res.render('login', { messageType: 'An error occurred, please log in again' });
+        res.render('login', { message: 'An error occurred, please log in again' });
     }
 };
 
