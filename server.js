@@ -1,7 +1,6 @@
 const express=require('express')
 const app=express()
 const path=require('path')
-const cors=require('cors')
 const env=require('dotenv')
 const session =require('express-session')
 const passport=require('./config/passport')
@@ -14,10 +13,6 @@ const nocache = require("nocache");
 
 env.config();
 connectDB()
-app.use(cors({
-    origin: ['https://kuppayam.online'],
-    credentials: true
-  }));
 app.use(nocache());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
