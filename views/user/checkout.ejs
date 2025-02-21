@@ -526,8 +526,11 @@ h2 {
                 <input type="radio" name="paymentMethod" value="Wallet" required>
                 Wallet 
                 <div class="wallet-balance">
-                    
-                    <span class="wallet-amount"> Available balance : ₹ <%= wallet.balance.toFixed(0) %></span>
+                    <% if (wallet) { %>
+                        <span class="wallet-amount"> Available balance : ₹ <%= wallet.balance.toFixed(0) %></span>
+                    <% } else { %>
+                        <span class="wallet-amount"> Available balance : ₹ 0</span>
+                    <% } %>
                 </div>
             </label>
         </div>
