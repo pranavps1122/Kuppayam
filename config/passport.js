@@ -4,9 +4,6 @@ require("dotenv").config(); // Ensure this is at the top
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../model/userSchema");
 
-// Debug logs to verify environment variables
-console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Verify environment variables before initializing strategy
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {

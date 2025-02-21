@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuppayam - Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -105,6 +107,7 @@
         .btn:hover {
             background: #333;
             transform: translateY(-1px);
+            color: white;
         }
 
         .divider {
@@ -201,6 +204,35 @@
         .password-field input[type="text"] {
             padding-right: 40px;
         }
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #3c4043;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .google-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .google-btn i {
+            margin-left: 8px;
+            color: #4285f4;
+        }
+
+        /* Alternative using Google's official G logo */
+        .google-logo {
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -235,7 +267,10 @@
             </div>
             
             <a href="/auth/google" class="google-btn" id="google-signin">
-                <span>Continue with Google</span>
+                <span>
+                    <i class="fab fa-google"></i>
+                    Continue with Google
+                </span>
             </a>
         </form>
         
@@ -243,37 +278,36 @@
             Don't have an account? <a href="/signup">Sign Up</a>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      
-        <% if (message) { %>
-            Swal.fire({
-                text: "<%= message %>",
-                icon: 'error',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-        <% } %>
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            <% if (message) { %>
+                Swal.fire({
+                    text: "<%= message %>",
+                    icon: "<%= messageType || 'info' %>", // Default to 'info' if messageType is not provided
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            <% } %>
+        });
 
-    function togglePassword(inputId) {
-        const input = document.getElementById(inputId);
-        const icon = input.parentElement.querySelector('.password-toggle');
-        
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.password-toggle');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
         }
-    }
     </script>
 </body>
 </html>

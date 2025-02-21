@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuppayam - Forgot Password</title>
+    <title>Kuppayam - Verify OTP</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -106,19 +106,18 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Forgot Password</h2>
-        <form action="/forgotpassword" method="POST">
+        <h2>Verify OTP</h2>
+        <form action="/verify-otp-forgot" method="POST">
             <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
             </div>
-            <button type="submit" class="btn">Send Reset Link</button>
+            <button type="submit" class="btn">Verify OTP</button>
         </form>
-        <p class="signup-link">Remember your password? <a href="/login">Login here</a></p>
+        <p class="signup-link">Didn't receive the OTP? <a href="/forgotpassword">Resend OTP</a></p>
     </div>
 
     <script>
-        // SweetAlert for messages
         <% if (message) { %>
             Swal.fire({
                 text: '<%= message %>',

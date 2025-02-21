@@ -79,8 +79,12 @@ router.get('/orderDetails',logged,profileController.orderDetails)
 router.get('/orderstatus/:id',logged,profileController.loadorderStatus)
 
 
-router.get('/forgotpassword',userController.loadForgotPassword)
-router.post('/forgotpassword',userController.forgotPassword)
+router.get('/forgotpassword', userController.loadForgotPassword);
+router.post('/forgotpassword', userController.forgotPassword);
+router.post('/verify-otp-forgot', userController.verifyOtpForgot);
+router.get('/newpassword',userController.loadNewPassword)
+router.post('/update-password',userController.updatePassword)
+
 
 router.post('/cancelorder/:orderid/:productid', logged,shopController.cancelOrder)
 router.post('/returnorder/:orderid/:productid', logged, shopController.returnOrder)

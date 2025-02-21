@@ -263,21 +263,36 @@
                 console.log('User found:', user);
         
                 if (!user) {
-                    return res.render('login', { message: 'Invalid email or password' });
+                    return res.render('login', { 
+                        message: 'User not found', 
+                        messageType: 'error'
+                    });
+                    
                 }
 
                 if (!user.password) {
-                    return res.render('login', { message: 'Please login with google' });
+                    return res.render('login', { 
+                        message: 'Please login with google', 
+                        messageType: 'error' 
+                    });
+                    
                 }
         
                 if (!user.Status) {
-                    return res.render('login', { message: 'Your account has been suspended. Please contact support.' });
+                    return res.render('login', { 
+                        message: 'User is blocked please contact', 
+                        messageType: 'error' 
+                    });
+                    
                 }
         
               
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (!isMatch) {
-                    return res.render('login', { message: 'Invalid email or password' });
+                    return res.render('login', { 
+                        message: 'Password is not matching', 
+                        messageType: 'error' 
+                    });
                 }
         
                 req.session.userId=user._id;
@@ -416,33 +431,90 @@
         const forgotPassword = async (req, res) => {
             try {
                 const { email } = req.body;
-        
                 const user = await User.findOne({ email: email });
                 if (!user) {
                     return res.render('forgotpassword', {
                         message: 'User not found'
                     });
                 }
-        
-                let otp;
-        
-                if (user) {
-                    otp = generateOtp(); 
-                    const emailSent = await sendVerificationEmail(email, otp);
-                    console.log('email', emailSent);
-                }
-        
+
+                const otp = generateOtp(); 
+                const emailSent = await sendVerificationEmail(email, otp);
+                console.log('email', emailSent);
+
                 req.session.userOtp = otp; 
-                req.session.forgot=true
+                req.session.forgot = true; 
+                req.session.email=email
                 console.log('otp', otp);
-        
-                res.render('verify-otp', {
-                    userData: user
+
+                res.render('forgot-verify', {
+                    userData: user,
+                    message: null
                 });
             } catch (error) {
                 console.log('error while generating otp', error);
             }
         };
+
+
+
+        const verifyOtpForgot = async (req, res) => {
+            try {
+                const { otp } = req.body;
+                const validOtp = req.session.userOtp;
+
+                if (otp !== validOtp) {
+                    return res.render('forgot-verify', {
+                        message: 'Invalid OTP'
+                    });
+                }
+
+            
+                res.redirect('/newpassword'); 
+            } catch (error) {
+                console.log('error while verifying otp', error);
+            }
+        };
+       
+        const loadNewPassword = async (req,res)=>{
+
+            try {
+                res.render('new-password',{
+                    message:null
+                })
+            } catch (error) {
+              console.log('error while loading newpassword',error)  
+            }
+        }
+
+        const updatePassword = async (req,res)=>{
+
+            try {
+             
+              
+                console.log('email',req.session.email)
+               
+                const{newPassword,confirmPassword}=req.body;
+                if(newPassword!==confirmPassword){
+                    return res.render('new-password',{
+                        message:'Password does not match'
+                    })
+                }
+
+                await User.findOneAndUpdate({email:req.session.email},{
+                    password:await bcrypt.hash(newPassword,10)  
+                })
+                return res.render('login', { 
+                    message: 'Password updated successfully', 
+                    messageType: 'success'
+                });
+                
+                delete req.session.userOtp;
+
+            } catch (error) {
+                console.log('error while updating password',error)
+            }
+        }
 
         const loadAbout = async (req,res)=>{
 
@@ -477,7 +549,12 @@
             loadForgotPassword,
             forgotPassword,
             loadAbout,
-            loadContact
+            loadContact,
+            verifyOtpForgot,
+            loadNewPassword,
+            updatePassword
+
+            
           
             
         }
