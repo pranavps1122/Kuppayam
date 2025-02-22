@@ -1,7 +1,6 @@
 const Order = require('../../model/orderSchema');
-const puppeteer = require('puppeteer');
+const pdf = require('html-pdf');
 
-// HTML template generation function
 const generateInvoiceHTML = (data) => {
     return `
         <!DOCTYPE html>
@@ -139,43 +138,37 @@ const invoiceController = {
 
             const html = generateInvoiceHTML(invoiceData);
 
-            // Configure Puppeteer for server environment
-            const browser = await puppeteer.launch({
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu'
-                ],
-                headless: 'new' // Use new headless mode
-            });
-
-            const page = await browser.newPage();
-            await page.setContent(html, { 
-                waitUntil: ['domcontentloaded', 'networkidle0'] 
-            });
-
-            const pdfBuffer = await page.pdf({
+            const options = {
                 format: 'A4',
-                printBackground: true,
-                margin: {
+                border: {
                     top: '20px',
                     right: '20px',
                     bottom: '20px',
                     left: '20px'
-                }
+                },
+                timeout: 30000, // Increased timeout
+                phantomPath: require('phantomjs-prebuilt').path
+            };
+
+            // Create PDF using Promise
+            await new Promise((resolve, reject) => {
+                pdf.create(html, options).toBuffer((err, buffer) => {
+                    if (err) {
+                        console.error('Error generating PDF:', err);
+                        reject(err);
+                        return;
+                    }
+
+                    res.set({
+                        'Content-Type': 'application/pdf',
+                        'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
+                        'Content-Length': buffer.length
+                    });
+
+                    res.send(buffer);
+                    resolve();
+                });
             });
-
-            await browser.close();
-
-            // Set response headers
-            res.set({
-                'Content-Type': 'application/pdf',
-                'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
-                'Content-Length': pdfBuffer.length
-            });
-
-            res.send(pdfBuffer);
 
         } catch (error) {
             console.error('Error generating invoice:', error);
