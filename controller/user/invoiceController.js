@@ -1,6 +1,5 @@
 const Order = require('../../model/orderSchema');
-const { jsPDF } = require('jspdf');
-require('jspdf-autotable');
+const PDFDocument = require('pdfkit');
 
 const invoiceController = {
     generateAndDownload: async (req, res) => {
@@ -25,79 +24,121 @@ const invoiceController = {
                 });
             }
 
-            // Create new PDF document
-            const doc = new jsPDF();
-
-            // Add company logo/header
-            doc.setFontSize(20);
-            doc.text('INVOICE', 105, 20, { align: 'center' });
-
-            // Company details
-            doc.setFontSize(10);
-            doc.text([
-                'Your Company Name',
-                'Company Address',
-                'Email: contact@company.com',
-                'Phone: +1234567890',
-                'GST: GST123456789'
-            ], 15, 40);
-
-            // Invoice details
-            doc.text([
-                `Invoice #: ${orderId}`,
-                `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
-                `Due Date: ${new Date(order.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}`
-            ], 15, 70);
-
-            // Customer details
-            doc.text([
-                'Bill To:',
-                order.userId?.name || 'N/A',
-                order.userId?.email || 'N/A',
-                order.userId?.phone || 'N/A',
-                order.shippingAddress?.street || 'N/A',
-                `${order.shippingAddress?.city || 'N/A'}, ${order.shippingAddress?.state || 'N/A'} ${order.shippingAddress?.zipCode || 'N/A'}`,
-                order.shippingAddress?.country || 'N/A'
-            ], 120, 40);
-
-            // Create table for products
-            const tableHeaders = [['Product', 'Size', 'Quantity', 'Price', 'Status', 'Total']];
-            const tableData = order.orderedItem.map(item => [
-                item.productId?.productName || 'Product Unavailable',
-                item.size || 'N/A',
-                item.quantity.toString(),
-                `₹${Number(item.productPrice).toFixed(2)}`,
-                item.productStatus || 'N/A',
-                `₹${(Number(item.quantity) * Number(item.productPrice)).toFixed(2)}`
-            ]);
-
-            doc.autoTable({
-                startY: 100,
-                head: tableHeaders,
-                body: tableData,
-                theme: 'grid',
-                headStyles: { fillColor: [66, 66, 66] },
-                styles: { 
-                    fontSize: 8,
-                    cellPadding: 3
-                }
+            // Create PDF document
+            const doc = new PDFDocument({
+                margin: 50,
+                size: 'A4'
             });
-
-            // Add total amount and payment method
-            const finalY = doc.lastAutoTable.finalY || 150;
-            doc.setFontSize(12);
-            doc.text([
-                `Total Amount: ₹${Number(order.orderAmount).toFixed(2)}`,
-                `Payment Method: ${order.paymentMethod || 'N/A'}`
-            ], 150, finalY + 20, { align: 'right' });
 
             // Set response headers
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename=invoice-${orderId}.pdf`);
 
-            // Send the PDF as a buffer
-            const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
-            res.send(pdfBuffer);
+            // Pipe the PDF directly to the response
+            doc.pipe(res);
+
+            // Add content to PDF
+            // Header
+            doc.fontSize(20)
+                .text('INVOICE', { align: 'center' })
+                .moveDown();
+
+            // Company Details
+            doc.fontSize(12)
+                .text('Your Company Name', { align: 'left' })
+                .text('Company Address')
+                .text('Email: contact@company.com')
+                .text('Phone: +1234567890')
+                .text('GST: GST123456789')
+                .moveDown();
+
+            // Invoice Details
+            doc.text(`Invoice #: ${orderId}`)
+                .text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`)
+                .text(`Due Date: ${new Date(order.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}`)
+                .moveDown();
+
+            // Customer Details
+            doc.text('Bill To:')
+                .text(order.userId?.name || 'N/A')
+                .text(order.userId?.email || 'N/A')
+                .text(order.userId?.phone || 'N/A')
+                .text(order.shippingAddress?.street || 'N/A')
+                .text(`${order.shippingAddress?.city || 'N/A'}, ${order.shippingAddress?.state || 'N/A'} ${order.shippingAddress?.zipCode || 'N/A'}`)
+                .text(order.shippingAddress?.country || 'N/A')
+                .moveDown();
+
+            // Table Header
+            const tableTop = doc.y;
+            const columnWidth = (doc.page.width - 100) / 6;
+
+            ['Product', 'Size', 'Quantity', 'Price', 'Status', 'Total'].forEach((header, i) => {
+                doc.text(header, 50 + (i * columnWidth), tableTop, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+            });
+
+            // Draw line under headers
+            doc.moveTo(50, tableTop + 20)
+                .lineTo(doc.page.width - 50, tableTop + 20)
+                .stroke();
+
+            // Table Content
+            let tableContentTop = tableTop + 30;
+            order.orderedItem.forEach((item, index) => {
+                const y = tableContentTop + (index * 20);
+                
+                doc.fontSize(10);
+                
+                doc.text(item.productId?.productName || 'Product Unavailable', 50, y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+                
+                doc.text(item.size || 'N/A', 50 + columnWidth, y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+                
+                doc.text(item.quantity.toString(), 50 + (columnWidth * 2), y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+                
+                doc.text(`₹${Number(item.productPrice).toFixed(2)}`, 50 + (columnWidth * 3), y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+                
+                doc.text(item.productStatus || 'N/A', 50 + (columnWidth * 4), y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+                
+                doc.text(`₹${(Number(item.quantity) * Number(item.productPrice)).toFixed(2)}`, 50 + (columnWidth * 5), y, {
+                    width: columnWidth,
+                    align: 'left'
+                });
+            });
+
+            // Total Amount
+            doc.moveDown()
+                .moveTo(50, doc.y)
+                .lineTo(doc.page.width - 50, doc.y)
+                .stroke()
+                .moveDown();
+
+            doc.fontSize(12)
+                .text(`Total Amount: ₹${Number(order.orderAmount).toFixed(2)}`, {
+                    align: 'right'
+                })
+                .text(`Payment Method: ${order.paymentMethod || 'N/A'}`, {
+                    align: 'right'
+                });
+
+            // Finalize the PDF
+            doc.end();
 
         } catch (error) {
             console.error('Error generating invoice:', error);
