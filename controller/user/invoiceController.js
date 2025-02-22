@@ -1,4 +1,5 @@
 const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 const Order = require('../../model/orderSchema');
 
 const invoiceController = {
@@ -60,36 +61,39 @@ const invoiceController = {
                 }
             };
 
-            const html = generateInvoiceHTML(invoiceData);
-
            
-            pdf.create(html, { format: 'A4' }).toBuffer((err, buffer) => {
-                if (err) {
-                    console.error('Error generating PDF:', err);
-                    return res.status(500).json({
-                        success: false,
-                        message: 'Error generating PDF'
-                    });
-                }
 
-            
-                res.set({
-                    'Content-Type': 'application/pdf',
-                    'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
-                    'Content-Length': buffer.length
-                });
-                res.send(buffer);
-            });
-        } catch (error) {
-            console.error('Error generating invoice:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error generating invoice',
-                error: error.message
-            });
-        }
+async function generateInvoicePDF(req, res) {
+    try {
+        const browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for AWS
+            headless: true
+        });
+
+        const page = await browser.newPage();
+        const htmlContent = generateInvoiceHTML(invoiceData); // Your function that generates HTML content
+
+        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+
+        await browser.close();
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
+            'Content-Length': pdfBuffer.length
+        });
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error('Error generating invoice:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error generating invoice',
+            error: error.message
+        });
     }
-};
+}
 
 
 function generateInvoiceHTML(data) {
