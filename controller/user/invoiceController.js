@@ -1,83 +1,6 @@
 const Order = require('../../model/orderSchema');
-const pdf = require('html-pdf');
-
-const generateInvoiceHTML = (data) => {
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Invoice</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                .header { text-align: center; margin-bottom: 30px; }
-                .company-details { margin-bottom: 30px; }
-                .customer-details { margin-bottom: 30px; }
-                table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f2f2f2; }
-                .totals { text-align: right; margin-top: 20px; }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>INVOICE</h1>
-                <p>Invoice #: ${data.orderId}</p>
-                <p>Date: ${data.invoiceDate}</p>
-                <p>Due Date: ${data.dueDate}</p>
-            </div>
-
-            <div class="company-details">
-                <h3>${data.companyDetails.name}</h3>
-                <p>${data.companyDetails.address}</p>
-                <p>Email: ${data.companyDetails.email}</p>
-                <p>Phone: ${data.companyDetails.phone}</p>
-                <p>GST: ${data.companyDetails.gst}</p>
-            </div>
-
-            <div class="customer-details">
-                <h3>Bill To:</h3>
-                <p>${data.customerDetails.name}</p>
-                <p>${data.customerDetails.email}</p>
-                <p>${data.customerDetails.phone}</p>
-                <p>${data.shippingAddress.street}</p>
-                <p>${data.shippingAddress.city}, ${data.shippingAddress.state} ${data.shippingAddress.zipCode}</p>
-                <p>${data.shippingAddress.country}</p>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Size</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.products.map(product => `
-                        <tr>
-                            <td>${product.name}</td>
-                            <td>${product.size}</td>
-                            <td>${product.quantity}</td>
-                            <td>₹${product.price.toFixed(2)}</td>
-                            <td>${product.status}</td>
-                            <td>₹${(product.quantity * product.price).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-
-            <div class="totals">
-                <h3>Total Amount: ₹${data.totalAmount.toFixed(2)}</h3>
-                <p>Payment Method: ${data.paymentMethod}</p>
-            </div>
-        </body>
-        </html>
-    `;
-};
+const { jsPDF } = require('jspdf');
+require('jspdf-autotable');
 
 const invoiceController = {
     generateAndDownload: async (req, res) => {
@@ -102,73 +25,79 @@ const invoiceController = {
                 });
             }
 
-            const invoiceData = {
-                orderId: order._id.toString(),
-                customerDetails: {
-                    name: order.userId?.name || 'N/A',
-                    email: order.userId?.email || 'N/A',
-                    phone: order.userId?.phone || 'N/A'
-                },
-                products: order.orderedItem.map(item => ({
-                    name: item.productId?.productName || 'Product Unavailable',
-                    quantity: Number(item.quantity) || 0,
-                    price: Number(item.productPrice) || 0,
-                    size: item.size || 'N/A',
-                    status: item.productStatus || 'N/A'
-                })),
-                paymentMethod: order.paymentMethod || 'N/A',
-                shippingAddress: {
-                    street: order.shippingAddress?.street || 'N/A',
-                    city: order.shippingAddress?.city || 'N/A',
-                    state: order.shippingAddress?.state || 'N/A',
-                    zipCode: order.shippingAddress?.zipCode || 'N/A',
-                    country: order.shippingAddress?.country || 'N/A'
-                },
-                totalAmount: Number(order.orderAmount) || 0,
-                invoiceDate: new Date(order.createdAt).toLocaleDateString(),
-                dueDate: new Date(order.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-                companyDetails: {
-                    name: 'Your Company Name',
-                    address: 'Company Address',
-                    email: 'contact@company.com',
-                    phone: '+1234567890',
-                    gst: 'GST123456789'
+            // Create new PDF document
+            const doc = new jsPDF();
+
+            // Add company logo/header
+            doc.setFontSize(20);
+            doc.text('INVOICE', 105, 20, { align: 'center' });
+
+            // Company details
+            doc.setFontSize(10);
+            doc.text([
+                'Your Company Name',
+                'Company Address',
+                'Email: contact@company.com',
+                'Phone: +1234567890',
+                'GST: GST123456789'
+            ], 15, 40);
+
+            // Invoice details
+            doc.text([
+                `Invoice #: ${orderId}`,
+                `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
+                `Due Date: ${new Date(order.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}`
+            ], 15, 70);
+
+            // Customer details
+            doc.text([
+                'Bill To:',
+                order.userId?.name || 'N/A',
+                order.userId?.email || 'N/A',
+                order.userId?.phone || 'N/A',
+                order.shippingAddress?.street || 'N/A',
+                `${order.shippingAddress?.city || 'N/A'}, ${order.shippingAddress?.state || 'N/A'} ${order.shippingAddress?.zipCode || 'N/A'}`,
+                order.shippingAddress?.country || 'N/A'
+            ], 120, 40);
+
+            // Create table for products
+            const tableHeaders = [['Product', 'Size', 'Quantity', 'Price', 'Status', 'Total']];
+            const tableData = order.orderedItem.map(item => [
+                item.productId?.productName || 'Product Unavailable',
+                item.size || 'N/A',
+                item.quantity.toString(),
+                `₹${Number(item.productPrice).toFixed(2)}`,
+                item.productStatus || 'N/A',
+                `₹${(Number(item.quantity) * Number(item.productPrice)).toFixed(2)}`
+            ]);
+
+            doc.autoTable({
+                startY: 100,
+                head: tableHeaders,
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [66, 66, 66] },
+                styles: { 
+                    fontSize: 8,
+                    cellPadding: 3
                 }
-            };
-
-            const html = generateInvoiceHTML(invoiceData);
-
-            const options = {
-                format: 'A4',
-                border: {
-                    top: '20px',
-                    right: '20px',
-                    bottom: '20px',
-                    left: '20px'
-                },
-                timeout: 30000, // Increased timeout
-                phantomPath: require('phantomjs-prebuilt').path
-            };
-
-            // Create PDF using Promise
-            await new Promise((resolve, reject) => {
-                pdf.create(html, options).toBuffer((err, buffer) => {
-                    if (err) {
-                        console.error('Error generating PDF:', err);
-                        reject(err);
-                        return;
-                    }
-
-                    res.set({
-                        'Content-Type': 'application/pdf',
-                        'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
-                        'Content-Length': buffer.length
-                    });
-
-                    res.send(buffer);
-                    resolve();
-                });
             });
+
+            // Add total amount and payment method
+            const finalY = doc.lastAutoTable.finalY || 150;
+            doc.setFontSize(12);
+            doc.text([
+                `Total Amount: ₹${Number(order.orderAmount).toFixed(2)}`,
+                `Payment Method: ${order.paymentMethod || 'N/A'}`
+            ], 150, finalY + 20, { align: 'right' });
+
+            // Set response headers
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=invoice-${orderId}.pdf`);
+
+            // Send the PDF as a buffer
+            const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+            res.send(pdfBuffer);
 
         } catch (error) {
             console.error('Error generating invoice:', error);
