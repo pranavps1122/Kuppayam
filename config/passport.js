@@ -14,13 +14,13 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID.trim(),
       clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim(),
-      callbackURL:"https://www.kuppayam.online/auth/google/callback",
-      passReqToCallback: true
+      callbackURL: "https://www.kuppayam.online/auth/google/callback",
+      passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
-        
+
         if (user) {
           user.name = profile.displayName;
           await user.save();
