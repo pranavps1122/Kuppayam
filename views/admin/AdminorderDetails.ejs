@@ -25,168 +25,8 @@
             background-color: #f8f9fa;
             overflow: scroll;
         }
-        
 
-        .container {
-            max-width: 800px;
-            margin-left: 300px;
-           margin-top: 70px;
-            padding: 4rem;
-            
-        }
-
-        .order-card {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-         
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--gray-100);
-        }
-
-        .order-id {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-card {
-            background-color: var(--gray-50);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-        }
-
-        .info-card h3 {
-            margin: 0 0 1rem 0;
-            font-size: 1rem;
-            color: var(--gray-700);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .info-card p {
-            margin: 0;
-            font-size: 1.125rem;
-            color: var(--gray-900);
-        }
-
-        .products-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .product-card {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.5rem;
-            align-items: center;
-            padding: 1.5rem;
-            background-color: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 0.75rem;
-            transition: transform 0.2s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-        }
-
-        .product-info h4 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.125rem;
-            color: var(--gray-900);
-        }
-
-        .product-meta {
-            font-size: 0.875rem;
-            color: var(--gray-700);
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .status-pending { background-color: #fef3c7; color: #92400e; }
-        .status-shipped { background-color: #dbeafe; color: #1e40af; }
-        .status-delivered { background-color: #d1fae5; color: #065f46; }
-        .status-cancelled { background-color: #fee2e2; color: #991b1b; }
-        .status-returned { background-color: #fee2e2; color: #991b1b; }
-
-        .status-form {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        select {
-            padding: 0.5rem;
-            border: 1px solid var(--gray-200);
-            border-radius: 0.5rem;
-            background-color: white;
-            color: var(--gray-900);
-            font-size: 0.875rem;
-            cursor: pointer;
-        }
-
-        .btn-update {
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-update:hover {
-            background-color: #4338ca;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-                margin: 1rem;
-            }
-
-            .product-card {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .product-image {
-                margin: 0 auto;
-            }
-
-            .status-form {
-                justify-content: center;
-            }
-        }
+        /* Keep original header styles */
         .header {
             display: flex;
             justify-content: space-between;
@@ -221,88 +61,266 @@
             background-color: #c0392b;
         }
 
-        .action-bar {
+        /* New enhanced styles */
+        .container {
+            max-width: 1050px;
+            margin-left: 220px;
+            margin-top: 70px;
+            padding: 2rem;
+        }
+
+        .order-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .order-header {
+            background: linear-gradient(to right, #f3f4f6, #e5e7eb);
+            padding: 1.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            border-bottom: 1px solid var(--gray-200);
         }
 
-        .page-title {
-            font-size: 24px;
-            font-weight: bold;
+        .order-id {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
         }
-        
-    
-                .admin-return-actions {
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #4338ca;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(145deg, var(--gray-50), white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-100);
+        }
+
+        .info-card h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-card p {
+            margin: 0;
+            font-size: 1.125rem;
+            color: var(--gray-900);
+        }
+
+        .products-section {
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .products-section h2 {
+            color: var(--gray-900);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .products-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-info h4 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.25rem;
+            color: var(--gray-900);
+        }
+
+        .product-meta {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-processing { background-color: #e0f2fe; color: #075985; }
+        .status-shipped { background-color: #dbeafe; color: #1e40af; }
+        .status-delivered { background-color: #d1fae5; color: #065f46; }
+        .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+        .status-returned { background-color: #fee2e2; color: #991b1b; }
+
+        .status-form {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        select {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            background-color: white;
+            color: var(--gray-900);
+            font-size: 0.875rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.5em 1.5em;
+        }
+
+        .btn-update {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-update:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .btn-update:disabled {
+            background-color: var(--gray-200);
+            cursor: not-allowed;
+        }
+
+        .return-request {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 0.75rem;
+           
+        }
+
+        .return-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .btn-accept, .btn-decline {
-            padding: 8px 10px;
-            font-size: 12px;
-            font-weight: bold;
-            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s;
         }
 
         .btn-accept {
-            background: linear-gradient(135deg, #28a745, #1e7e34);
+            background-color: var(--success-color);
             color: white;
-         
-        }
-
-        .btn-accept:hover {
-            transform: scale(1.05);
-  
+            border: none;
         }
 
         .btn-decline {
-            background: linear-gradient(135deg, #dc3545, #a71d2a);
+            background-color: var(--danger-color);
             color: white;
-          
+            border: none;
         }
 
-        .btn-decline:hover {
-            transform: scale(1.05);
-       
-        }
+        @media (max-width: 768px) {
+            .container {
+                margin-left: 0;
+                padding: 1rem;
+            }
 
-        .main-container {
-            max-width: 1200px; /* Standardized width */
-            margin: 0 auto; /* Centering */
-            padding: 20px; /* Consistent padding */
-            background: white; /* Background for uniformity */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
-        }
-        .btn-primary {
-            background-color: #3498db; /* Standard primary button color */
-            color: white;
-        }
-        .btn-secondary {
-            background-color: #e9ecef; /* Standard secondary button color */
-            color: #2d3436;
-        }
+            .product-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 1rem;
+            }
 
+            .product-image {
+                margin: 0 auto;
+            }
+
+            .status-form {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="logo">Admin Dashboard</div>
         <a href="/admin/logout" class="logout-btn">Logout</a>
-
     </header>
-   
+
     <div class="container">
         <div class="order-card">
             <div class="order-header">
                 <h1 class="order-id">Order #<%= order._id %></h1>
-                <a href="/admin/orderManagement" style="background-color: #4f46e5; font-size: 12px; padding: 7px 12px; color: white; text-decoration: none;">Back</a>
+                <a href="/admin/orderManagement" class="back-button">Back</a>
             </div>
 
             <div class="info-grid">
@@ -320,60 +338,67 @@
                 </div>
             </div>
 
-            <h2>Products</h2>
-            <div class="products-list">
-                <% order.orderedItem.forEach(item => { %>
-                    <div class="product-card">
-                        <img class="product-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
-                        <div class="product-info">
-                            <h4><%= item.productId.productName %></h4>
-                            <div class="product-meta">
-                                <p>Quantity: <%= item.quantity %></p>
-                                <p>Price: ₹<%= item.totalProductPrice.toFixed(2) %></p>
-                                <span class="status-badge status-<%= item.productStatus.toLowerCase() %>">
-                                    <%= item.productStatus %>
-                                </span>
+            <div class="products-section">
+                <h2>Products</h2>
+                <div class="products-list">
+                    <% order.orderedItem.forEach(item => { %>
+                        <div class="product-card">
+                            <img class="product-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+                            <div class="product-info">
+                                <h4><%= item.productId.productName %></h4>
+                                <div class="product-meta">
+                                    <p>Quantity: <%= item.quantity %></p>
+                                    <p>Price: ₹<%= item.totalProductPrice.toFixed(2) %></p>
+                                    <span class="status-badge status-<%= item.productStatus.toLowerCase() %>">
+                                        <%= item.productStatus %>
+                                    </span>
+                                </div>
                             </div>
+
+                            <form class="status-form" action="/admin/updateProductStatus" method="POST">
+                                <input type="hidden" name="orderId" value="<%= order._id %>">
+                                <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                                
+                                <select name="status" <%= item.productStatus === 'cancelled' ? 'disabled' : '' %>>
+                                    <% if (item.productStatus !== 'cancelled') { %>
+                                        <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="processing" <%= item.productStatus === 'processing' ? 'selected' : '' %>>Processing</option>
+                                        <option value="shipped" <%= item.productStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                        <option value="delivered" <%= item.productStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                        <option value="returned" <%= item.productStatus === 'returned' ? 'selected' : '' %>>Returned</option>
+                                    <% } else { %>
+                                        <option value="cancelled" selected>Cancelled</option>
+                                    <% } %>
+                                </select>
+
+                                <button type="submit" class="btn-update" <%= item.productStatus === 'cancelled' ? 'disabled' : '' %>>
+                                    <%= item.productStatus === 'cancelled' ? 'Cancelled' : 'Update' %>
+                                </button>
+                            </form>
+
+                            <% if (item.productStatus === 'Return Requested') { %>
+                                <div class="return-request">
+                                    <p><strong>Return Reason:</strong> <%= order.returnReason ? order.returnReason : "No reason provided" %></p>
+                                    <div class="return-actions">
+                                        <form action="/admin/approve-return/<%= order._id %>/<%= item.productId._id %>" method="POST">
+                                            <button type="submit" class="btn-accept">Accept Return</button>
+                                        </form>
+                                        <form action="/admin/decline-return/<%= order._id %>/<%= item.productId._id %>" method="POST">
+                                            <button type="submit" class="btn-decline">Decline Return</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <% if (item.productStatus === 'cancelled') { %>
+                                <div class="cancellation-reason">
+                                    <h5>Cancellation Reason:</h5>
+                                    <p><%= item.cancellationReason || 'No reason provided' %></p>
+                                </div>
+                            <% } %>
                         </div>
-                
-                     
-                        <form class="status-form" action="/admin/updateProductStatus" method="POST">
-                            <input type="hidden" name="orderId" value="<%= order._id %>">
-                            <input type="hidden" name="productId" value="<%= item.productId._id %>">
-                            <select name="status">
-                                <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
-                                <option value="processing" <%= item.productStatus === 'processing' ? 'selected' : '' %>>Processing</option>
-                                <option value="shipped" <%= item.productStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                                <option value="delivered" <%= item.productStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                                <option value="cancelled" <%= item.productStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                <option value="returned" <%= item.productStatus === 'returned' ? 'selected' : '' %>>Returned</option>
-                            </select>
-                            <button type="submit" class="btn-update">Update</button>
-                        </form>
-                        
-                        <% if (item.productStatus === 'Delivered') { %>
-                           
-                        <% } %>
-                
-                 
-                        <% if (item.productStatus === 'Return Requested') { %>
-                            <div class="admin-return-actions">
-                                <form action="/admin/approve-return/<%= order._id %>/<%= item.productId._id %>" method="POST">
-                                    <button type="submit" class="btn-accept">
-                                        ✅ Accept Return
-                                    </button>
-                                </form>
-                                <form action="/admin/decline-return/<%= order._id %>/<%= item.productId._id %>" method="POST">
-                                    <button type="submit" class="btn-decline">
-                                        ❌ Decline Return
-                                    </button>
-                                </form>
-                            </div>
-                            
-                        <% } %>
-                    </div>
-                <% }); %>
-                
+                    <% }); %>
+                </div>
             </div>
         </div>
     </div>

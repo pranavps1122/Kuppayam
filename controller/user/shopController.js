@@ -422,6 +422,10 @@
                     const userId = req.session.userId;
                     const orderId = req.params.orderid;
                     const productId = req.params.productid;
+                    const returnReason = req.body.reason;
+
+                    console.log('req.body',req.body)
+
                     const order = await Order.findOne({ userId: userId, _id: orderId }).populate('orderedItem.productId');
                  
         
@@ -437,6 +441,7 @@
             
             
                     itemToReturn.productStatus = 'Return Requested';
+                    order.returnReason= returnReason;
 
 
                     

@@ -244,7 +244,7 @@ const returnDecline = async (req,res)=>{
         itemToReturn.productStatus = 'Return Declined';
         await order.save();
 
-        res.redirect('/admin/orders'); 
+        res.redirect('/admin/ordermanagement'); 
     } catch (error) {
         console.error('Error declining return:', error);
         res.status(500).send('Error processing return decline');

@@ -83,6 +83,8 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    returnReason: { type: String, 
+        default: null },
     razorpayOrderId: { type: String, 
         default: null },
 
