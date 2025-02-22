@@ -1,6 +1,6 @@
-const pdf = require('html-pdf');
-const puppeteer = require('puppeteer');
+
 const Order = require('../../model/orderSchema');
+const puppeteer = require('puppeteer');
 
 const invoiceController = {
     generateAndDownload: async (req, res) => {
@@ -14,7 +14,6 @@ const invoiceController = {
                 });
             }
 
-        
             const order = await Order.findById(orderId)
                 .populate('orderedItem.productId')
                 .populate('userId');
@@ -26,7 +25,6 @@ const invoiceController = {
                 });
             }
 
-            
             const invoiceData = {
                 orderId: order._id.toString(),
                 customerDetails: {
@@ -61,95 +59,37 @@ const invoiceController = {
                 }
             };
 
-           
+            const html = generateInvoiceHTML(invoiceData);
 
-async function generateInvoicePDF(req, res) {
-    try {
-        const browser = await puppeteer.launch({
-            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for AWS
-            headless: true
-        });
+            // Use Puppeteer to generate PDF
+            const browser = await puppeteer.launch({
+                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                headless: true
+            });
 
-        const page = await browser.newPage();
-        const htmlContent = generateInvoiceHTML(invoiceData); // Your function that generates HTML content
+            const page = await browser.newPage();
+            await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
-        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+            const pdfBuffer = await page.pdf({ format: 'A4' });
 
-        const pdfBuffer = await page.pdf({ format: 'A4' });
+            await browser.close();
 
-        await browser.close();
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
+                'Content-Length': pdfBuffer.length
+            });
 
-        res.set({
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=invoice-${orderId}.pdf`,
-            'Content-Length': pdfBuffer.length
-        });
-        res.send(pdfBuffer);
-    } catch (error) {
-        console.error('Error generating invoice:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error generating invoice',
-            error: error.message
-        });
+            res.send(pdfBuffer);
+        } catch (error) {
+            console.error('Error generating invoice:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error generating invoice',
+                error: error.message
+            });
+        }
     }
-}
-
-
-function generateInvoiceHTML(data) {
-    const productRows = data.products.map(product => `
-        <tr>
-            <td>${product.name}</td>
-            <td>${product.quantity}</td>
-            <td>${product.size}</td>
-            <td>₹${product.price.toFixed(2)}</td>
-            <td>₹${(product.price * product.quantity).toFixed(2)}</td>
-            <td>${product.status}</td>
-        </tr>
-    `).join('');
-
-    return `
-        <html>
-        <head>
-            <title>Invoice #${data.orderId}</title>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                .invoice-container { max-width: 800px; margin: auto; padding: 20px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-                th { background: #f5f5f5; }
-                .total-amount { text-align: right; margin-top: 20px; font-size: 1.2em; }
-            </style>
-        </head>
-        <body>
-            <div class="invoice-container">
-                <h1>Invoice #${data.orderId}</h1>
-                <p><strong>Customer:</strong> ${data.customerDetails.name}</p>
-                <p><strong>Email:</strong> ${data.customerDetails.email}</p>
-                <p><strong>Phone:</strong> ${data.customerDetails.phone}</p>
-                <p><strong>Invoice Date:</strong> ${data.invoiceDate}</p>
-                <p><strong>Due Date:</strong> ${data.dueDate}</p>
-                <p><strong>Payment Method:</strong> ${data.paymentMethod}</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Size</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${productRows}
-                    </tbody>
-                </table>
-                <p class="total-amount"><strong>Total Amount: ₹${data.totalAmount.toFixed(2)}</strong></p>
-            </div>
-        </body>
-        </html>
-    `;
-}
+};
 
 module.exports = invoiceController;
