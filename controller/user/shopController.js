@@ -512,17 +512,20 @@
             const verifyPayment = async (req, res) => {
                 try {
                     const { razorpay_payment_id, razorpay_order_id, razorpay_signature, couponCode, addressId } = req.body;
+
             
                     console.log('Starting payment verification with details:', {
                         razorpay_order_id,
                         couponCode,
                         payment_id: razorpay_payment_id
                     });
+                    console.log('req.body',req.body)
             
                     let couponDiscount = 0; 
                     if (couponCode) {
                         const cpCode = couponCode.toUpperCase();
                         const couponUsed = await Coupon.findOne({ couponCode: cpCode });
+                        console.log('couponUsed',couponUsed);
             
                         if (couponUsed) {
                             couponDiscount = (couponUsed.discount / 100); 
@@ -562,6 +565,8 @@
                     }));
             
                     const coupon = cart.appliedCoupon;
+                    
+                 
                     let totalDiscount = 0; 
             
                     if (coupon) {
@@ -572,6 +577,8 @@
                             console.log('totalDiscount', totalDiscount);
                         }
                     }
+
+                    const couponName= await Coupon.findOne({ _id: coupon })
             
                     if (generated_signature === razorpay_signature) {
                         console.log('Payment verified successfully');
@@ -585,7 +592,7 @@
                             paymentMethod: 'Online Payment',
                             paymentStatus: 'paid',
                             paymentId: razorpay_payment_id,
-                            couponCode: coupon || "",
+                            couponCode: couponName.couponCode || "",
                             orginalPrice:cart.cartTotal,
                             couponDiscount: totalDiscount,
                             razorpayOrderId: razorpay_order_id

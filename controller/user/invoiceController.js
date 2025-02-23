@@ -45,9 +45,9 @@ const invoiceController = {
 
             // Company Details
             doc.fontSize(12)
-                .text('Your Company Name', { align: 'left' })
-                .text('Company Address')
-                .text('Email: contact@company.com')
+                .text('Kuppayam', { align: 'left' })
+                .text('Kuppayam, Kuppayam City', { align: 'left' })
+                .text('Email: Kuppayam@company.com')
                 .text('Phone: +1234567890')
                 .text('GST: GST123456789')
                 .moveDown();
@@ -60,13 +60,14 @@ const invoiceController = {
 
             // Customer Details
             doc.text('Bill To:')
-                .text(order.userId?.name || 'N/A')
-                .text(order.userId?.email || 'N/A')
+                order.deliveryAddress.forEach((address) => {
+                doc.text(order.userId?.email || 'N/A')
                 .text(order.userId?.phone || 'N/A')
-                .text(order.shippingAddress?.street || 'N/A')
-                .text(`${order.shippingAddress?.city || 'N/A'}, ${order.shippingAddress?.state || 'N/A'} ${order.shippingAddress?.zipCode || 'N/A'}`)
-                .text(order.shippingAddress?.country || 'N/A')
+                .text(address.street || 'N/A')
+                .text(`${address.city || 'N/A'}, ${address.state || 'N/A'} ${address.zipCode || 'N/A'}`)
+                .text(address.country || 'N/A')
                 .moveDown();
+            });
 
             // Table Header
             const tableTop = doc.y;
@@ -141,7 +142,7 @@ const invoiceController = {
             doc.end();
 
         } catch (error) {
-            console.error('Error generating invoice:', error);
+            console.log('Error generating invoice:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error generating invoice',
