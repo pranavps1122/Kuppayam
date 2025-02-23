@@ -46,10 +46,7 @@ const invoiceController = {
             // Company Details
             doc.fontSize(12)
                 .text('Kuppayam', { align: 'left' })
-                .text('Kuppayam, Kuppayam City', { align: 'left' })
                 .text('Email: Kuppayam@company.com')
-                .text('Phone: +1234567890')
-                .text('GST: GST123456789')
                 .moveDown();
 
             // Invoice Details
