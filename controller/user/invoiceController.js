@@ -61,7 +61,7 @@ const invoiceController = {
                 doc.text(order.userId?.email || 'N/A')
                 .text(order.userId?.phone || 'N/A')
                 .text(address.street || 'N/A')
-                .text(`${address.city || 'N/A'}, ${address.state || 'N/A'} ${address.zipCode || 'N/A'}`)
+                .text(`${address.city || 'N/A'}, ${address.state || 'N/A'} ${address.postalCode || 'N/A'}`)
                 .text(address.country || 'N/A')
                 .moveDown();
             });

@@ -736,9 +736,7 @@ const applyCoupon = async (req, res) => {
         const { couponCode } = req.body;
         
         const cart = await Cart.findOne({ userId });
-        const coupon = await Coupon.findOne({ 
-            couponCode: couponCode.toUpperCase() 
-        });
+        const coupon = await Coupon.findOne({ couponCode: couponCode.toUpperCase() });
 
         if (!coupon) {
             return res.json({
@@ -747,7 +745,7 @@ const applyCoupon = async (req, res) => {
             });
         }
 
-        if(coupon.status==false){
+        if (coupon.status === false) {
             return res.json({
                 success: false,
                 message: 'Invalid coupon code'
@@ -765,11 +763,8 @@ const applyCoupon = async (req, res) => {
         return cart.cartTotal
       }
 
-        let discountAmount;
+        let discountAmount = (cart.cartTotal * coupon.discount) / 100;
         
-            discountAmount = (cart.cartTotal * coupon.discount) / 100;
-           
-       
         cart.appliedCoupon = coupon._id;
         cart.discountAmount = discountAmount;
         cart.discountedTotal = cart.cartTotal - discountAmount;
@@ -795,49 +790,41 @@ const applyCoupon = async (req, res) => {
     }
 };
 
-    const removeCoupon = async (req,res)=>{
-        
-
-
+    const removeCoupon = async (req, res) => {
         try {
-          const userId=req.session.userId  
-          const cart=await Cart.findOne({userId:userId})
+            const userId = req.session.userId;
+            const cart = await Cart.findOne({ userId });
 
-          if (!cart) {
-            return res.json({
-                success: false,
-                message: 'Cart not found'
-            });
-        }
-
-        const originalPrice = cart.discountedTotal+cart.discountAmount
-        console.log('dfd',originalPrice)
-
-        await Cart.findOneAndUpdate(
-            { userId: userId },
-            { 
-                cartTotal: originalPrice,
-                appliedCoupon: null,
-                discountAmount: 0
+            if (!cart) {
+                return res.json({
+                    success: false,
+                    message: 'Cart not found'
+                });
             }
-        );
 
-        req.session.appliedCoupon = null;
+            const originalPrice = cart.discountedTotal + cart.discountAmount;
 
+            await Cart.findOneAndUpdate(
+                { userId: userId },
+                { 
+                    cartTotal: originalPrice,
+                    appliedCoupon: null,
+                    discountAmount: 0
+                }
+            );
 
+            req.session.appliedCoupon = null;
 
-        res.json({
-            success: true,
-            newTotal: originalPrice,
-            message: 'Coupon removed successfully'
-        });
+            res.json({
+                success: true,
+                newTotal: originalPrice,
+                message: 'Coupon removed successfully'
+            });
 
         } catch (error) {
-            console.log('error while removing the coupon',error)
+            console.log('Error while removing the coupon', error);
         }
-
-
-    }
+    };
 
 
 
