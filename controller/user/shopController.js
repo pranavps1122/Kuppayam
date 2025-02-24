@@ -198,6 +198,7 @@
             
                     // Find delivery address
                     const address = await Address.findById(addressId);
+                    console.log('no address',address)
                     if (!address) {
                         return res.status(400).send('Delivery address not found.');
                     }
@@ -258,29 +259,15 @@
                         couponCode: couponUsed ? couponUsed.couponCode : null,
                         couponDiscount: discountAmount,
                     });
+                    
             
-                    await order.save();  // Save order before proceeding
-            
-                    console.log('Order placed successfully', order);
-            
-                    // Ensure order has a valid address
-                    if (!order.deliveryAddress) {
-                        const user = await User.findById(userId);
-                        return res.render('checkout', {
-                            cart,
-                            address,
-                            user,
-                            key_id: process.env.key_id,
-                            wallet,
-                            message: 'Please add an address before placing the order.',
-                        });
-                    }
+                    console.log('order placed successfully', order);
+                    await order.save();
             
                     // Clear cart
                     await Cart.deleteOne({ userId });
             
                     res.redirect('/ordersuccess');
-            
                 } catch (error) {
                     console.log('Error while placing order:', error);
                     res.status(500).send('Internal Server Error');

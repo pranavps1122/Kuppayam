@@ -659,8 +659,20 @@ function initializeRazorpay(orderId, amount) {
 document.querySelector('.checkout-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
-    const addressId = document.querySelector('input[name="addressId"]:checked').value;
+    const addressId = document.querySelector('input[name="addressId"]:checked')?.value;
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+    if (!addressId) {
+        Swal.fire({
+            text: 'Please add an address.',
+            icon: 'error',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return; // Stop the form submission
+    }
 
     if (paymentMethod === 'online') {
         try {
