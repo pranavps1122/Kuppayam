@@ -174,36 +174,30 @@
 
             const placeOrder = async (req, res) => {
                 try {
-                    const { addressId, paymentMethod, couponCode, appliedCoupon } = req.body;
-                    console.log('dkhd', req.body);
+                    const { addressId, paymentMethod, couponCode } = req.body;
                     const userId = req.session.userId;
             
-                    // Find wallet, create one if it doesn't exist
+                    // Fetch wallet balance
                     let wallet = await Wallet.findOne({ userId });
                     if (!wallet) {
                         wallet = new Wallet({ userId, balance: 0 });
                         await wallet.save();
                     }
             
-                    // Find cart
                     const cart = await Cart.findOne({ userId }).populate('item.productId');
                     if (!cart || !cart.item || cart.item.length === 0) {
-                        return res.status(400).send('Cart is empty or invalid.');
+                        return res.status(400).json({ success: false, message: 'Cart is empty or invalid.' });
                     }
             
                     const totalAmount = cart.cartTotal;
                     const discountAmount = cart.discountAmount;
-                    const coupon = cart.appliedCoupon;
-                    const couponUsed = coupon ? await Coupon.findOne({ _id: coupon }) : null;
             
                     // Find delivery address
                     const address = await Address.findById(addressId);
-                    console.log('no address',address)
                     if (!address) {
-                        return res.status(400).send('Delivery address not found.');
+                        return res.status(400).json({ success: false, message: 'Delivery address not found.' });
                     }
             
-                    // Prepare ordered items
                     const orderedItem = cart.item.map((item) => ({
                         productId: item.productId._id,
                         quantity: item.quantity,
@@ -212,25 +206,22 @@
                         totalProductPrice: item.price * item.quantity,
                     }));
             
-                    // Stock validation
+                    // Check stock availability
                     for (let item of orderedItem) {
                         const { productId, quantity, size } = item;
                         const product = await Product.findById(productId);
                         if (!product) {
-                            return res.status(400).send('Product not found.');
+                            return res.status(400).json({ success: false, message: 'Product not found.' });
                         }
             
                         const sizeIndex = product.stock.findIndex((s) => s.size === size);
                         if (sizeIndex === -1) {
-                            return res.status(400).send(`Size ${size} not found for the product.`);
+                            return res.status(400).json({ success: false, message: `Size ${size} not found for the product.` });
                         }
             
                         const availableStock = product.stock[sizeIndex].quantity;
                         if (quantity > availableStock) {
-                            return res.render('cart', {
-                                message: `Insufficient stock for size ${size}. Only ${availableStock} items available.`,
-                                cart,
-                            });
+                            return res.status(400).json({ success: false, message: `Insufficient stock for size ${size}. Only ${availableStock} items available.` });
                         }
             
                         product.stock[sizeIndex].quantity -= quantity;
@@ -238,13 +229,17 @@
                         await product.save();
                     }
             
-                    // Wallet Payment Handling
+                    // Handle payment methods
                     if (paymentMethod === 'Wallet') {
-                        if (wallet.balance <= 0 || cart.cartTotal > wallet.balance) {
-                            return res.status(400).send('Insufficient wallet balance.');
+                        if (wallet.balance <= 0 || totalAmount > wallet.balance) {
+                            return res.status(400).json({ success: false, message: 'Insufficient balance in wallet' });
                         }
-                        wallet.balance -= cart.cartTotal;
+                        wallet.balance -= totalAmount;
                         await wallet.save();
+                    } else if (paymentMethod === 'COD') {
+                        // No additional action needed for Cash on Delivery
+                    } else {
+                        return res.status(400).json({ success: false, message: 'Invalid payment method.' });
                     }
             
                     // Create order
@@ -253,28 +248,22 @@
                         cartId: cart._id,
                         orderedItem,
                         deliveryAddress: address,
-                        orginalPrice: cart.cartTotal,
-                        orderAmount: cart.cartTotal - cart.discountAmount,
+                        originalPrice: totalAmount,
+                        orderAmount: totalAmount - discountAmount,
                         paymentMethod,
-                        couponCode: couponUsed ? couponUsed.couponCode : null,
+                        couponCode: couponCode || null,
                         couponDiscount: discountAmount,
                     });
-                    
             
-                    console.log('order placed successfully', order);
                     await order.save();
-            
-                    // Clear cart
                     await Cart.deleteOne({ userId });
             
-                    res.redirect('/ordersuccess');
+                    res.json({ success: true, message: 'Order placed successfully.' });
                 } catch (error) {
                     console.log('Error while placing order:', error);
-                    res.status(500).send('Internal Server Error');
+                    res.status(500).json({ success: false, message: 'Internal Server Error' });
                 }
             };
-            
-
             const orderSuccess = async (req,res)=>{
                 try {
            
