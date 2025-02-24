@@ -528,12 +528,45 @@
         const loadContact = async (req,res)=>{
 
             try {
-              res.render('contact')  
+              res.render('contact',{
+                message:null,
+                messageType:null
+              })  
             } catch (error) {
                 console.log('error while loading conatct',error)
             }
         }
 
+        const sendMail =async(req,res)=>{
+
+            try {
+                console.log('req.body',req.body)
+                const{name,email,message}=req.body;
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    port: 587,
+                    secure: false,
+                    requireTLS: true, 
+                    auth: {
+                        user: process.env.NODEMAILER_EMAIL,
+                        pass: process.env.NODEMAILER_PASSWORD,
+                    },
+                });
+                const mailOptions = {
+                    from: email,
+                    to: "your-email@gmail.com", // Your email to receive messages
+                    subject: "New Contact Form Message",
+                    text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+                };
+                await transporter.sendMail(mailOptions);
+                res.render('contact',{
+                    message:'Mail Sent Successfully',
+                    messageType:'success'
+                })
+            } catch (error) {
+                console.log('error while sending mail',error)
+            }
+        }
         module.exports={
             loadHomepage,
             pageNotFound,
@@ -552,7 +585,8 @@
             loadContact,
             verifyOtpForgot,
             loadNewPassword,
-            updatePassword
+            updatePassword,
+            sendMail
 
             
           

@@ -578,7 +578,8 @@
                         }
                     }
 
-                    const couponName= await Coupon.findOne({ _id: coupon })
+                    const couponName = coupon ? await Coupon.findOne({ _id: coupon }) : null;
+
             
                     if (generated_signature === razorpay_signature) {
                         console.log('Payment verified successfully');

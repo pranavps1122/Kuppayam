@@ -22,7 +22,7 @@
                 <div class="contact-icon">📞</div>
                 <div>
                     <h3>Call Us</h3>
-                    <p>+1 (234) 567-8901</p>
+                    <p>9895711952</p>
                 </div>
             </div>
             
@@ -30,12 +30,12 @@
                 <div class="contact-icon">📍</div>
                 <div>
                     <h3>Visit Us</h3>
-                    <p>123 Fashion St, Style City, CA 90210, USA</p>
+                    <p>Hsr Layout 2nd sector building no:3 pin:654533</p>
                 </div>
             </div>
         </div>
         
-        <form class="contact-form">
+        <form class="contact-form" method="post" action="/send-mail">
             <h2>Send Us a Message</h2>
             
             <div class="form-group">
@@ -253,5 +253,20 @@
     }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    <% if (message) { %>
+        Swal.fire({
+            text: "<%= message %>",
+            icon: "<%= messageType || 'info' %>",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    <% } %>
+</script>
+
 
 <%-include('../../views/partials/user/footer')%>

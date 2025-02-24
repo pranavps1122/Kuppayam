@@ -123,4 +123,6 @@ router.get('/downloadInvoice/:orderId', invoiceController.generateAndDownload);
 router.get('/about',userController.loadAbout)
 router.get('/contact',userController.loadContact)
 
+router.post('/send-mail',userController.sendMail)
+
 module.exports=router
