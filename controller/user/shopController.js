@@ -593,7 +593,7 @@
                             paymentMethod: 'Online Payment',
                             paymentStatus: 'paid',
                             paymentId: razorpay_payment_id,
-                            couponCode: couponName.couponCode || "",
+                            couponCode: couponName ? couponName.couponCode : "",
                             orginalPrice:cart.cartTotal,
                             couponDiscount: totalDiscount,
                             razorpayOrderId: razorpay_order_id
