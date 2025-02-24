@@ -198,6 +198,7 @@
             
                     // Find delivery address
                     const address = await Address.findById(addressId);
+                    console.log('no address',address)
                     if (!address) {
                         return res.status(400).send('Delivery address not found.');
                     }
