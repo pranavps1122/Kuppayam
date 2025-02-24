@@ -174,29 +174,35 @@
 
             const placeOrder = async (req, res) => {
                 try {
-                    const { addressId, paymentMethod,couponCode,
-                        appliedCoupon } = req.body;
-                        console.log('dkhd',req.body)
+                    const { addressId, paymentMethod, couponCode, appliedCoupon } = req.body;
+                    console.log('dkhd', req.body);
                     const userId = req.session.userId;
-
-                    
-                    
-                
-                    const wallet=await Wallet.findOne({userId:userId})
-                    
-                    const cart = await Cart.findOne({ userId: userId }).populate('item.productId');
-
+            
+                    // Find wallet, create one if it doesn't exist
+                    let wallet = await Wallet.findOne({ userId });
+                    if (!wallet) {
+                        wallet = new Wallet({ userId, balance: 0 });
+                        await wallet.save();
+                    }
+            
+                    // Find cart
+                    const cart = await Cart.findOne({ userId }).populate('item.productId');
+                    if (!cart || !cart.item || cart.item.length === 0) {
+                        return res.status(400).send('Cart is empty or invalid.');
+                    }
+            
                     const totalAmount = cart.cartTotal;
                     const discountAmount = cart.discountAmount;
-                    const coupon=cart.appliedCoupon
-                    const couponUsed= await Coupon.findOne({_id:coupon})
-          
-                 
-
-                
+                    const coupon = cart.appliedCoupon;
+                    const couponUsed = coupon ? await Coupon.findOne({ _id: coupon }) : null;
+            
+                    // Find delivery address
                     const address = await Address.findById(addressId);
-                
-
+                    if (!address) {
+                        return res.status(400).send('Delivery address not found.');
+                    }
+            
+                    // Prepare ordered items
                     const orderedItem = cart.item.map((item) => ({
                         productId: item.productId._id,
                         quantity: item.quantity,
@@ -204,85 +210,68 @@
                         productPrice: item.price,
                         totalProductPrice: item.price * item.quantity,
                     }));
-
-                
-
-                    
+            
+                    // Stock validation
                     for (let item of orderedItem) {
                         const { productId, quantity, size } = item;
                         const product = await Product.findById(productId);
-
-                        if (product) {
-                        
-                            const sizeIndex = product.stock.findIndex((s) => s.size === size);
-
-                            if (sizeIndex !== -1) {
-                                const availableStock = product.stock[sizeIndex].quantity;
-
-                        
-                                if (quantity > availableStock) {
-                                
-                                    return res.render('cart',{
-                                        message:`Insufficient stock for size ${size}. Only ${availableStock} items available.`,
-                                        cart
-                                    })
-                                
-                                }
-
-                            
-                            
-                                product.stock[sizeIndex].quantity -= quantity;
-                                product.totalStock -= quantity;
-                                await product.save();
-                            } else {
-                                console.log('product with particular size not found');
-                                return res.status(400).send(`Size ${size} not found for the product.`);
-                            }
-                        } else {
-                            console.log('product not found');
+                        if (!product) {
                             return res.status(400).send('Product not found.');
                         }
+            
+                        const sizeIndex = product.stock.findIndex((s) => s.size === size);
+                        if (sizeIndex === -1) {
+                            return res.status(400).send(`Size ${size} not found for the product.`);
+                        }
+            
+                        const availableStock = product.stock[sizeIndex].quantity;
+                        if (quantity > availableStock) {
+                            return res.render('cart', {
+                                message: `Insufficient stock for size ${size}. Only ${availableStock} items available.`,
+                                cart,
+                            });
+                        }
+            
+                        product.stock[sizeIndex].quantity -= quantity;
+                        product.totalStock -= quantity;
+                        await product.save();
                     }
-                     
-                    if(paymentMethod=='Wallet'){
-                        if(wallet.balance<=0){
+            
+                    // Wallet Payment Handling
+                    if (paymentMethod === 'Wallet') {
+                        if (wallet.balance <= 0 || cart.cartTotal > wallet.balance) {
                             return res.status(400).send('Insufficient wallet balance.');
                         }
-                        if(cart.cartTotal>wallet.balance){
-                            return res.status(400).send('Insufficient wallet balance.');
-                        }
-                        wallet.balance-=cart.cartTotal
+                        wallet.balance -= cart.cartTotal;
+                        await wallet.save();
                     }
-                
-                    await wallet.save()
-
+            
+                    // Create order
                     const order = new Order({
-                        userId: userId,
+                        userId,
                         cartId: cart._id,
-                        orderedItem: orderedItem,
+                        orderedItem,
                         deliveryAddress: address,
                         orginalPrice: cart.cartTotal,
                         orderAmount: cart.cartTotal - cart.discountAmount,
-                        paymentMethod: paymentMethod,
-                        couponCode: couponUsed ? couponUsed.couponCode : null, 
-                        couponDiscount: discountAmount
+                        paymentMethod,
+                        couponCode: couponUsed ? couponUsed.couponCode : null,
+                        couponDiscount: discountAmount,
                     });
-                    
-                    console.log('order placed successfully',order)
+            
+                    console.log('order placed successfully', order);
                     await order.save();
-                    cart.cartTotal=null
-                    await cart.deleteOne({ userId: userId });
-                   
-
-
-                
+            
+                    // Clear cart
+                    await Cart.deleteOne({ userId });
+            
                     res.redirect('/ordersuccess');
-
                 } catch (error) {
-                    console.log('error while placing order', error);
+                    console.log('Error while placing order:', error);
                     res.status(500).send('Internal Server Error');
                 }
             };
+            
 
             const orderSuccess = async (req,res)=>{
                 try {
