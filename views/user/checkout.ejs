@@ -587,9 +587,9 @@
             <div class="cart-items-container">
               <% cart.item.forEach(item => { %>
                 <div class="cart-item">
-                  <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.name %>" class="item-image">
+                  <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" class="item-image">
                   <div class="item-details">
-                    <h3><%= item.name %></h3>
+                    <h3><%=  item.productId.productName %></h3>
                     <div class="item-meta">
                       <div class="price-qty">
                         <p class="price">₹<%= item.price %></p>
