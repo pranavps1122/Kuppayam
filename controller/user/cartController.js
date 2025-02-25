@@ -209,13 +209,18 @@
 
                 const newQuantity = item.quantity + updateQuantity;
 
+                if (newQuantity > 5) {
+                    return res.status(400).json({ success: false, message: 'You can only add up to 5 of this product' });
+                }
+                
+
                 // Check stock availability
                 if (newQuantity > selectedStock.quantity) {
                     return res.status(400).json({ success: false, message: `Only ${selectedStock.quantity} left in stock` });
                 }
 
                 if (newQuantity <= 0) {
-                    cart.item.splice(itemIndex, 1); // Remove item if quantity is 0
+                    cart.item.splice(itemIndex, 1); 
                 } else {
                     cart.item[itemIndex].quantity = newQuantity;
                     cart.item[itemIndex].total = newQuantity * cart.item[itemIndex].price; // Update total

@@ -712,7 +712,7 @@ body {
                     <form action="/updatequantity" method="POST" class="quantity-form">
                       <input type="hidden" name="itemId" value="<%= item._id %>">
                       <input type="hidden" name="action" value="increase">
-                      <button type="submit" class="quantity-btn increase" <%= item.quantity >= 5 ? 'disabled' : '' %>>
+                      <button type="submit" class="quantity-btn increase">
                         <span>+</span>
                       </button>
                     </form>
@@ -815,7 +815,7 @@ body {
 
 <script>
   $(document).ready(function () {
-    // Add animation by setting a delay for each cart item
+    
     $('.cart-item').each(function(index) {
       $(this).css('--item-index', index);
     });
@@ -837,10 +837,14 @@ body {
         }
       }).fail(function (xhr) {
         Swal.fire({
-          title: 'Error',
           text: xhr.responseJSON?.message || 'Something went wrong!',
           icon: 'error',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
+          toast: true,
+          position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
         });
       });
     });

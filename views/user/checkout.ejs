@@ -618,7 +618,7 @@
             </div>
             
             <div class="order-total">
-              <h3>Total: ₹<span id="totalAmount"><%= cart.cartTotal %></span></h3>
+              <h3>Total: ₹<span id="totalAmount"><%= cart.cartTotal.toFixed(2) %></span></h3>
             </div>
           </div>
           
@@ -754,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validate payment method selection
+    
         if (!paymentMethod) {
             Swal.fire({
                 text: 'Please select a payment method',
