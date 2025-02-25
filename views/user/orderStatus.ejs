@@ -478,13 +478,13 @@
           <td><%= item.productId.productName %></td>
           <td><%= item.quantity %></td>
           <td><%= item.size %></td>
-          
-          
           <td>
-            ₹<%= item.productPrice.toFixed(order.couponDiscount > 0 ? 0 : 2) %>
+            <% if (order.couponDiscount > 0) { %>
+              ₹<%= item.productPrice.toFixed(0) %>
+            <% } else { %>
+              ₹<%= item.productPrice.toFixed(2) %>
+            <% } %>
           </td>
-          
-       
           <td>
             <% if (order.couponDiscount > 0) { %>
               <del>₹<%= (item.productPrice * item.quantity).toFixed(0) %></del> 
@@ -493,40 +493,20 @@
               ₹<%= (item.productPrice * item.quantity).toFixed(0) %>
             <% } %>
           </td>
-          
           <td><%= item.productStatus %></td>
-          
-       
           <td>
-            <% 
-            
-              const isDelivered = item.productStatus === 'delivered';
-              const isPendingOrShipped = ['pending', 'shipped'].includes(item.productStatus);
-              
-              let canReturn = false;
-              if (isDelivered) {
-                const deliveryDate = item.statusHistory?.find(record => record.status === 'delivered')?.date || item.updatedAt;
-                const daysSinceDelivery = Math.floor((new Date() - new Date(deliveryDate)) / (1000 * 60 * 60 * 24));
-                canReturn = daysSinceDelivery <= 7;
-              }
-            %>
-            
-            <% if (isPendingOrShipped) { %>
+            <% if (item.productStatus === 'pending' || item.productStatus === 'shipped') { %>
               <form action="/cancelorder/<%= order._id %>/<%= item.productId._id %>" method="POST" style="display: inline;">
                 <button type="submit" class="cancel-btn">Cancel</button>
               </form>
-            <% } else if (isDelivered) { %>
-              <% if (canReturn) { %>
-                <button type="button" class="return-btn" onclick="openReturnModal('<%= order._id %>', '<%= item.productId._id %>')">
-                  Return
-                </button>
-              <% } else { %>
-                <span class="return-unavailable">Return not available</span>
-              <% } %>
+            <% } else if (item.productStatus === 'delivered') { %>
+              <button type="button" class="return-btn" onclick="openReturnModal('<%= order._id %>', '<%= item.productId._id %>')">
+                Return
+              </button>
             <% } %>
           </td>
         </tr>
-      <% }) %>
+      <% }); %>
     </tbody>
   </table>
 
