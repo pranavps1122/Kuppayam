@@ -116,7 +116,7 @@ router.post('/verify-wallet-payment',logged,profileController.VerifyPayment)
 router.post('/apply-coupon',profileController.applyCoupon)
 
 router.post('/remove-coupon',profileController.removeCoupon)
-
+router.get('/available-coupons', profileController.availableCoupons)
 
 router.get('/downloadInvoice/:orderId', invoiceController.generateAndDownload);
 

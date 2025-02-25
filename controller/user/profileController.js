@@ -827,6 +827,33 @@ const applyCoupon = async (req, res) => {
     };
 
 
+    const availableCoupons = async (req, res) => {
+        try {
+            const userId = req.session.userId
+            const cart = await Cart.findOne({userId})
+            const coupons = await Coupon.find({status: true})
+            
+           
+            const formattedCoupons = coupons.map(coupon => ({
+                code: coupon.couponCode,
+                description: coupon.description || `${coupon.discount}% off`,
+                validUntil: coupon.expiryDate || new Date(Date.now() + 30*24*60*60*1000) 
+            }))
+            
+      
+            res.json({
+                success: true,
+                coupons: formattedCoupons
+            })
+        } catch (error) {
+            console.log('error while loading available coupons', error)
+            res.status(500).json({
+                success: false,
+                message: 'Failed to load available coupons'
+            })
+        }
+    }
+
 
 
 
@@ -857,5 +884,6 @@ module.exports={
     addMoney,
     applyCoupon,
     removeCoupon,
-    VerifyPayment
+    VerifyPayment,
+    availableCoupons
 }
