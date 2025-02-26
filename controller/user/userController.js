@@ -561,6 +561,7 @@
                 console.log('error while sending mail',error)
             }
         }
+
         module.exports={
             loadHomepage,
             pageNotFound,
@@ -580,7 +581,8 @@
             verifyOtpForgot,
             loadNewPassword,
             updatePassword,
-            sendMail
+            sendMail,
+           
 
             
           

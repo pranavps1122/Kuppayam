@@ -7,6 +7,16 @@ const addressSchema = new Schema({
         ref: 'User', // Assuming you have a User model
         required: true
     },
+    fullName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true,
+        trim: true
+    },
     street: {
         type: String,
         required: true,
@@ -46,7 +56,7 @@ const addressSchema = new Schema({
     }
 });
 
-// Optionally, you can create a pre-save hook to update the `updatedAt` field
+// Pre-save hook to update `updatedAt` field
 addressSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();

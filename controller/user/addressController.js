@@ -24,9 +24,9 @@ const loadAddress= async (req,res) => {
 
 const addAddress= async (req,res)=>{
 
-    const {street,city,state,postalCode,country}=req.body
+    const {street,city,state,postalCode,country,fullName,number}=req.body
     const userId =   req.session.userId 
-    console.log('userId',userId)
+    console.log('userId',req.body)
     try {
         
         const newAddress = new Address ({
@@ -35,6 +35,8 @@ const addAddress= async (req,res)=>{
             state,
             postalCode,
             country,
+            fullName,
+            phoneNumber:number,
             userId
             
         })
@@ -104,10 +106,37 @@ const deleteAddress = async(req,res)=>{
 
 }
 
+const checkoutAddress = async (req,res)=>{
+
+    try {
+        const{fullName,street,city,state,postalCode,country,number}=req.body
+        const userId=req.session.userId
+        const newAddress = new Address({
+            fullName,
+            street,
+            city,
+            state,
+            postalCode,
+            country,
+            phoneNumber:number,
+            userId
+        })
+        console.log('new address',newAddress)
+        await newAddress.save()
+        return res.json({success:true,message:'address added'})
+    }   catch (error) {
+            console.log('error while adding address', error);
+            return res.json({ success: false, message: 'Failed to add address' });
+        }
+        
+    
+  
+}
 module.exports={
     loadAddress,
     addAddress,
     loadeditAddress,
     editAddress,
-    deleteAddress
+    deleteAddress,
+    checkoutAddress
 }

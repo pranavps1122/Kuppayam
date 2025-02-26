@@ -125,4 +125,6 @@ router.get('/contact',userController.loadContact)
 
 router.post('/send-mail',userController.sendMail)
 
+router.post('/address/add',addressController.checkoutAddress)
+
 module.exports=router
