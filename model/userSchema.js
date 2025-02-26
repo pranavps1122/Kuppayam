@@ -13,24 +13,23 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        required:false
+        required: false
     },
-    
     password: {
         type: String,
         required: false,
     },
     Status: {
         type: Boolean,
-        required:true,
+        required: true,
         default: true
     },
     isAdmin: {
         type: Boolean,
         default: false
     },
-   
-},{timestamps:true});
+    usedCoupons: [{ type: String }] 
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 

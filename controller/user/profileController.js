@@ -730,47 +730,39 @@ const addToWishlist = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+
 const applyCoupon = async (req, res) => {
     try {
         const userId = req.session.userId;
         const { couponCode } = req.body;
         
-        const cart = await Cart.findOne({ userId });
-        const coupon = await Coupon.findOne({ couponCode: couponCode.toUpperCase() });
-
-        if (!coupon) {
-            return res.json({
-                success: false,
-                message: 'Invalid coupon code'
-            });
-        }
-
-        if (coupon.status === false) {
-            return res.json({
-                success: false,
-                message: 'Invalid coupon code'
-            });
-        }
-       
-        if (!cart) {
-            return res.json({
-                success: false,
-                message: 'Cart not found'
-            });
-        }
-
-      if(!coupon){
-        return cart.cartTotal
-      }
-
-        let discountAmount = (cart.cartTotal * coupon.discount) / 100;
+        console.log('Received Coupon Code:', couponCode);
         
+        const cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.json({ success: false, message: 'Cart not found' });
+        }
+
+        const coupon = await Coupon.findOne({ couponCode: couponCode.toUpperCase() });
+        if (coupon.status === false) {
+            return res.json({ success: false, message: 'Invalid coupon code' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+  
+       
+        let discountAmount = (cart.cartTotal * coupon.discount) / 100;
         cart.appliedCoupon = coupon._id;
         cart.discountAmount = discountAmount;
         cart.discountedTotal = cart.cartTotal - discountAmount;
-  
         await cart.save();
 
+        
         coupon.usedCount += 1;
         await coupon.save();
 
@@ -783,12 +775,10 @@ const applyCoupon = async (req, res) => {
 
     } catch (error) {
         console.error('Error applying coupon:', error);
-        res.json({
-            success: false,
-            message: 'Error applying coupon'
-        });
+        res.json({ success: false, message: 'Error applying coupon' });
     }
 };
+
 
     const removeCoupon = async (req, res) => {
         try {

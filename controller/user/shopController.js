@@ -177,7 +177,6 @@
                     const { addressId, paymentMethod, couponCode } = req.body;
                     const userId = req.session.userId;
             
-                    // Fetch wallet balance
                     let wallet = await Wallet.findOne({ userId });
                     if (!wallet) {
                         wallet = new Wallet({ userId, balance: 0 });
@@ -192,7 +191,6 @@
                     const totalAmount = cart.cartTotal;
                     const discountAmount = cart.discountAmount;
             
-                    // Find delivery address
                     const address = await Address.findById(addressId);
                     if (!address) {
                         return res.status(400).json({ success: false, message: 'Delivery address not found.' });
@@ -206,7 +204,7 @@
                         totalProductPrice: item.price * item.quantity,
                     }));
             
-                    // Check stock availability
+                    
                     for (let item of orderedItem) {
                         const { productId, quantity, size } = item;
                         const product = await Product.findById(productId);
@@ -229,20 +227,20 @@
                         await product.save();
                     }
             
-                    // Handle payment methods
+               
                     if (paymentMethod === 'Wallet') {
-                        if (wallet.balance <= 0 || totalAmount > wallet.balance) {
+                        if (wallet.balance <= 0 || cart.discountedTotal > wallet.balance) {
                             return res.status(400).json({ success: false, message: 'Insufficient balance in wallet' });
                         }
-                        wallet.balance -= totalAmount;
+                        wallet.balance -= cart.discountedTotal;  // Deduct the correct amount
                         await wallet.save();
                     } else if (paymentMethod === 'COD') {
-                        // No additional action needed for Cash on Delivery
+                    
                     } else {
                         return res.status(400).json({ success: false, message: 'Invalid payment method.' });
                     }
-            
-                    // Create order
+                    
+                   
                     const order = new Order({
                         userId,
                         cartId: cart._id,
@@ -255,6 +253,7 @@
                         couponDiscount: discountAmount,
                     });
             
+                 
                     await order.save();
                     await Cart.deleteOne({ userId });
             
