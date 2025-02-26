@@ -215,13 +215,7 @@
                 }
         
                 if (submittedOtp === req.session.userOtp) {
-                    console.log('heloooo')
-                    console.log(req.session.forgot)
-                    if(req.session.forgot){
-                        console.log('entering forgot')
-                        return res.json({ success: true, redirectUrl: '/newpassword' });
-
-                    }
+                
                     const hashedPassword = await bcrypt.hash(req.session.userData.password, 10);
                     const newUser = new User({
                         name: req.session.userData.name,

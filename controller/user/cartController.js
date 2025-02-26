@@ -55,6 +55,7 @@
                         message: 'Product is not available'
                     });
                 }
+
             
 
 
@@ -102,12 +103,21 @@
                         message: 'Selected size not available'
                     });
                 }
+
+                if (!selectedStock || selectedStock.quantity <= 0) {
+                    return res.render('cart', {
+                        cart: await Cart.findOne({ userId }).populate('item.productId'),
+                        message: 'Selected size is out of stock'
+                    });
+                }
+                
         
              
                 let cart = await Cart.findOne({ userId });
                 if (!cart) {
                     cart = new Cart({ userId, item: [], cartTotal: 0 });
                 }
+
         
                
                 const newItem = {

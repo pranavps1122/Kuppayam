@@ -24,38 +24,35 @@ const invoiceController = {
                 });
             }
 
-            // Create PDF document
+            
             const doc = new PDFDocument({
                 margin: 50,
                 size: 'A4'
             });
 
-            // Set response headers
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename=invoice-${orderId}.pdf`);
 
-            // Pipe the PDF directly to the response
             doc.pipe(res);
 
-            // Add content to PDF
-            // Header
+      
             doc.fontSize(20)
                 .text('INVOICE', { align: 'center' })
                 .moveDown();
 
-            // Company Details
+    
             doc.fontSize(12)
                 .text('Kuppayam', { align: 'left' })
                 .text('Email: Kuppayam@company.com')
                 .moveDown();
 
-            // Invoice Details
+     
             doc.text(`Invoice #: ${orderId}`)
                 .text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`)
                 .text(`Due Date: ${new Date(order.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}`)
                 .moveDown();
 
-            // Customer Details
+    
             doc.text('Bill To:')
                 order.deliveryAddress.forEach((address) => {
                 doc.text(order.userId?.email || 'N/A')
@@ -66,7 +63,7 @@ const invoiceController = {
                 .moveDown();
             });
 
-            // Table Header
+        
             const tableTop = doc.y;
             const columnWidth = (doc.page.width - 100) / 6;
 
@@ -77,12 +74,12 @@ const invoiceController = {
                 });
             });
 
-            // Draw line under headers
+            
             doc.moveTo(50, tableTop + 20)
                 .lineTo(doc.page.width - 50, tableTop + 20)
                 .stroke();
 
-            // Table Content
+        
             let tableContentTop = tableTop + 30;
             order.orderedItem.forEach((item, index) => {
                 const y = tableContentTop + (index * 20);
@@ -120,7 +117,7 @@ const invoiceController = {
                 });
             });
 
-            // Total Amount
+     
             doc.moveDown()
                 .moveTo(50, doc.y)
                 .lineTo(doc.page.width - 50, doc.y)
@@ -135,7 +132,7 @@ const invoiceController = {
                     align: 'right'
                 });
 
-            // Finalize the PDF
+
             doc.end();
 
         } catch (error) {
