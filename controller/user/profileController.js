@@ -745,15 +745,25 @@ const applyCoupon = async (req, res) => {
         }
 
         const coupon = await Coupon.findOne({ couponCode: couponCode.toUpperCase() });
-        if (coupon.status === false) {
+
+        
+        if(!coupon){
             return res.json({ success: false, message: 'Invalid coupon code' });
         }
+        if (coupon.status === false) {
+            return res.json({ success: false, message: 'Coupon expired' });
+        }
+
 
         const user = await User.findById(userId);
         if (!user) {
             return res.json({ success: false, message: 'User not found' });
         }
 
+        if (user.usedCoupons.map(coupon => coupon.toUpperCase()).includes(couponCode.toUpperCase())) {
+            return res.json({ success: false, message: 'Coupon already used' });
+        }
+        
   
        
         let discountAmount = (cart.cartTotal * coupon.discount) / 100;

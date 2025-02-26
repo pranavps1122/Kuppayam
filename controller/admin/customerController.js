@@ -348,36 +348,36 @@ const deleteCoupon = async (req,res)=>{
             }
         }
 
-const LoadOfferManagement = async (req, res) => {
-    try {
-        const products = await Product.find({ isActive: true });
-        const categories = await Category.find({ isActive: true });
+            const LoadOfferManagement = async (req, res) => {
+                try {
+                    const products = await Product.find({ isActive: true });
+                    const categories = await Category.find({ isActive: true });
 
-        const offers = await Offer.find().populate('productId').populate('categoryId'); 
-        
-        console.log('products', products);
-        console.log('offers', offers);
+                    const offers = await Offer.find().populate('productId').populate('categoryId'); 
+                    
+                    console.log('products', products);
+                    console.log('offers', offers);
 
-        res.render('offerManagement', {
-            admin: req.session.admin,
-            active: 'offers',
-            message: null,
-            offers: offers,
-            products: products,
-            categories: categories 
-        });
-    } catch (error) {
-        console.log('error while loading offer', error);
-        res.render('offerManagement', {
-            admin: req.session.admin,
-            active: 'offers',
-            message: { text: 'Error loading offers', type: 'error' },
-            offers: [],
-            products: [],
-            categories: []
-        });
-    }
-};
+                    res.render('offerManagement', {
+                        admin: req.session.admin,
+                        active: 'offers',
+                        message: null,
+                        offers: offers,
+                        products: products,
+                        categories: categories 
+                    });
+                } catch (error) {
+                    console.log('error while loading offer', error);
+                    res.render('offerManagement', {
+                        admin: req.session.admin,
+                        active: 'offers',
+                        message: { text: 'Error loading offers', type: 'error' },
+                        offers: [],
+                        products: [],
+                        categories: []
+                    });
+                }
+            };
 
 
             const addOffer = async (req, res) => {

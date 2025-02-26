@@ -868,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Selected address:', addressId);
         console.log('Applied coupon:', couponCode);
 
-        // Validate address selection
+  
         if (!addressId) {
             Swal.fire({
                 text: 'Please select a delivery address',
@@ -894,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Handle online payment
+
         if (paymentMethod === 'online') {
             try {
                 console.log('Initiating online payment...');
@@ -931,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Handle COD or Wallet payment
+   
         try {
             console.log('Processing COD/Wallet payment...');
             const formData = new FormData(this);
@@ -1009,25 +1009,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModal = document.querySelector('.close-modal');
     const couponsContainer = document.getElementById('couponsContainer');
     
-    // Open modal and fetch coupons
+
     viewCouponsButton.addEventListener('click', function() {
         couponsModal.style.display = 'block';
         fetchAvailableCoupons();
     });
-    
-    // Close modal
-    closeModal.addEventListener('click', function() {
+        closeModal.addEventListener('click', function() {
         couponsModal.style.display = 'none';
     });
     
-    // Close modal when clicking outside
+  
     window.addEventListener('click', function(event) {
         if (event.target === couponsModal) {
             couponsModal.style.display = 'none';
         }
     });
     
-    // Fetch and display available coupons
+
     async function fetchAvailableCoupons() {
         try {
             const response = await fetch('/available-coupons');
@@ -1044,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Display coupons in the modal
+   
     function displayCoupons(coupons) {
         couponsContainer.innerHTML = '';
         
@@ -1066,14 +1064,14 @@ document.addEventListener('DOMContentLoaded', function() {
             couponsContainer.appendChild(couponCard);
         });
         
-        // Add event listeners to "Use" buttons
+
         document.querySelectorAll('.use-coupon-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const couponCode = this.getAttribute('data-coupon');
                 document.getElementById('couponCode').value = couponCode;
                 couponsModal.style.display = 'none';
                 
-                // Optional: Automatically apply the coupon
+                
                 document.getElementById('applyCouponButton').click();
             });
         });
@@ -1085,7 +1083,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appliedCoupon = document.getElementById('appliedCoupon');
     const removeCouponForm = document.getElementById('removeCouponForm');
 
-    let couponApplied = false; // Track if a coupon has been applied
+    let couponApplied = false; 
 
     applyCouponButton.addEventListener('click', async function() {
         const couponCode = couponCodeInput.value.trim();
@@ -1139,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 couponApplied = true; 
             } else {
                 Swal.fire({
-                text: 'Enter a valid coupon!',
+                text: result.message,
                 icon: 'error',
                 toast: true,
                 position: 'top-end',

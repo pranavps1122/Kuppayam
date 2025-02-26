@@ -232,7 +232,7 @@
                         if (wallet.balance <= 0 || cart.discountedTotal > wallet.balance) {
                             return res.status(400).json({ success: false, message: 'Insufficient balance in wallet' });
                         }
-                        wallet.balance -= cart.discountedTotal;  // Deduct the correct amount
+                        wallet.balance -= cart.discountedTotal;  
                         await wallet.save();
                     } else if (paymentMethod === 'COD') {
                     
@@ -254,6 +254,12 @@
                     });
             
                  
+                    if (couponCode) {
+                        await User.findByIdAndUpdate(userId, {
+                            $addToSet: { usedCoupons: couponCode } 
+                        });
+                    }
+
                     await order.save();
                     await Cart.deleteOne({ userId });
             
@@ -359,7 +365,7 @@
                         }
                     });
 
-                    console.log('jdfbhbjdh',itemToCancel.quantity)
+                  
                     wallet.balance += refundAmount
 
 

@@ -1,5 +1,5 @@
     const Category = require('../../model/categorySchema')
-const { findOneAndUpdate, exists } = require('../../model/userSchema')
+    const { findOneAndUpdate, exists } = require('../../model/userSchema')
 
 
 
