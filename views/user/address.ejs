@@ -9,66 +9,158 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <%- include('../partials/user/sidebar-styles') %>
-    <!-- Only form specific styles -->
+    <!-- Enhanced form styles -->
     <style>
+        :root {
+            --form-gradient: linear-gradient(135deg, #6366f1, #4f46e5);
+            --input-bg: #f8fafc;
+            --label-color: #4338ca;
+            --input-focus: #c7d2fe;
+            --transition: all 0.3s ease;
+        }
+
         .content-section {
             background: white;
-            border-radius: 8px;
-            padding: 1.2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--form-gradient);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--form-gradient);
+            border-radius: 2px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 0.5rem;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            position: relative;
         }
 
         .form-group label {
-            font-weight: bold;
-            color: #64748b;
+            font-weight: 600;
+            color: var(--label-color);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.9rem 1rem;
             border: 1px solid #e2e8f0;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1rem;
-            color: #333;
+            color: #334155;
+            background: var(--input-bg);
+            transition: var(--transition);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px var(--input-focus);
+        }
+
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-group .input-icon {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            color: #94a3b8;
         }
 
         .btn-submit {
-            padding: 0.4rem 0.8rem;
-            background: var(--accent-color);
+            padding: 0.8rem 1.5rem;
+            background: var(--form-gradient);
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-top: 1rem;
             display: inline-block;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
         }
 
-        h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .required-field::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
         }
 
         .page-animation {
-            animation: fadeIn 0.5s ease-out forwards;
+            animation: fadeIn 0.6s ease-out forwards;
         }
+        
         @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.page-animation {
-    animation: fadeIn 0.5s ease-out forwards;
-}
+        .form-footer {
+            margin-top: 1.5rem;
+            text-align: right;
+        }
+
+        .form-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 
@@ -81,45 +173,66 @@
         
         <main class="main-content">
             <div id="address-section" class="content-section page-animation">
-                <h2>Add New Address</h2>
+                <h2 class="form-title">Add New Address</h2>
                 <form action="/Address" method="POST" id="add-address-form" class="address-form">
-
-                    <div class="form-group">
-                        <label for="street">Full Name</label>
-                        <input type="text" id="fullName" name="fullName" placeholder="Enter Full Name" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName" class="required-field">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="street">Street Address</label>
-                        <input type="text" id="street" name="street" placeholder="Enter street address" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="street" class="required-field">Street Address</label>
+                            <input type="text" id="street" name="street" placeholder="123 Main Street" required>
+                            <i class="fas fa-home input-icon"></i>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" placeholder="Enter city" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city" class="required-field">City</label>
+                            <input type="text" id="city" name="city" placeholder="New York" required>
+                            <i class="fas fa-city input-icon"></i>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="state" class="required-field">State</label>
+                            <input type="text" id="state" name="state" placeholder="New York" required>
+                            <i class="fas fa-map-marker-alt input-icon"></i>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="state">State</label>
-                        <input type="text" id="state" name="state" placeholder="Enter state" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postalCode" class="required-field">Postal Code</label>
+                            <input type="text" id="postalCode" name="postalCode" placeholder="10001" required>
+                            <i class="fas fa-mail-bulk input-icon"></i>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="country" class="required-field">Country</label>
+                            <input type="text" id="country" name="country" placeholder="United States" required>
+                            <i class="fas fa-globe-americas input-icon"></i>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="postalCode">Postal Code</label>
-                        <input type="text" id="postalCode" name="postalCode" placeholder="Enter postal code" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="number" class="required-field">Phone Number</label>
+                            <input type="tel" id="number" name="number" placeholder="+1 (555) 123-4567" required>
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" id="country" name="country" placeholder="Enter country" required>
+                    <div class="form-footer">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-plus-circle"></i> Add Address
+                        </button>
+                        <p class="form-note">Fields marked with * are required</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="number">Phone Number</label>
-                        <input type="number" id="number" name="number" placeholder="Enter Mobile Number" required>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Add Address</button>
                 </form>
             </div>
         </main>
@@ -128,4 +241,3 @@
     <%- include('../partials/user/footer') %>
 </body>
 </html>
-
