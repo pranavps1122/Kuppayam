@@ -1,5 +1,5 @@
 <%- include('../partials/user/header') %>
-<%- include('../partials/user/sidebar-styles') %>
+
 
 <style>
     :root {
@@ -420,9 +420,11 @@
         .profile-wrapper {
             grid-template-columns: 1fr;
         }
-        
         .main-content {
-            margin-top: -60px;
+            padding: 1.5rem;
+            margin-top: -50px;
+            margin-left: -80px;
+            width: 100%;
         }
     }
 
@@ -502,6 +504,7 @@
         
         .section-content {
             padding: 1.25rem;
+            width: 100;
         }
         
         .profile-card {
@@ -524,12 +527,14 @@
     /* Mobile breakpoint */
     @media (max-width: 480px) {
         .main-content {
-            padding: 1rem;
-            margin-top: -30px;
+            padding: 1.5rem;
+            margin-top: -50px;
+            margin-left: -80px;
+            width: 100%;
         }
-        
         .section-content {
             padding: 1rem;
+            width: 100%;
         }
         
         .profile-card {
@@ -562,12 +567,15 @@
     /* Extra small mobile breakpoint */
     @media (max-width: 360px) {
         .main-content {
-            padding: 0.75rem;
-            margin-left: -100px;
+            padding: 1.5rem;
+            margin-top: -50px;
+            margin-left: -80px;
+            width: 100%;
         }
         
         .section-content {
             padding: 0.75rem;
+            width: 100%;
         }
         
         .profile-card {
