@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuppayam</title>
     <link rel="stylesheet" href="/home.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="icon" href="/path/to/your/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <link rel="icon" href="/path/to/your/favicon.ico" type="image/x-icon">
 
     <style>
         body {
@@ -46,7 +44,6 @@
             text-decoration: none;
             color: #000;
             font-size: 16px;
-          
             transition: color 0.3s ease;
         }
 
@@ -62,8 +59,8 @@
 
         .icon-link {
             display: flex;
-            flex-direction: column; /* Stack icon and text vertically */
-            align-items: center; /* Center the icon and text */
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
             color: black;
             font-weight: 500;
@@ -75,12 +72,12 @@
         }
 
         .icon {
-            font-size: 17px; /* Icon size */
-            margin-bottom: 2px; /* Space between icon and text */
+            font-size: 17px;
+            margin-bottom: 2px;
         }
 
         .icon-name {
-            font-size: 14px; /* Adjust text size */
+            font-size: 14px;
         }
 
         .login-button {
@@ -97,12 +94,95 @@
 
         .login-button:hover {
             background-color: #2d3b49;
-            transform: scale(1.05); /* Slight zoom effect */
+            transform: scale(1.05);
         }
 
         .login-button:active {
             background-color: #2d3b49;
-            transform: scale(1); /* Reset scale */
+            transform: scale(1);
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .menu-toggle {
+                display: block;
+                order: 3;
+            }
+
+            .logo {
+                flex: 1;
+            }
+
+            .navbar-icons {
+                order: 2;
+            }
+
+            .nav-links {
+                flex-basis: 100%;
+                flex-direction: column;
+                gap: 10px;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+                order: 4;
+                padding: 0;
+                margin: 0;
+            }
+
+            .nav-links.active {
+                max-height: 200px;
+                margin-top: 15px;
+            }
+
+            .nav-links a {
+                padding: 8px 0;
+                display: block;
+            }
+
+            .icon-name {
+                display: none;
+            }
+
+            .icon-link {
+                font-size: 20px;
+            }
+
+            .navbar-icons {
+                gap: 15px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .logo {
+                font-size: 16px;
+            }
+
+            .header {
+                padding: 10px;
+            }
+
+            .navbar-icons {
+                gap: 10px;
+            }
+
+            .login-button {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -110,25 +190,26 @@
     <header class="header">
         <nav class="nav-container">
             <a href="/" style="text-decoration: none;"><div class="logo">KUPPAYAM.ONLINE</div></a>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="/">Home</a>
                 <a href="/Shop">Shop</a>
-                <a href="/about">About </a>
-                <a href="/contact">Contact </a>
-                
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
             </div>
+            
             <div class="navbar-icons">
+             
                 <% if (locals.session.isAuth) { %>
                     <a href="/profile" class="icon-link" title="Profile">
-                        <div class="icon">&#128100;</div>
+                        <div class="icon"><i class="fas fa-user"></i></div>
                         <span class="icon-name">Profile</span>
                     </a>
                     <a href="/wishlist" class="icon-link" title="Wishlist">
-                        <div class="icon">&#10084;&#65039;</div>
+                        <div class="icon"><i class="fas fa-heart"></i></div>
                         <span class="icon-name">Wishlist</span>
                     </a>
                     <a href="/cart" class="icon-link" title="Cart">
-                        <div class="icon">&#128722;</div>
+                        <div class="icon"><i class="fas fa-shopping-cart"></i></div>
                         <span class="icon-name">Cart</span>
                     </a>
                 <% } else { %>
@@ -137,7 +218,43 @@
                     </a>
                 <% } %>
             </div>
+            
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+          
         </nav>
     </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                // Change icon based on menu state
+                const icon = menuToggle.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when window is resized beyond mobile breakpoint
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    navLinks.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

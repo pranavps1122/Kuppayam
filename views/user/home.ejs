@@ -491,6 +491,57 @@
         padding: 15px;
     }
 }
+@media (max-width: 768px) {
+    /* Hide carousel slide images on mobile */
+    .slide-images {
+        display: none;
+    }
+    
+    /* Adjust carousel content to take full width when images are hidden */
+    .carousel-content {
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    /* Make carousel content more readable on mobile */
+    .carousel-content h1 {
+        font-size: 2.2em;
+    }
+    
+    .carousel-content p {
+        font-size: 1.1em;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* You can also optionally adjust product grid images to be smaller */
+    .product-image {
+        padding-top: 80%; /* Slightly shorter aspect ratio for mobile */
+    }
+}
+
+/* For very small screens, you might want to further optimize */
+@media (max-width: 480px) {
+    .carousel-container {
+        height: 50vh; /* Shorter carousel on very small screens */
+    }
+    
+    /* Make product cards more compact */
+    .product-card {
+        padding: 10px;
+    }
+    
+    .product-card h3 {
+        font-size: 0.9rem;
+    }
+}
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
 </style>
 
 <script>

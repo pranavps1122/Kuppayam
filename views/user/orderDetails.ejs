@@ -23,6 +23,20 @@
         --transition: all 0.3s ease;
     }
 
+    /* Responsive container */
+    .page-container {
+        display: flex;
+        width: 100%;
+        position: relative;
+    }
+    
+    .main-content {
+        flex: 1;
+        padding: 1.5rem;
+        transition: var(--transition);
+        width: 100%;
+    }
+
     /* Page title styling */
     .page-title {
         font-size: 1.75rem;
@@ -52,7 +66,6 @@
         box-shadow: var(--shadow-md);
         position: relative;
         overflow: hidden;
-        
     }
     
     .orders-container::before {
@@ -146,6 +159,7 @@
         padding: 0.3rem 0.6rem;
         border-radius: 4px;
         display: inline-block;
+        word-break: break-all;
     }
 
     /* Date styling */
@@ -195,6 +209,7 @@
         border: none;
         box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
         cursor: pointer;
+        margin-bottom: 0.5rem;
     }
     
     .cancel-btn:hover {
@@ -237,6 +252,7 @@
         justify-content: center;
         gap: 0.5rem;
         margin-top: 2rem;
+        flex-wrap: wrap;
     }
 
     .page-link {
@@ -248,6 +264,7 @@
         font-size: 0.9rem;
         transition: var(--transition);
         background-color: white;
+        margin-bottom: 0.5rem;
     }
     
     .page-link:hover {
@@ -323,6 +340,134 @@
     .order-card:nth-child(5) {
         animation-delay: 0.5s;
     }
+
+    /* Responsive styles */
+    @media screen and (max-width: 1024px) {
+        .main-content {
+            padding: 1.25rem;
+        }
+        
+        .orders-container {
+            padding: 1.5rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .item-table th,
+        .item-table td {
+            padding: 0.8rem;
+        }
+    }
+    
+    @media screen and (max-width: 768px) {
+        .main-content {
+            padding: 1rem;
+        }
+        
+        .orders-container {
+            padding: 1.25rem;
+        }
+        
+        .item-table {
+            font-size: 0.85rem;
+        }
+        
+        .item-table th,
+        .item-table td {
+            padding: 0.7rem;
+        }
+        
+        .order-total {
+            font-size: 1rem;
+            padding: 0.7rem 1rem;
+        }
+
+        /* Show/hide table columns based on importance */
+        .hide-mobile {
+            display: none;
+        }
+    }
+    
+    @media screen and (max-width: 576px) {
+        /* Convert table to cards for mobile */
+        .item-table {
+            display: block;
+            border: none;
+        }
+        
+        .item-table thead {
+            display: none; /* Hide table headers on mobile */
+        }
+        
+        .item-table tbody, 
+        .item-table tr, 
+        .item-table td {
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .item-table tr {
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .item-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            position: relative;
+        }
+        
+        .item-table td:last-child {
+            border-bottom: none;
+        }
+        
+        .item-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-medium);
+            margin-right: 0.5rem;
+        }
+        
+        /* Adjust order ID for mobile */
+        .order-id {
+            font-size: 0.85rem;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .order-card {
+            padding: 1rem;
+        }
+        
+        .cancel-btn, .invoice {
+            width: 100%;
+            margin-right: 0;
+        }
+        
+        .order-total {
+            float: none;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 1.25rem;
+        }
+        
+        .pagination {
+            gap: 0.3rem;
+        }
+        
+        .page-link {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
 </style>
 
 <div class="page-container">
@@ -346,15 +491,15 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><span class="order-id">#<%= order._id %></span></td>
-                                    <td>
+                                    <td data-label="Order ID:"><span class="order-id">#<%= order._id %></span></td>
+                                    <td data-label="Date:">
                                         <span class="order-date">
                                             <i class="fas fa-calendar-alt"></i>
                                             <%= new Date(order.date).toLocaleDateString() %>
                                         </span>
                                     </td>
 
-                                    <td>
+                                    <td data-label="Action:">
                                         <% if (order.paymentMethod === 'Online Payment' && order.paymentStatus === 'pending') { %>
                                             <button onclick="retryPayment('<%= order.razorpayOrderId %>')" class="cancel-btn">
                                                 <i class="fas fa-sync-alt"></i> Retry
@@ -363,19 +508,19 @@
                                             <a href="/orderstatus/<%= order._id %>" class="cancel-btn">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
-                                    
-                                            <td>
-                                            <% let invoiceShown = false; %> <!-- Flag to ensure only one button is shown -->
-                                            <% order.orderedItem.forEach(item => { %>
-                                                <% if (item.productStatus === 'delivered' && !invoiceShown) { %>
-                                                    <a href="/downloadInvoice/<%= order._id %>" class="invoice">
-                                                        <i class="fas fa-file-download"></i> Download
-                                                    </a>
-                                                    <% invoiceShown = true; %> <!-- Set flag to true after showing once -->
-                                                <% } %>
-                                            <% }) %>
-                                        </td>
                                         <% } %>
+                                    </td>
+                                    
+                                    <td data-label="Invoice:">
+                                        <% let invoiceShown = false; %>
+                                        <% order.orderedItem.forEach(item => { %>
+                                            <% if (item.productStatus === 'delivered' && !invoiceShown) { %>
+                                                <a href="/downloadInvoice/<%= order._id %>" class="invoice">
+                                                    <i class="fas fa-file-download"></i> Download
+                                                </a>
+                                                <% invoiceShown = true; %>
+                                            <% } %>
+                                        <% }) %>
                                     </td>
                                 </tr>
                             </tbody>

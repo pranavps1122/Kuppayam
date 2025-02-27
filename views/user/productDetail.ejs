@@ -696,6 +696,34 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* Responsive main image styling */
+.main-image-container {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: var(--transition);
+}
+
+/* Make sure image scales appropriately on different devices */
+@media screen and (max-width: 768px) {
+    .main-image-container {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .main-image-container {
+        margin-bottom: 1rem;
+    }
+}
     </style>
 
     <%-include('../../views/partials/user/header')%>
