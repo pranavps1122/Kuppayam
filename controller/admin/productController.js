@@ -3,7 +3,6 @@
         const User = require('../../model/userSchema');
         const fs = require('fs');
         const path = require('path');
-        // Removed sharp import
         const { CLIENT_RENEG_LIMIT } = require('tls');
         const { log } = require('console');
 

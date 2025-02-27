@@ -1,4 +1,4 @@
-// controllers/salesReportController.js
+
 
 const Order = require('../../model/orderSchema');
 const exceljs = require('exceljs');
@@ -21,7 +21,7 @@ exports.generateSalesReport = async (req, res) => {
         const { reportType, startDate, endDate } = req.body;
         let query = {};
 
-        // Set date range based on report type
+        
         switch (reportType) {
             case 'daily': {
                 const today = new Date();
@@ -92,7 +92,7 @@ exports.exportSalesPDF = async (req, res) => {
         const { reportType, startDate, endDate } = req.body;
         let query = {};
 
-        // Set date range based on report type
+        
         switch (reportType) {
             case 'daily': {
                 const today = new Date();
@@ -129,28 +129,27 @@ exports.exportSalesPDF = async (req, res) => {
 
         const orders = await Order.find(query).populate('userId', 'name email');
 
-        // Create PDF document with better margins
+        
         const doc = new PDFDocument({
             margin: 50,
             size: 'A4',
-            bufferPages: true // Enable page numbering
+            bufferPages: true 
         });
 
-        // Set up response
+      
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=sales-report-${reportType}.pdf`);
         doc.pipe(res);
 
-        // Helper function to format currency
         const formatCurrency = (amount) => `₹${amount.toFixed(2)}`;
 
-        // Add logo and company header
+     
         doc.fontSize(24)
             .font('Helvetica-Bold')
             .text('KUPPAYAM', { align: 'center' })
             .moveDown(0.2);
 
-        // Add decorative line
+      
         const pageWidth = doc.page.width - 100;
         doc.moveTo(50, doc.y)
             .lineTo(doc.page.width - 50, doc.y)
@@ -162,7 +161,7 @@ exports.exportSalesPDF = async (req, res) => {
             .text('Sales Report', { align: 'center' })
             .moveDown();
 
-        // Add report details in a box
+        
         const reportDetailsY = doc.y;
         doc.rect(50, reportDetailsY, pageWidth, 80)
             .fillAndStroke('#f6f6f6', '#cccccc');
@@ -179,7 +178,7 @@ exports.exportSalesPDF = async (req, res) => {
 
         doc.moveDown(3);
 
-        // Add summary section with a different background
+
         const totalSales = orders.reduce((acc, order) => acc + order.orderAmount, 0);
         const totalDiscounts = orders.reduce((acc, order) => acc + (order.couponDiscount || 0), 0);
         const netRevenue = totalSales - totalDiscounts;
@@ -201,16 +200,16 @@ exports.exportSalesPDF = async (req, res) => {
 
         doc.moveDown(4);
 
-        // Create table with improved styling
+       
         const tableTop = doc.y;
         const tableHeaders = ['Date', 'Order ID', 'Amount', 'Discount', 'Coupon', 'Final Amount'];
         const columnWidth = pageWidth / tableHeaders.length;
 
-        // Draw table header with gradient
+
         doc.rect(50, tableTop, pageWidth, 20)
             .fill('#2196f3');
 
-        // Add table headers
+      
         doc.fill('#ffffff');
         tableHeaders.forEach((header, i) => {
             doc.font('Helvetica-Bold')
@@ -226,19 +225,18 @@ exports.exportSalesPDF = async (req, res) => {
                 );
         });
 
-        // Add table content with improved formatting
+   
         let tableContentTop = tableTop + 25;
         let currentPage = 1;
 
         orders.forEach((order, index) => {
-            // Check if we need a new page
+           
             if (tableContentTop > doc.page.height - 150) {
                 doc.addPage();
                 currentPage++;
-                // Reset table content position and redraw headers
-                tableContentTop = 50;
                 
-                // Redraw headers on new page
+                tableContentTop = 50;
+
                 doc.rect(50, tableContentTop, pageWidth, 20)
                     .fill('#2196f3');
 
@@ -260,13 +258,13 @@ exports.exportSalesPDF = async (req, res) => {
                 tableContentTop += 25;
             }
 
-            // Add zebra striping
+   
             if (index % 2 === 0) {
                 doc.rect(50, tableContentTop - 5, pageWidth, 20)
                     .fill('#f8f9fa');
             }
 
-            // Add row data
+
             doc.fill('#000000')
                 .font('Helvetica')
                 .fontSize(9);
@@ -295,16 +293,15 @@ exports.exportSalesPDF = async (req, res) => {
             tableContentTop += 20;
         });
 
-        // Add footer to each page
+  
         let pages = doc.bufferedPageRange();
         for (let i = 0; i < pages.count; i++) {
             doc.switchToPage(i);
             
-            // Add page border
+
             doc.rect(40, 40, doc.page.width - 80, doc.page.height - 80)
                 .stroke('#cccccc');
 
-            // Add footer
             doc.fontSize(8)
                 .text(
                     'Generated by Kuppayam Sales System',
@@ -326,7 +323,6 @@ exports.exportSalesPDF = async (req, res) => {
                 );
         }
 
-        // Finalize PDF
         doc.end();
 
     } catch (error) {
@@ -339,7 +335,7 @@ exports.exportSalesExcel = async (req, res) => {
         const { reportType, startDate, endDate } = req.body;
         let query = {};
 
-        // Set date range based on report type
+        
         switch (reportType) {
             case 'daily': {
                 const today = new Date();
@@ -379,7 +375,7 @@ exports.exportSalesExcel = async (req, res) => {
         const workbook = new exceljs.Workbook();
         const worksheet = workbook.addWorksheet('Sales Report');
 
-        // Style the headers
+     
         worksheet.columns = [
             { header: 'Date', key: 'date', width: 15 },
             { header: 'Order ID', key: 'orderId', width: 20 },
@@ -389,7 +385,7 @@ exports.exportSalesExcel = async (req, res) => {
             { header: 'Final Amount', key: 'finalAmount', width: 15 },
         ];
 
-        // Style header row
+    
         worksheet.getRow(1).font = { bold: true };
         worksheet.getRow(1).fill = {
             type: 'pattern',
@@ -397,7 +393,6 @@ exports.exportSalesExcel = async (req, res) => {
             fgColor: { argb: 'FFE0E0E0' }
         };
 
-        // Add data rows
         orders.forEach(order => {
             worksheet.addRow({
                 date: new Date(order.date).toLocaleDateString(),
@@ -409,23 +404,21 @@ exports.exportSalesExcel = async (req, res) => {
             });
         });
 
-        // Add summary section
-        worksheet.addRow([]); // Empty row
+        worksheet.addRow([]);
         worksheet.addRow(['Summary']);
         worksheet.addRow(['Total Orders', orders.length]);
         worksheet.addRow(['Total Sales', orders.reduce((acc, order) => acc + order.orderAmount, 0)]);
         worksheet.addRow(['Total Discounts', orders.reduce((acc, order) => acc + (order.couponDiscount || 0), 0)]);
 
-        // Style numbers as currency
         worksheet.getColumn('amount').numFmt = '₹#,##0.00';
         worksheet.getColumn('discount').numFmt = '₹#,##0.00';
         worksheet.getColumn('finalAmount').numFmt = '₹#,##0.00';
 
-        // Set response headers
+      
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=sales-report-${reportType}.xlsx`);
 
-        // Write to response
+      
         await workbook.xlsx.write(res);
         res.end();
 

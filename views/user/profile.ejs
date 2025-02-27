@@ -20,6 +20,8 @@
         min-height: 100vh;
         width: 100%;
         overflow-x: hidden;
+        display: flex;
+        margin-top:-66px;
     }
 
     .main-content {
@@ -27,7 +29,7 @@
         margin-top: -80px;
         position: relative;
         z-index: 10;
-        width: 100%;
+        flex: 1;
     }
 
     .profile-wrapper {
@@ -429,6 +431,12 @@
         .main-content {
             padding: 1.5rem;
             margin-top: -50px;
+            margin-left: -80px;
+            width: 100%;
+        }
+        
+        .profile-wrapper {
+            grid-template-columns: 1fr;
         }
         
         .section-header h2 {
@@ -442,13 +450,54 @@
         .address-list {
             grid-template-columns: 1fr;
         }
+        
+        .profile-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            margin-right: 0;
+            margin-bottom: 1rem;
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+        
+        .detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+        
+        .address-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn-edit-profile, .btn-edit, .btn-delete, .add-address-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .empty-state {
+            padding: 1rem;
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+        }
     }
 
     /* Small tablet and large mobile breakpoint */
     @media (max-width: 640px) {
+        
         .main-content {
-            padding: 1.25rem;
-            margin-top: -40px;
+            padding: 1.5rem;
+            margin-top: -50px;
+            margin-left: -80px;
+            width: 100%;
         }
         
         .section-content {
@@ -460,7 +509,7 @@
         }
         
         .detail-section {
-            padding: 1rem;
+            padding: 0rem;
         }
         
         .action-buttons {
@@ -477,7 +526,6 @@
         .main-content {
             padding: 1rem;
             margin-top: -30px;
-            margin-left: -100px;
         }
         
         .section-content {
@@ -485,73 +533,29 @@
         }
         
         .profile-card {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
             padding: 1rem;
+        }
+        
+        .profile-name {
+            font-size: 1.3rem;
         }
         
         .profile-avatar {
-            margin-right: 0;
-            margin-bottom: 1rem;
-            width: 80px;
-            height: 80px;
-            font-size: 2rem;
+            width: 70px;
+            height: 70px;
         }
         
-        .profile-info {
-            text-align: center;
-        }
-        
-        .profile-name, .profile-email {
-            margin-left: 0;
-        }
-        
-        .detail-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.3rem;
-        }
-        
-        .detail-value {
-            width: 100%;
-            word-break: break-word;
-        }
-        
-        .section-header {
-            padding: 1rem;
-        }
-        
-        .section-header i {
-            padding: 0.5rem;
+        .detail-section h3 {
             font-size: 1rem;
         }
         
-        .address-item {
-            padding: 1rem;
+        .detail-item {
+            font-size: 0.9rem;
         }
         
-        .address-actions {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .btn-edit, .btn-delete {
-            width: 100%;
-            justify-content: center;
-        }
-        
-        .add-address-btn {
-            width: 100%;
-            text-align: center;
-        }
-        
-        .empty-state {
-            padding: 1rem;
-        }
-        
-        .empty-state i {
-            font-size: 2.5rem;
+        .btn-edit-profile, .btn-edit, .btn-delete, .add-address-btn {
+            font-size: 0.8rem;
+            padding: 0.6rem 0.8rem;
         }
     }
     
@@ -590,6 +594,26 @@
         .btn-edit-profile, .btn-edit, .btn-delete, .add-address-btn {
             font-size: 0.8rem;
             padding: 0.6rem 0.8rem;
+        }
+    }
+
+    /* Additional media query for very small screens */
+    @media (max-width: 320px) {
+        .profile-name {
+            font-size: 1.2rem; /* Smaller font size for very small screens */
+        }
+
+        .profile-card {
+            padding: 0.5rem; /* Reduce padding */
+        }
+
+        .detail-section {
+            padding: 0.5rem; /* Reduce padding */
+        }
+
+        .btn-edit-profile, .btn-edit, .btn-delete, .add-address-btn {
+            font-size: 0.7rem; /* Smaller buttons */
+            padding: 0.4rem 0.6rem; /* Smaller padding */
         }
     }
 </style>
