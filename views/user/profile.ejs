@@ -50,6 +50,7 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        
     }
 
     .content-section:hover {
@@ -236,7 +237,7 @@
 
     .address-item {
         background: #f8fafc;
-        padding: 1.2rem;
+        padding: 1.8rem;
         border-radius: 12px;
         font-size: 0.95rem;
         line-height: 1.5;
@@ -247,6 +248,8 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        margin-top: -10px;
+       
     }
 
     .address-item:hover {
@@ -329,28 +332,19 @@
     }
 
     .add-address-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--secondary-color);
-        color: white;
-        padding: 0.7rem 1.2rem;
-        border-radius: 8px;
         text-decoration: none;
-        font-weight: 500;
-        margin-top: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        padding: 8px 6px;
+        background-color: #10b981;
+        color: white;
+        border-radius: 6px;
+       
+        margin-left: 40px;
     }
 
-    .add-address-btn:hover {
-        background: #0d9488;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
-    }
 
     .add-address-btn i {
         margin-right: 0.5rem;
+        margin-top: 100px;
     }
 
     .empty-state {
@@ -407,6 +401,7 @@
     #addresses-section::after {
         background: var(--gradient-secondary);
     }
+   
 
     /* Comprehensive Mobile Responsiveness */
     @media (min-width: 992px) {
@@ -713,14 +708,14 @@
                             <% }); %>
                         </ul>
                         <a href="/Address" class="add-address-btn">
-                            <i class="fas fa-plus-circle"></i> Add New Address
+                            <i class="addnew"></i> Add New Address
                         </a>
                     <% } else { %>
                         <div class="empty-state">
                             <i class="fas fa-map-marked-alt"></i>
                             <p>You haven't added any addresses yet.</p>
                             <a href="/Address" class="add-address-btn">
-                                <i class="fas fa-plus-circle"></i> Add Your First Address
+                                <i></i> Add Address
                             </a>
                         </div>
                     <% } %>
