@@ -58,6 +58,11 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "User ID is missing" });
         }
 
+
+        if (!/^[A-Za-z\s]+$/.test(name)) {
+            return res.status(400).json({ message: "Name must only contain letters and spaces" });
+        }
+
         if (!name || typeof name !== "string") {
             return res.status(400).json({ message: "Invalid name" });
         }
