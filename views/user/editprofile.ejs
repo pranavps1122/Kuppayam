@@ -169,7 +169,7 @@
                         toast: true,
                         position: "top-end",
                         showConfirmButton: false,
-                        timerProgressBar: true // Adds a progress bar for better UX
+                        timerProgressBar: true
                     }).then(() => {
                         window.location.href = "/profile";
                     });
@@ -177,11 +177,12 @@
                     const data = await response.json();
                     Swal.fire({
                         icon: "error",
-                        text: data.message || "Failed to update profile. Please try again.",
-                        timer: 4000, // Gives the user enough time to read the error
-                        showConfirmButton: true, // Allows manual dismissal for critical errors
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "#d33" // Red color for emphasis
+                        text: data.message,
+                        timer: 3000,
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timerProgressBar: true 
                     });
                 }
             } catch (error) {

@@ -59,11 +59,10 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "User ID is missing" });
         }
 
-        // Trim input values
+        
         const trimmedName = name ? name.trim() : "";
         const trimmedPhone = phone ? phone.trim() : "";
 
-        // Name validation
         if (!trimmedName || typeof trimmedName !== "string") {
             return res.status(400).json({ message: "Invalid name" });
         }
@@ -76,18 +75,16 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "Name must only contain letters and spaces" });
         }
 
-        // Phone validation (only if provided)
+        
         if (trimmedPhone && (!/^\d{10}$/.test(trimmedPhone) || trimmedPhone.startsWith(" "))) {
             return res.status(400).json({ message: "Phone number must be 10 digits and cannot start with a space" });
         }
 
-        // Find user before updating
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Update user data
         user.name = trimmedName;
         user.phone = trimmedPhone;
         await user.save();
