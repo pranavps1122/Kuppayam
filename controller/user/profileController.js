@@ -51,7 +51,7 @@ const loadeditProfile = async (req,res)=>{
 const editprofile = async (req, res) => {
     try {
         const { name, phone } = req.body;
-        console.log(req.body)
+        console.log('erjkhewjkjklwejjheipjr',req.body)
         
         const id = req.session.userId 
 
