@@ -51,7 +51,8 @@ const loadeditProfile = async (req,res)=>{
 const editprofile = async (req, res) => {
     try {
         const { name, phone } = req.body;
-        const id = req.query.userId; // Get userId from query params
+        const id = req.session.userId; 
+        console.log(id)
 
         if (!id) {
             return res.status(400).json({ message: "User ID is missing" });
@@ -76,6 +77,8 @@ const editprofile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
+
 
         res.status(200).json({ message: "Profile updated successfully" });
 
