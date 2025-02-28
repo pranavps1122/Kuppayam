@@ -138,10 +138,15 @@
                 overflow: hidden;
                 transition: max-height 0.3s ease-out;
                 order: 4;
+                padding: 0;
+                margin: 0;
             }
 
             .nav-links.active {
-                max-height: 200px;
+                max-height: 100px;
+                padding-top: 15px;
+                margin-top: 4px;
+                
             }
 
             .nav-links a {
@@ -224,7 +229,34 @@
     </header>
 
     <script>
-      
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                
+                // Change icon between bars and times (X)
+                const icon = menuToggle.querySelector('i');
+                if (icon.classList.contains('fa-bars')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.nav-container')) {
+                    navLinks.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
     </script>
 </body>
 </html>
