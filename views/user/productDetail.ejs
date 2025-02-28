@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= product.productName %> | KUPPAYAM</title>
+    
 
 
 
     <style>
+
+        
         /* General form styling */
 .size-options {
     margin: 20px 0;
@@ -105,7 +108,7 @@
             display: grid;
             grid-template-columns: 150px 1fr 1fr;
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: -10px;
         }
    
 
@@ -128,13 +131,13 @@
         /* Main Image */
         .main-image-container {
             position: relative;
-            width: 80%;
+            width: 90%;
             max-width: 50px;
             height: auto;
         }
 
         .main-image {
-            width: 769%;
+            width: 969%;
             height: 80%;
             object-fit: contain;
         }
@@ -426,6 +429,52 @@
         }
 
         @media (max-width: 768px) {
+
+            .thumbnail-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .main-image-container {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-md);
+    
+    box-shadow: var(--shadow-sm);
+}
+
+        .thumbnail {
+            width: 100px;
+            height: 120px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        /* Main Image */
+        .main-image-container {
+            position: relative;
+            width: 10%;
+            max-width: 50px;
+            height: auto;
+        }
+
+        .main-image {
+            margin-top: 200px;
+            width: 969%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+.main-image {
+    width: 1150%;
+    height: auto;
+    display: block;
+    margin-top: 150px;
+    margin-left: -120px;
+    transition: var(--transition);
+}
             .product-grid {
                 grid-template-columns: 1fr;
             }
@@ -696,21 +745,7 @@ body {
         grid-template-columns: 1fr;
     }
 }
-/* Responsive main image styling */
-.main-image-container {
-    width: 100%;
-    margin-bottom: 2rem;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-}
 
-.main-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: var(--transition);
-}
 
 /* Make sure image scales appropriately on different devices */
 @media screen and (max-width: 768px) {
