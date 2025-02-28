@@ -51,6 +51,7 @@ const loadeditProfile = async (req,res)=>{
 const editprofile = async (req, res) => {
     try {
         const { name, phone } = req.body;
+        
         const id = req.session.userId // Ensure ID is properly retrieved
 
         if (!id) {
@@ -61,14 +62,13 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "Invalid name" });
         }
 
-        const trimmedName = name.trim();
-        const trimmedPhone = phone ? phone.trim() : "";
+      
 
-        if (trimmedName.length < 3 || name.startsWith(" ")) {
+        if (name.length < 3 || name.startsWith(" ")) {
             return res.status(400).json({ message: "Name must be at least 3 characters and cannot start with a space" });
         }
 
-        if (trimmedPhone && (!/^\d{10}$/.test(trimmedPhone) || phone.startsWith(" "))) {
+        if (phone&& (!/^\d{10}$/.test(phone) || phone.startsWith(" "))) {
             return res.status(400).json({ message: "Phone number must be 10 digits and cannot start with a space" });
         }
 
