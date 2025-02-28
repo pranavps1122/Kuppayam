@@ -7,29 +7,39 @@
         const { log } = require('console');
 
         const loadProductPage = async (req, res) => {
-     
-            const page = parseInt(req.query.page) || 1; 
-            const limit = 5; 
-            const skip = (page - 1) * limit;
+            try {
+                const page = parseInt(req.query.page) || 1;
+                const limit = 5;
+                const skip = (page - 1) * limit;
+                const searchQuery = req.query.search ? req.query.search.trim() : "";
         
-            const totalProducts = await Product.countDocuments(); 
-            const totalPages = Math.ceil(totalProducts / limit);
+                let filter = {};
+                if (searchQuery) {
+                    filter = { productName: { $regex: searchQuery, $options: "i" } }; // Case-insensitive search
+                }
         
-            const products = await Product.find()
-                .populate('category')
-                .skip(skip)
-                .limit(limit);
+                const totalProducts = await Product.countDocuments(filter);
+                const totalPages = Math.ceil(totalProducts / limit);
         
-                res.render('product', {
-                    path: '/admin/products',
-                    title: 'Products',
+                const products = await Product.find(filter)
+                    .populate("category")
+                    .skip(skip)
+                    .limit(limit);
+        
+                res.render("product", {
+                    path: "/admin/products",
+                    title: "Products",
                     products,
                     currentPage: page,
                     totalPages,
-                    admin: req.session.admin, 
-                    active: 'products'        
+                    admin: req.session.admin,
+                    active: "products",
+                    searchQuery, 
                 });
-                
+            } catch (error) {
+                console.error("Error loading products:", error);
+                res.status(500).send("Internal Server Error");
+            }
         };
         
         const getProductAddPage = async (req, res) => {

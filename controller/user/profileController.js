@@ -118,6 +118,12 @@ const resetpassword = async (req,res)=>{
 
     const isMatch=await bcrypt.compare(newPassword,user.password)
 
+    if(confirmPassword.length<6&&newPassword.length<6){
+        res.render('resetpassword',{
+            message:'Password minmum length 6'
+        })
+    }
+
     if(isMatch){
         res.render('resetpassword',{
             message:'Current password is wrong'

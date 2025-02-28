@@ -259,13 +259,10 @@
                 <tr>
                     <th>Order ID</th>
                     <th>Details</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
+                    <th>Total Quantity</th>
                     <th>Total Price</th>
-                    <th>Status</th>
-                    <th>Address</th>
+                    <th>Delivery Address</th>
                     <th>Payment Method</th>
-               
                 </tr>
             </thead>
             <tbody id="ordersBody">
@@ -277,49 +274,36 @@
                                 <a href="/admin/orderDetails/<%= order._id %>" class="view-btn">View</a>
                             </td>
                             <td>
-                                <div id="details-<%= order._id %>" class="order-details" style="display: none;">
-                                    <% order.orderedItem.forEach(item => { %>
-                                        <div class="product-detail">
-                                            <img class="item-image" src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
-                                            <div>
-                                                <strong><%= item.productId.productName %></strong><br>
-                                                Quantity: <%= item.quantity %><br>
-                                                Price: ₹<%= item.totalProductPrice.toFixed(2) %><br>
-                                                Status: <span class="status-badge"><%= item.productStatus %></span>
-                                            </div>
-                                        </div>
-                                    <% }); %>
-                                </div>
-                            </td>
-                            <td>
-                                <% let totalQuantity = 0; %>
-                                <% order.orderedItem.forEach(item => { totalQuantity += item.quantity; }); %>
+                                <% let totalQuantity = order.orderedItem.reduce((sum, item) => sum + item.quantity, 0); %>
                                 <%= totalQuantity %>
                             </td>
                             <td>
-                                <% let totalPrice = 0; %>
-                                <% order.orderedItem.forEach(item => { totalPrice += item.totalProductPrice; }); %>
+                                <% let totalPrice = order.orderedItem.reduce((sum, item) => sum + item.totalProductPrice, 0); %>
                                 ₹<%= totalPrice.toFixed(2) %>
                             </td>
                             <td>
-                                <span class="status-badge"><%= order.orderedItem[0].productStatus %></span>
-                            </td>
-                            <td>
-                                <%= order.deliveryAddress.length > 0 
-                                    ? `${order.deliveryAddress[0].street}, ${order.deliveryAddress[0].city}, ${order.deliveryAddress[0].country}` 
-                                    : 'Address not available' %>
+                                <div class="address-container">
+                                    <% if (order.deliveryAddress.length > 0) { %>
+                                        <%= order.deliveryAddress[0].street %>, 
+                                        <%= order.deliveryAddress[0].city %>, 
+                                        <%= order.deliveryAddress[0].country %>
+                                    <% } else { %>
+                                        Address not available
+                                    <% } %>
+                                </div>
                             </td>
                             <td><%= order.paymentMethod %></td>
-                        
                         </tr>
                     <% }); %>
                 <% } else { %>
                     <tr>
-                        <td colspan="9" style="text-align: center;">No orders found</td>
+                        <td colspan="6" style="text-align: center;">No orders found</td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
+        
+        
 
         <div class="pagination">
             <% if (currentPage > 1) { %>
