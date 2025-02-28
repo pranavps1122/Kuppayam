@@ -51,40 +51,43 @@ const loadeditProfile = async (req,res)=>{
 const editprofile = async (req, res) => {
     try {
         const { name, phone } = req.body;
-        console.log('erjkhewjkjklwejjheipjr',req.body)
+        console.log("Received Data:", req.body);
         
-        const id = req.session.userId 
+        const id = req.session.userId;
 
         if (!id) {
             return res.status(400).json({ message: "User ID is missing" });
         }
 
+        // Trim input values
+        const trimmedName = name ? name.trim() : "";
+        const trimmedPhone = phone ? phone.trim() : "";
 
-        if (!/^[A-Za-z\s]+$/.test(name)) {
-            return res.status(400).json({ message: "Name must only contain letters and spaces" });
-        }
-
-        if (!name || typeof name !== "string") {
+        // Name validation
+        if (!trimmedName || typeof trimmedName !== "string") {
             return res.status(400).json({ message: "Invalid name" });
         }
 
-      
-
-        if (name.length < 3 || name.startsWith(" ")) {
+        if (trimmedName.length < 3 || trimmedName.startsWith(" ")) {
             return res.status(400).json({ message: "Name must be at least 3 characters and cannot start with a space" });
         }
 
-        if (phone&& (!/^\d{10}$/.test(phone) || phone.startsWith(" "))) {
+        if (!/^[A-Za-z\s]+$/.test(trimmedName)) {
+            return res.status(400).json({ message: "Name must only contain letters and spaces" });
+        }
+
+        // Phone validation (only if provided)
+        if (trimmedPhone && (!/^\d{10}$/.test(trimmedPhone) || trimmedPhone.startsWith(" "))) {
             return res.status(400).json({ message: "Phone number must be 10 digits and cannot start with a space" });
         }
 
-        
+        // Find user before updating
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        
+        // Update user data
         user.name = trimmedName;
         user.phone = trimmedPhone;
         await user.save();
@@ -96,7 +99,6 @@ const editprofile = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
 
 const loadresetpassword = async (req,res) => {
     
