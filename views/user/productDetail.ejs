@@ -756,11 +756,67 @@ body {
 }
 
 @media screen and (max-width: 576px) {
+
+    /* General styles */
+.container {
+    max-width: 100%; /* Allow full width on mobile */
+    padding: 20px; /* Adjust padding */
+}
+
+/* Product Layout */
+.product-grid1 {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 20px;
+}
+
+/* Thumbnail Column */
+.thumbnail-column {
+    display: flex;
+    flex-direction: row; /* Row layout for thumbnails */
+    overflow-x: auto; /* Allow horizontal scrolling */
+}
+
+/* Main Image */
+.main-image-container {
+    width: 100%; /* Full width on mobile */
+    max-width: 100%; /* Prevent overflow */
+}
+
+/* Main Image */
+.main-image {
+    width: 100%; /* Full width on mobile */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .product-grid1 {
+        grid-template-columns: 1fr; /* Single column layout */
+    }
+
+    .thumbnail {
+        width: 80px; /* Adjust thumbnail size */
+        height: 100px; /* Adjust thumbnail size */
+    }
+
+    .main-image-container {
+        margin-top: 0; /* Remove margin on mobile */
+    }
+}
+
+/* Additional media queries for smaller devices */
+@media (max-width: 576px) {
+    .thumbnail {
+        width: 60px; /* Smaller thumbnails for very small screens */
+        height: 80px; /* Smaller thumbnails for very small screens */
+    }
+}
     
     .thumbnail-column {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-direction: row;
+            gap: 1px;
         }
 
         .main-image-container {
@@ -794,19 +850,23 @@ body {
             height: 80%;
             object-fit: contain;
         }
+   
 
 .main-image {
-    width: 1150%;
+    width: 1100%;
     height: auto;
     display: block;
     margin-top: 150px;
-    margin-left: -120px;
+    margin-left: -15px;
     transition: var(--transition);
 }
 }
 *body{
     width: 100%;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
     </style>
 
