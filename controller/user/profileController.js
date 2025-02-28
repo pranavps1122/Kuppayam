@@ -51,8 +51,9 @@ const loadeditProfile = async (req,res)=>{
 const editprofile = async (req, res) => {
     try {
         const { name, phone } = req.body;
+        console.log(req.body)
         
-        const id = req.session.userId // Ensure ID is properly retrieved
+        const id = req.session.userId 
 
         if (!id) {
             return res.status(400).json({ message: "User ID is missing" });
@@ -77,7 +78,7 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "Phone number must be 10 digits and cannot start with a space" });
         }
 
-        // Check if user exists before updating
+        
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
