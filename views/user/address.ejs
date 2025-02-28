@@ -182,7 +182,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="fullName" class="required-field">Full Name</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                            <input type="text" id="fullName" name="fullName" placeholder="John Doe" >
                             <i class="fas fa-user input-icon"></i>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="street" class="required-field">Street Address</label>
-                            <input type="text" id="street" name="street" placeholder="123 Main Street" required>
+                            <input type="text" id="street" name="street" placeholder="123 Main Street" >
                             <i class="fas fa-home input-icon"></i>
                         </div>
                     </div>
@@ -198,13 +198,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="city" class="required-field">City</label>
-                            <input type="text" id="city" name="city" placeholder="New York" required>
+                            <input type="text" id="city" name="city" placeholder="New York" >
                             <i class="fas fa-city input-icon"></i>
                         </div>
                         
                         <div class="form-group">
                             <label for="state" class="required-field">State</label>
-                            <input type="text" id="state" name="state" placeholder="New York" required>
+                            <input type="text" id="state" name="state" placeholder="New York" >
                             <i class="fas fa-map-marker-alt input-icon"></i>
                         </div>
                     </div>
@@ -212,13 +212,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="postalCode" class="required-field">Postal Code</label>
-                            <input type="text" id="postalCode" name="postalCode" placeholder="10001" required>
+                            <input type="text" id="postalCode" name="postalCode" placeholder="10001" >
                             <i class="fas fa-mail-bulk input-icon"></i>
                         </div>
                         
                         <div class="form-group">
                             <label for="country" class="required-field">Country</label>
-                            <input type="text" id="country" name="country" placeholder="United States" required>
+                            <input type="text" id="country" name="country" placeholder="United States" >
                             <i class="fas fa-globe-americas input-icon"></i>
                         </div>
                     </div>
@@ -226,7 +226,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="number" class="required-field">Phone Number</label>
-                            <input type="tel" id="number" name="number" placeholder="+1 (555) 123-4567" required>
+                            <input type="tel" id="number" name="number" placeholder="+1 (555) 123-4567" >
                             <i class="fas fa-phone input-icon"></i>
                         </div>
                     </div>
@@ -244,4 +244,63 @@
 
     <%- include('../partials/user/footer') %>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById("add-address-form").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch("/Address", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formObject)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            Swal.fire({
+                text: result.message || "Address added successfully!",
+                icon: "success",
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            }).then(() => {
+                window.location.href = "/profile"; 
+            });
+
+          
+        } else {
+            Swal.fire({
+                text: result.message || "Failed to add address. Please try again.",
+                icon: "error",
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+            text: "An error occurred. Please try again.",
+            icon: "error",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    }
+});
+
+</script>
 </html>

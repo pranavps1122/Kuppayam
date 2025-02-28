@@ -260,6 +260,59 @@
       });
     });
 });
+
+document.getElementById("add-address-form").addEventListener("submit", async function (event) {
+    event.preventDefault(); 
+
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch("/Address", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formObject)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            Swal.fire({
+                text: result.message || "Address added successfully!",
+                icon: "success",
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            this.reset();
+        } else {
+            Swal.fire({
+                text: result.message || "Failed to add address. Please try again.",
+                icon: "error",
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+            text: "An error occurred. Please try again.",
+            icon: "error",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    }
+});
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

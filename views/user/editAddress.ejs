@@ -84,7 +84,19 @@
 
 <div class="edit-address-container page-animation">
     <h2>Edit Address</h2>
-    <form action="/editaddress/<%= address._id %>" method="POST">
+    <form id="edit-address-form" data-address-id="<%= address._id %>">
+
+        <div class="form-group">
+            <label for="street">Full Name</label>
+            <input
+                type="text"
+                id="fullname"
+                name="fullname"
+                class="form-control"
+                value="<%= address.fullName %>"
+               
+            >
+        </div>
         <div class="form-group">
             <label for="street">Street</label>
             <input
@@ -93,7 +105,7 @@
                 name="street"
                 class="form-control"
                 value="<%= address.street %>"
-                required
+              
             >
         </div>
         <div class="form-group">
@@ -104,7 +116,7 @@
                 name="city"
                 class="form-control"
                 value="<%= address.city %>"
-                required
+               
             >
         </div>
         <div class="form-group">
@@ -115,7 +127,7 @@
                 name="state"
                 class="form-control"
                 value="<%= address.state %>"
-                required
+                
             >
         </div>
         <div class="form-group">
@@ -126,7 +138,7 @@
                 name="postalCode"
                 class="form-control"
                 value="<%= address.postalCode %>"
-                required
+                
             >
         </div>
         <div class="form-group">
@@ -137,12 +149,104 @@
                 name="country"
                 class="form-control"
                 value="<%= address.country %>"
-                required
+             
+            >
+        </div>
+        <div class="form-group">
+            <label for="street">Phone Number
+            </label>
+            <input
+                type="number"
+                id="number"
+                name="number"
+                class="form-control"
+                value="<%= address.phoneNumber %>"
+               
             >
         </div>
         <button type="submit" class="btn btn-primary">Update Address</button>
         <a href="/address" class="btn-secondary">Cancel</a>
     </form>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('edit-address-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    // Get the address ID from the data attribute
+    const addressId = this.getAttribute('data-address-id');
+    
+    // Create form data object
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData.entries());
+    
+    try {
+        const response = await fetch(`/editaddress/${addressId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formObject)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    text: result.message || 'Address updated successfully!',
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    
+                    window.location.href = '/profile';
+                });
+            } else {
+             
+                alert('Address updated successfully!');
+                window.location.href = '/address';
+            }
+        } else {
+            // If using SweetAlert2
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    text: result.message || 'Failed to update address. Please try again.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            } else {
+                // Fallback if SweetAlert is not available
+                alert(result.message || 'Failed to update address. Please try again.');
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        
+        // If using SweetAlert2
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                text: 'An error occurred. Please try again.',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        } else {
+            // Fallback if SweetAlert is not available
+            alert('An error occurred. Please try again.');
+        }
+    }
+});
+</script>
 <%- include('../../views/partials/user/footer') %>
