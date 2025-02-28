@@ -166,8 +166,11 @@
                         icon: "success",
                         title: "Profile Updated!",
                         text: "Your changes have been saved successfully.",
-                        timer: 2000,
-                        showConfirmButton: false
+                        timer: 3000,
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timerProgressBar: true // Adds a progress bar for better UX
                     }).then(() => {
                         window.location.href = "/profile";
                     });
@@ -176,7 +179,11 @@
                     Swal.fire({
                         icon: "error",
                         title: "Update Failed!",
-                        text: data.message || "Failed to update profile. Please try again."
+                        text: data.message || "Failed to update profile. Please try again.",
+                        timer: 4000, // Gives the user enough time to read the error
+                        showConfirmButton: true, // Allows manual dismissal for critical errors
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#d33" // Red color for emphasis
                     });
                 }
             } catch (error) {
