@@ -117,8 +117,14 @@
 
         <div class="form-group">
             <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
+        
+            <% if (user.phone && user.phone.length > 0) { %>
+                <input type="tel" id="phone" name="phone" value="<%= user.phone %>">
+            <% } else { %>
+                <p>No phone number available.</p>
+            <% } %>
         </div>
+        
 
         <div class="button-group">
             <a href="/profile" class="btn-secondary">Cancel</a>
