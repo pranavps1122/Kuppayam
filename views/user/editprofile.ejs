@@ -106,24 +106,19 @@
     }
 }
 </style>
-
 <div class="profile-container">
     <h1>Edit Profile</h1>
-    <form action="/editprofile?userId=<%= user._id %>" method="POST" class="edit-profile-form">
+    <form class="edit-profile-form">
 
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" value="<%= user.name %>" required>
         </div>
 
-        <% if (!user.phone || user.phone.length === 0) { %>
-            <p>No phone number available.</p>
-        <% } else { %>
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" value="<%= user.phone %>" required>
-            </div>
-        <% } %>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
+        </div>
 
         <div class="button-group">
             <a href="/profile" class="btn-secondary">Cancel</a>
@@ -131,3 +126,56 @@
         </div>
     </form>
 </div>
+
+<!-- SweetAlert2 Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".edit-profile-form");
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById("name").value.trim(),
+                phone: document.getElementById("phone").value.trim()
+            };
+
+            try {
+                const response = await fetch("/editprofile", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated!",
+                        text: "Your changes have been saved successfully.",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "/profile";
+                    });
+                } else {
+                    const data = await response.json();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed!",
+                        text: data.message || "Failed to update profile. Please try again."
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "An Error Occurred",
+                    text: "Something went wrong. Please try again later."
+                });
+            }
+        });
+    });
+</script>

@@ -48,25 +48,44 @@ const loadeditProfile = async (req,res)=>{
     }
 }
 
-const editprofile = async (req,res)=>{
-
+const editprofile = async (req, res) => {
     try {
-        const {name,phone}=req.body
-        const id=req.query.userId 
-        console.log('editprofileid',id)
-        const newUser={
-            name,
-            phone
+        const { name, phone } = req.body;
+        const id = req.query.userId; // Get userId from query params
+
+        if (!id) {
+            return res.status(400).json({ message: "User ID is missing" });
         }
-        await User.findByIdAndUpdate(id,newUser ,{
-            new: true, 
-          })
-          res.redirect('profile')
+
+        // Trim input values
+        const trimmedName = name.trim();
+        const trimmedPhone = phone ? phone.trim() : "";
+
+        // Validate name (at least 3 characters and no leading spaces)
+        if (!trimmedName || trimmedName.length < 3 || name.startsWith(" ")) {
+            return res.status(400).json({ message: "Name must be at least 3 characters and cannot start with a space" });
+        }
+
+        // Validate phone number (must be 10 digits if provided and no leading spaces)
+        if (trimmedPhone && (!/^\d{10}$/.test(trimmedPhone) || phone.startsWith(" "))) {
+            return res.status(400).json({ message: "Phone number must be 10 digits and cannot start with a space" });
+        }
+
+        const updatedUser = { name: trimmedName, phone: trimmedPhone };
+
+        const user = await User.findByIdAndUpdate(id, updatedUser, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Profile updated successfully" });
 
     } catch (error) {
-        console.log('error while updating profile',error)
+        console.error("Error while updating profile:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 const loadresetpassword = async (req,res) => {
     
