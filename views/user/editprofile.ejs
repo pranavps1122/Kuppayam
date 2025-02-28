@@ -107,6 +107,7 @@
 }
 </style>
 
+
 <div class="profile-container">
     <h1>Edit Profile</h1>
     <form class="edit-profile-form">
@@ -118,11 +119,14 @@
 
         <div class="form-group">
             <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
-            <% if (!user.phone || user.phone.length === 0) { %>
+        
+            <% if (user.phone && user.phone.length > 0) { %>
+                <input type="tel" id="phone" name="phone" value="<%= user.phone %>">
+            <% } else { %>
                 <p>No phone number available.</p>
             <% } %>
         </div>
+        
 
         <div class="button-group">
             <a href="/profile" class="btn-secondary">Cancel</a>
@@ -141,12 +145,9 @@
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const nameInput = document.getElementById("name");
-            const phoneInput = document.getElementById("phone");
-
             const formData = {
-                name: nameInput.value.trim(),
-                phone: phoneInput ? phoneInput.value.trim() : "" // Ensure phone is handled properly
+                name: document.getElementById("name").value.trim(),
+                phone: document.getElementById("phone").value.trim()
             };
 
             try {
