@@ -137,7 +137,6 @@
 
 <!-- SweetAlert2 Library -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.querySelector(".edit-profile-form");
@@ -145,9 +144,12 @@
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
+            const nameInput = document.getElementById("name");
+            const phoneInput = document.getElementById("phone"); // Might be null if not rendered
+
             const formData = {
-                name: document.getElementById("name").value.trim(),
-                phone: document.getElementById("phone").value.trim()
+                name: nameInput.value.trim(),
+                phone: phoneInput ? phoneInput.value.trim() : "" // Ensure it doesn't throw an error
             };
 
             try {
