@@ -57,11 +57,9 @@ const editprofile = async (req, res) => {
             return res.status(400).json({ message: "User ID is missing" });
         }
 
-        // Trim input values
         const trimmedName = name.trim();
         const trimmedPhone = phone ? phone.trim() : "";
 
-        // Validate name (at least 3 characters and no leading spaces)
         if (!trimmedName || trimmedName.length < 3 || name.startsWith(" ")) {
             return res.status(400).json({ message: "Name must be at least 3 characters and cannot start with a space" });
         }

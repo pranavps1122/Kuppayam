@@ -164,7 +164,6 @@
                 if (response.ok) {
                     Swal.fire({
                         icon: "success",
-                        title: "Profile Updated!",
                         text: "Your changes have been saved successfully.",
                         timer: 3000,
                         toast: true,
@@ -178,7 +177,6 @@
                     const data = await response.json();
                     Swal.fire({
                         icon: "error",
-                        title: "Update Failed!",
                         text: data.message || "Failed to update profile. Please try again.",
                         timer: 4000, // Gives the user enough time to read the error
                         showConfirmButton: true, // Allows manual dismissal for critical errors
