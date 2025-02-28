@@ -756,9 +756,52 @@ body {
 }
 
 @media screen and (max-width: 576px) {
-    .main-image-container {
-        margin-bottom: 0rem;
-    }
+    .thumbnail-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .main-image-container {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-md);
+    
+    box-shadow: var(--shadow-sm);
+}
+
+        .thumbnail {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #eee;
+            margin-top: 30px;
+        }
+
+        /* Main Image */
+        .main-image-container {
+            position: relative;
+            width: 10%;
+            max-width: 50px;
+            height: auto;
+        }
+
+        .main-image {
+            margin-top: 200px;
+            width: 969%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+.main-image {
+    width: 1150%;
+    height: auto;
+    display: block;
+    margin-top: 150px;
+    margin-left: -120px;
+    transition: var(--transition);
+}
 }
     </style>
 
