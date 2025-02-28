@@ -11,23 +11,25 @@
 .page-container {
     display: flex;
     padding-top: var(--header-height);
-    position: relative;
     width: 100%;
+    position: relative; /* Add this to create a positioning context */
 }
 
 .sidebar {
     margin-top: 35px;
     width: var(--sidebar-width);
-    position: fixed;
-    top: var(--header-height);
+    /* Change from fixed to absolute positioning */
+    position: absolute; 
+    top: 0; /* Start from the top of the container */
     left: 0;
     background: white;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
     z-index: 40;
     border-radius: 10px;
-    height: calc(100vh - var(--header-height) - 35px);
-    overflow: hidden; /* Prevent scrolling as per your request */
+    /* Remove fixed height */
+    overflow: visible; /* Allow content to flow naturally */
     transition: transform 0.3s ease-in-out;
+    margin-top: 120px;
 }
 
 .sidebar-content {
@@ -111,8 +113,6 @@
     top: calc(var(--header-height) + 10px);
     right: 20px;
     z-index: 50;
-   
- 
     border: none;
     border-radius: 50%;
     width: 50px;
@@ -144,6 +144,9 @@
 @media (max-width: 992px) {
     .sidebar {
         transform: translateX(-100%); /* Hide sidebar off-screen */
+        position: fixed; /* Keep fixed for mobile */
+        top: var(--header-height); /* Reset for mobile */
+        height: calc(100vh - var(--header-height) - 35px); /* Reset height for mobile */
     }
 
     .main-content {
@@ -207,9 +210,7 @@
   
 
 <script>
-     document.addEventListener('DOMContentLoaded', function() {
-
-        
+   document.addEventListener('DOMContentLoaded', function() {
     // Remove any duplicate sidebars
     const sidebars = document.querySelectorAll('.sidebar');
     if (sidebars.length > 1) {
@@ -223,14 +224,14 @@
     const menuToggle = document.getElementById('menuToggle');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     
-    // Prevent any scrolling on the sidebar as requested
-    sidebar.addEventListener('wheel', function(e) {
-      e.preventDefault();
-    });
+    // REMOVE these event listeners that prevent scrolling
+    // sidebar.addEventListener('wheel', function(e) {
+    //   e.preventDefault();
+    // });
     
-    sidebar.addEventListener('touchmove', function(e) {
-      e.preventDefault();
-    }, { passive: false });
+    // sidebar.addEventListener('touchmove', function(e) {
+    //   e.preventDefault();
+    // }, { passive: false });
     
     // Toggle sidebar when menu button is clicked
     menuToggle.addEventListener('click', function() {
@@ -258,12 +259,7 @@
         }
       });
     });
-    
-    // Add a warning if content exceeds viewport and scrolling is disabled
-    if (sidebar.scrollHeight > sidebar.clientHeight) {
-      console.warn('Sidebar content exceeds visible height but scrolling is disabled. Consider showing fewer menu items.');
-    }
-  });
+});
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

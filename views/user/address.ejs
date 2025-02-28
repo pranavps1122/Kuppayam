@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <%- include('../partials/user/sidebar-styles') %>
+   
     <!-- Enhanced form styles -->
     <style>
         :root {
@@ -167,10 +168,12 @@
 
 <body>
     <%- include('../partials/user/header') %>
+    <%- include('../partials/user/sidebar', { active: 'wallet' }) %>
     
-    <!-- Single page container with single sidebar -->
+    
     <div class="page-container">
-        <%- include('../partials/user/sidebar', { user, active: 'address' }) %>
+   
+      
         
         <main class="main-content">
             <div id="address-section" class="content-section page-animation">
