@@ -285,7 +285,12 @@ const checkoutAddress = async (req,res)=>{
 
 
         
-    
+        if (!fullname || !street || !city || !state || !postalCode || !country || !number) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required'
+            });
+        }
 
         if (!/^[+\d\s()-]{6,}$/.test(postalCode)) {
             return res.json({
@@ -353,7 +358,7 @@ const checkoutAddress = async (req,res)=>{
         
         // Basic phone validation
         if (!/^[+\d\s()-]{10,}$/.test(number)) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: 'Please enter a valid phone number'
             });
@@ -379,18 +384,6 @@ const checkoutAddress = async (req,res)=>{
     
   
 }
-
-exports.handleGoogleCallback = (req, res) => {
-    if (req.user) {
-        // User is authenticated
-        return res.redirect('/profile'); // Redirect to profile or another page
-    } else {
-        // If user is not authenticated, redirect to login with flash message
-        req.flash('error', 'User is Blocked');
-        return res.redirect('/login');
-    }
-};
-
 module.exports={
     loadAddress,
     addAddress,
