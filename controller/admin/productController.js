@@ -287,7 +287,7 @@
                     products.productImage = [];
                 }
 
-                res.render('admin/updateimage', {
+                res.render('updateimage', {
                     products: products,
                 });
             } catch (error) {
