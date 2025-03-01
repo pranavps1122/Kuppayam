@@ -320,7 +320,7 @@
 
                     updatedImages[imageIndex] = `product-images/${uploadedFiles[0].filename}`;
                 } else {
-                    // If no specific index provided, append new images
+               
                     const newImages = uploadedFiles.map(file => `product-images/${file.filename}`);
                     updatedImages = [...updatedImages, ...newImages];
                 }
