@@ -81,13 +81,14 @@
             
         const handleGoogleCallback = async (req, res) => {
             try {
-                if (!req.user) {
-                    return res.redirect('/login?error=Your+account+has+been+blocked');
-                }
-        
-                req.session.userId = req.user._id;
-                req.session.email = req.user.email;
+                console.log('entering in handle google call back');
+            
+                req.session.userId=req.user._id
+                req.session.email=req.user.email
                 req.session.isAuth = true;
+
+        
+        
                 res.redirect("/"); 
             } catch (error) {
                 console.error("Google callback error:", error);
@@ -95,6 +96,10 @@
             }
         };
         
+
+
+
+
         const loadSignup = async (req,res)=>{
             try {
                 res.render('signup',{

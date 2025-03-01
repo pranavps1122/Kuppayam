@@ -16,10 +16,9 @@ const invoiceController=require('../controller/user/invoiceController')
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/login?error=Your+account+has+been+blocked' }),
+    passport.authenticate('google', { failureRedirect: '/login' }),
     userController.handleGoogleCallback
 );
-
 router.get('/',userController.loadHomepage)
 
 router.get('/pageNotFound',userController.pageNotFound)
