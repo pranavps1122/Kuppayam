@@ -493,7 +493,7 @@
         <div class="tabs">
             <button class="tab active" onclick="showTab('product')">Product Offers</button>
             <button class="tab" onclick="showTab('category')">Category Offers</button>
-            <button class="tab" onclick="showTab('referral')">Referral Offers</button>
+          
         </div>
     
        
@@ -647,34 +647,8 @@
             </table>
         </div>
         
-        <!-- Referral Offers Section -->
-        <div id="referral-offers" class="offer-section">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Referral Code</th>
-                        <th>Discount</th>
-                        <th>Usage Limit</th>
-                        <th>Used Count</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>REFER25</td>
-                        <td>25%</td>
-                        <td>100</td>
-                        <td>45</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>
-                            <a href="/route"><button class="btn btn-delete">Delete</button></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     
+       
 
         <div id="offerModal" class="modal">
             <div class="modal-content">
@@ -685,7 +659,7 @@
                         <select id="offerType" name="offerType" required>
                             <option value="product">Product Offer</option>
                             <option value="category">Category Offer</option>
-                            <option value="referral">Referral Offer</option>
+                            
                         </select>
                     </div>
         
@@ -711,11 +685,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group" id="referralSelection" style="display: none;">
-                        <label for="referralCode">Referral Code</label>
-                        <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code">
-                    </div>
-
+                   
                     <div class="form-group">
                         <label for="discount">Discount (%)</label>
                         <input type="number" id="discount" name="discount" required min="0" max="100">
@@ -740,8 +710,8 @@
       
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-      // Main offer type change handler
-document.getElementById('offerType').addEventListener('change', function() {
+     
+   document.getElementById('offerType').addEventListener('change', function() {
     const productSelection = document.getElementById('productSelection');
     const categorySelection = document.getElementById('categorySelection');
 
@@ -763,25 +733,58 @@ document.getElementById('offerType').addEventListener('change', function() {
     }
 });
 
-// Window load handler
 window.onload = function() {
-    const offerType = document.getElementById('offerType');
-    if (offerType.value === 'product') {
-        document.getElementById('productSelection').style.display = 'block';
-    } else if (offerType.value === 'category') {
-        document.getElementById('categorySelection').style.display = 'block';
-    }
-    
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('startDate').min = today;
-};
 
-// Start date change handler
+    document.querySelectorAll('[id^="startDate_"]').forEach(input => {
+        input.setAttribute('min', today);
+    });
+
+    document.querySelectorAll('[id^="endDate_"]').forEach(input => {
+        input.setAttribute('min', today);
+    });
+};
+document.querySelectorAll('[id^="startDate_"]').forEach(startDateInput => {
+    startDateInput.addEventListener('change', function() {
+        const startDate = this.value;
+        const endDateInput = document.getElementById(this.id.replace('startDate', 'endDate'));
+
+        if (endDateInput) {
+            endDateInput.setAttribute('min', startDate);
+        }
+    });
+});
+
+document.querySelectorAll('.edit-offer-form').forEach(form => {
+    form.addEventListener('submit', function(event) {
+        const startDateInput = form.querySelector('[id^="startDate_"]');
+        const endDateInput = form.querySelector('[id^="endDate_"]');
+
+        if (startDateInput && endDateInput) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            const today = new Date();
+
+            if (startDate < today) {
+                alert("Start date cannot be in the past.");
+                event.preventDefault();
+                return;
+            }
+
+            if (endDate < startDate) {
+                alert("End date cannot be before the start date.");
+                event.preventDefault();
+                return;
+            }
+        }
+    });
+});
+
 document.getElementById('startDate').addEventListener('change', function() {
     document.getElementById('endDate').min = this.value;
 });
 
-// Tab handling function
+
 function showTab(tabName) {
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
@@ -795,7 +798,7 @@ function showTab(tabName) {
     document.getElementById(tabName + '-offers').classList.add('active');
 }
 
-// Modal functions
+
 function openModal() {
     document.getElementById('offerModal').style.display = 'block';
 }
@@ -805,14 +808,14 @@ function closeModal() {
     document.getElementById('offerForm').reset();
 }
 
-// Modal outside click handler
+
 window.onclick = function(event) {
     if (event.target == document.getElementById('offerModal')) {
         closeModal();
     }
 };
 
-// Form submission handler (without fetch)
+
 document.getElementById('offerForm').onsubmit = function(e) {
     const discount = document.getElementById('discount').value;
     const offerType = document.getElementById('offerType').value;
@@ -821,7 +824,7 @@ document.getElementById('offerForm').onsubmit = function(e) {
 
     if (discount < 0 || discount > 100) {
         alert("Discount must be between 0 and 100.");
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault(); 
         return;
     }
 
@@ -838,7 +841,7 @@ document.getElementById('offerForm').onsubmit = function(e) {
     }
 };
 
-// Message handling (SweetAlert)
+
 document.addEventListener('DOMContentLoaded', function() {
     <% if (message) { %>
         let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error'; 
@@ -854,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <% } %>
 });
 
-// Cancel button handlers for hover edit form
+
 document.querySelectorAll('.cancel-edit').forEach(button => {
     button.addEventListener('click', function() {
         this.closest('.hover-edit-form').style.display = 'none';

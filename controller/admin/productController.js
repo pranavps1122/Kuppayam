@@ -287,7 +287,7 @@
                     products.productImage = [];
                 }
 
-                res.render('updateimage', {
+                res.render('admin/updateimage', {
                     products: products,
                 });
             } catch (error) {
@@ -311,15 +311,13 @@
                     return res.status(400).json({ error: 'No files uploaded' });
                 }
 
-                // Get the index of the image being updated
                 const imageIndex = parseInt(req.body.imageIndex);
                 
-                // Create a copy of the existing images array
+          
                 let updatedImages = [...product.productImage];
 
-                // If we have a valid index, update only that specific image
                 if (!isNaN(imageIndex) && imageIndex >= 0 && imageIndex < updatedImages.length) {
-                    // Update only the specified image
+
                     updatedImages[imageIndex] = `product-images/${uploadedFiles[0].filename}`;
                 } else {
                     // If no specific index provided, append new images
@@ -327,7 +325,6 @@
                     updatedImages = [...updatedImages, ...newImages];
                 }
 
-                // Update the product with the new images array
                 product.productImage = updatedImages;
                 await product.save();
 

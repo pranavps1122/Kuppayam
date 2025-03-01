@@ -336,13 +336,13 @@
                             await product.save();
                         }
                  
-                        itemToCancel.productStatus = 'Cancelled';
+                        itemToCancel.productStatus = 'cancelled';
                     }
 
                   
                     await Order.updateOne(
                         { _id: orderId, 'orderedItem.productId': productId },
-                        { $set: { 'orderedItem.$.productStatus': 'Cancelled' } }
+                        { $set: { 'orderedItem.$.productStatus': 'cancelled' } }
                     );
 
           

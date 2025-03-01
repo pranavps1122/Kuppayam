@@ -496,17 +496,30 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        function toggleForm() {
-            const form = document.getElementById('couponForm');
-            form.classList.toggle('active');
-            if (!form.classList.contains('active')) {
-                form.reset();
-                document.getElementById('errorMessage').textContent = '';
-            }
+<script>
+   
+    function toggleForm() {
+        const form = document.getElementById('couponForm');
+        form.classList.toggle('active');
+        if (!form.classList.contains('active')) {
+            form.reset();
+            document.getElementById('errorMessage').textContent = '';
         }
+    }
 
-        function openEditForm(id, code, discount, minPrice, maxRedeem, expiry) {
+
+    function setMinExpiryDate() {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById("expiry").setAttribute("min", today);
+        document.getElementById("editExpiry").setAttribute("min", today);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setMinExpiryDate();
+    });
+
+
+    function openEditForm(id, code, discount, minPrice, maxRedeem, expiry) {
         document.getElementById('editCouponId').value = id;
         document.getElementById('editCode').value = code;
         document.getElementById('editDiscount').value = discount;
@@ -520,24 +533,23 @@
     function closeEditForm() {
         document.getElementById('editFormPopup').style.display = 'none';
     }
-            
-             <% if (message) { %>
-            document.addEventListener('DOMContentLoaded', function() {
-                let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error';
-                Swal.fire({
-                    text: '<%= message.text %>',
-                    icon: iconType, 
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            });
-        <% } %>
 
-    </script>
-    
-    
+  
+    <% if (message) { %>
+        document.addEventListener('DOMContentLoaded', function() {
+            let iconType = '<%= message.type %>' === 'success' ? 'success' : 'error';
+            Swal.fire({
+                text: '<%= message.text %>',
+                icon: iconType, 
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    <% } %>
+</script>
+
 </body>
 </html>

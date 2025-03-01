@@ -670,23 +670,22 @@
                                 <input type="hidden" name="orderId" value="<%= order._id %>">
                                 <input type="hidden" name="productId" value="<%= item.productId._id %>">
                             
-                                <select name="status" <%= item.productStatus === 'cancelled' ? 'disabled' : '' %>>
-                                    <% if (item.productStatus !== 'cancelled') { %>
+                                <% if (item.productStatus !== 'cancelled') { %>
+                                    <select name="status">
                                         <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
                                         <option value="processing" <%= item.productStatus === 'processing' ? 'selected' : '' %>>Processing</option>
                                         <option value="shipped" <%= item.productStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
                                         <option value="delivered" <%= item.productStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                                        <option value="returned" <%= item.productStatus === 'returned' ? 'selected' : '' %>>Returned</option>
-                                    <% } else { %>
-                                        <option value="cancelled" selected>Cancelled</option>
-                                    <% } %>
-                                </select>
+                                    </select>
                             
-                                <button type="submit" class="btn-update" disabled>
-                                    <i class="fas fa-ban"></i>
-                                    Cancelled
-                                </button>
+                                    <button type="submit" class="btn-update">
+                                        <i class="fas fa-sync-alt"></i> Update Status
+                                    </button>
+                                <% } else { %>
+                                    <p class="text-danger"><strong>Order Cancelled</strong></p>
+                                <% } %>
                             </form>
+                            
                             
                             
                             <% if (item.productStatus === 'Return Requested') { %>
