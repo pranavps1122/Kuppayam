@@ -379,6 +379,18 @@ const checkoutAddress = async (req,res)=>{
     
   
 }
+
+exports.handleGoogleCallback = (req, res) => {
+    if (req.user) {
+        // User is authenticated
+        return res.redirect('/profile'); // Redirect to profile or another page
+    } else {
+        // If user is not authenticated, redirect to login with flash message
+        req.flash('error', 'User is Blocked');
+        return res.redirect('/login');
+    }
+};
+
 module.exports={
     loadAddress,
     addAddress,

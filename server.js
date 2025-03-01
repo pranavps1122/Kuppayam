@@ -2,6 +2,7 @@ const express=require('express')
 const app=express()
 const path=require('path')
 const env=require('dotenv')
+const flash = require("express-flash");
 const session =require('express-session')
 const passport=require('./config/passport')
 const connectDB=require('./config/db')
@@ -16,6 +17,7 @@ connectDB()
 app.use(nocache());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(flash());
 
 
 
