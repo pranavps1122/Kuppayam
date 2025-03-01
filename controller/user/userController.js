@@ -87,6 +87,8 @@
                 req.session.email=req.user.email
                 req.session.isAuth = true;
 
+                
+
         
         
                 res.redirect("/"); 

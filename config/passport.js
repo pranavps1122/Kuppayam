@@ -27,6 +27,9 @@ passport.use(
           await user.save();
           return done(null, user);
         }
+        if(user.Status===false){
+          return res.redirect('/login')
+        }
 
         user = new User({
           name: profile.displayName,
