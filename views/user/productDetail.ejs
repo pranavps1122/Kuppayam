@@ -880,6 +880,8 @@ body {
     </div>
 
     <div class="container page-animation">
+
+            
       
         <div class="product-grid1">
          
@@ -1028,6 +1030,8 @@ body {
        
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function changeImage(thumb, src) {
             document.getElementById('mainImage').src = src;
@@ -1035,64 +1039,80 @@ body {
                 t.style.border = t === thumb ? '2px solid black' : '1px solid #eee'
             );
         }
-
+    
         function selectColor(dot) {
             document.querySelectorAll('.color-dot').forEach(d => 
                 d.style.border = d === dot ? '2px solid black' : '1px solid #ddd'
             );
         }
-
-        function selectSize(button) {
-  
-    document.querySelectorAll('.size-button').forEach(b => 
-        b.classList.remove('selected')
-    );
     
-
-    button.classList.add('selected');
-
- 
-    var selectedSize = button.innerText;
-
-   
-    document.getElementById('wishlist-size').value = selectedSize;
-}
-
-
+        function selectSize(button) {
+            document.querySelectorAll('.size-button').forEach(b => 
+                b.classList.remove('selected')
+            );
+            
+            button.classList.add('selected');
+            
+            var selectedSize = button.innerText;
+            
+            document.getElementById('wishlist-size').value = selectedSize;
+        }
+    
         function zoomIn(image) {
             image.classList.add('zoomed');
         }
-
+    
         function zoomOut(image) {
             image.classList.remove('zoomed');
-
-
-            
         }
-      
-            
-    </script>
-
-    <script>
+        
         const searchInput = document.getElementById('searchInput');
         const clearButton = document.getElementById('clearSearch');
-
-        searchInput.addEventListener('input', function() {
-            clearButton.style.display = this.value ? 'block' : 'none';
-        });
-
+    
+        if (searchInput && clearButton) {
+            searchInput.addEventListener('input', function() {
+                clearButton.style.display = this.value ? 'block' : 'none';
+            });
+        }
+    
         function clearSearch() {
-            searchInput.value = '';
-            clearButton.style.display = 'none';
-            searchInput.focus();
- 
-            if (searchInput.form) {
-                searchInput.form.submit();
+            if (searchInput) {
+                searchInput.value = '';
+                clearButton.style.display = 'none';
+                searchInput.focus();
+                
+                if (searchInput.form) {
+                    searchInput.form.submit();
+                }
             }
         }
-
+    
         document.addEventListener('DOMContentLoaded', function() {
-            clearButton.style.display = searchInput.value ? 'block' : 'none';
+
+            if (searchInput && clearButton) {
+                clearButton.style.display = searchInput.value ? 'block' : 'none';
+            }
+   
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorMsg = urlParams.get('error');
+            
+            if (errorMsg) {
+                
+                Swal.fire({
+                    icon: 'error',
+                    text: errorMsg,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                  
+                    const url = new URL(window.location);
+                    url.searchParams.delete('error');
+                    window.history.replaceState({}, '', url);
+                });
+            }
         });
     </script>
 <%-include('../../views/partials/user/footer')%>

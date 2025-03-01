@@ -43,28 +43,16 @@
                 const product = await Product.findOne({ _id: productId, "stock.size": size });
                 
                 if (!product) {
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        message: 'Product not found'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Product not found`);
                 }
                 
                 if(!product.isActive){
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        message: 'Product is not available'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Product is not available`);
                 }
-
-            
-
-
+        
                 const category = await Category.findById(categoryId);
                 if(!category.isActive){
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        message: 'Product is not available'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Product is not available`);
                 }
              
                 const offerProduct = await Offer.findOne({ productId: productId, status: true });
@@ -98,17 +86,11 @@
               
                 const selectedStock = product.stock.find(item => item.size === size);
                 if (!selectedStock) {
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        message: 'Selected size not available'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Selected size not available`);
                 }
-
+        
                 if (!selectedStock || selectedStock.quantity <= 0) {
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        message: 'Selected size is out of stock'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Selected size is out of stock`);
                 }
                 
         
@@ -117,7 +99,6 @@
                 if (!cart) {
                     cart = new Cart({ userId, item: [], cartTotal: 0 });
                 }
-
         
                
                 const newItem = {
@@ -131,17 +112,12 @@
                     categoryId: categoryId
                 };
         
-                const populatedCart = await Cart.findOne({ userId }).populate('item.productId');
                 const itemExists = cart.item.some(item => 
                     item.productId.toString() === productId && item.size === size
                 );
         
                 if (itemExists) {
-                    return res.render('cart', {
-                        cart: await Cart.findOne({ userId }).populate('item.productId'),
-                        
-                        message: 'Item already in cart'
-                    });
+                    return res.redirect(`/productDetail/${productId}/${categoryId}?error=Item already in cart`);
                 }
         
                 cart.item.push(newItem);
@@ -156,9 +132,12 @@
         
             } catch (error) {
                 console.error('Error while adding to cart:', error);
-                res.status(500).send('Internal Server Error');
+                const { productId, categoryId } = req.params;
+                res.redirect(`/productDetail/${productId}/${categoryId}?error=Something went wrong. Please try again.`);
             }
         };
+
+        
         const removeProduct = async (req,res)=>{
 
             try {

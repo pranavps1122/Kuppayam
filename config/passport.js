@@ -9,43 +9,36 @@ const User = require("../model/userSchema");
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   throw new Error('Google OAuth credentials missing. Check your .env file.');
 }
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "https://kuppayam.online/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ googleId: profile.id });
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://kuppayam.online/auth/google/callback",
-      passReqToCallback: true,
-    },
-    async (req, accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ email: profile.emails[0].value });
-
-        if (user) {
-          user.name = profile.displayName;
-          await user.save();
-          return done(null, user);
-        }
-
-        user = new User({
-          name: profile.displayName,
-          email: profile.emails[0].value,
-          googleId: profile.id,
-        });
-
-        await user.save();
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
-      }
+    if (!user) {
+      user = new User({
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.emails[0].value,
+        Status: true  
+      });
+      await user.save();
     }
-  )
-);
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+    
+    if (user.Status === false) {
+      console.log("Blocking user login:", user.email);
+      return done(null, false, { message: 'Your account has been blocked' });
+    }
+
+    return done(null, user);
+  } catch (error) {
+    console.error("Error in Google strategy:", error);
+    return done(error);
+  }
+}));
 
 passport.deserializeUser(async (id, done) => {
   try {

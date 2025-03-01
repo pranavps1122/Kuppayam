@@ -178,6 +178,9 @@
                     const userId = req.session.userId;
             
                     let wallet = await Wallet.findOne({ userId });
+
+                    
+
                     if (!wallet) {
                         wallet = new Wallet({ userId, balance: 0 });
                         await wallet.save();
@@ -454,12 +457,51 @@
             const initiateRazorpay = async (req, res) => {
                 try {
                     const userId = req.session.userId;
-                    const cart = await Cart.findOne({ userId: userId });
+                    const cart = await Cart.findOne({ userId: userId }).populate('item.productId');
             
-                    if (!cart) {
-                        return res.status(404).json({ error: 'Cart not found' });
+                    if (!cart || !cart.item || cart.item.length === 0) {
+                        return res.status(404).json({ error: 'Cart is empty or invalid' });
                     }
             
+                   
+                    for (let cartItem of cart.item) {
+                        const product = await Product.findById(cartItem.productId);
+                        
+                        if (!product) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: 'Product not found or no longer available' 
+                            });
+                        }
+                        
+                        if (!product.isActive) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: `Product "${product.productName}" is no longer available` 
+                            });
+                        }
+            
+                       
+                        const sizeIndex = product.stock.findIndex((s) => s.size === cartItem.size);
+                        
+                        if (sizeIndex === -1) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: `Size ${cartItem.size} is no longer available for "${product.productName}"` 
+                            });
+                        }
+            
+                        const availableStock = product.stock[sizeIndex].quantity;
+                        
+                        if (cartItem.quantity > availableStock) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: `Insufficient stock for "${product.productName}" in size ${cartItem.size}. Only ${availableStock} items available.` 
+                            });
+                        }
+                    }
+            
+                    
                     let totalDiscount = 0;
             
                     if (cart.appliedCoupon) {
@@ -472,6 +514,7 @@
             
                     const discountedTotal = cart.cartTotal - totalDiscount;
             
+                 
                     const options = {
                         amount: Math.round(discountedTotal * 100), 
                         currency: 'INR',
@@ -484,33 +527,37 @@
                         success: true,
                         order: {
                             id: order.id,
-                            amount: discountedTotal, 
+                            amount: discountedTotal,
                         },
+                        totalDiscount
                     });
             
                 } catch (error) {
                     console.error('Razorpay order creation failed:', error);
-                    res.status(500).json({ error: 'Payment initiation failed' });
+                    res.status(500).json({ 
+                        success: false, 
+                        error: 'Payment initiation failed', 
+                        message: error.message 
+                    });
                 }
             };
             
             const verifyPayment = async (req, res) => {
                 try {
                     const { razorpay_payment_id, razorpay_order_id, razorpay_signature, couponCode, addressId } = req.body;
-
             
                     console.log('Starting payment verification with details:', {
                         razorpay_order_id,
                         couponCode,
                         payment_id: razorpay_payment_id
                     });
-                    console.log('req.body',req.body)
+                    console.log('req.body', req.body);
             
                     let couponDiscount = 0; 
                     if (couponCode) {
                         const cpCode = couponCode.toUpperCase();
                         const couponUsed = await Coupon.findOne({ couponCode: cpCode });
-                        console.log('couponUsed',couponUsed);
+                        console.log('couponUsed', couponUsed);
             
                         if (couponUsed) {
                             couponDiscount = (couponUsed.discount / 100); 
@@ -518,7 +565,6 @@
                         }
                     }
             
-
                     const generated_signature = crypto
                         .createHmac('sha256', process.env.key_secret)
                         .update(razorpay_order_id + '|' + razorpay_payment_id)
@@ -530,7 +576,8 @@
                         return res.status(400).json({ error: 'User not authenticated' });
                     }
             
-                    const cart = await Cart.findOne({ userId });
+                    const cart = await Cart.findOne({ userId }).populate('item.productId');
+                    
                     if (!cart || !cart.item || cart.item.length === 0) {
                         return res.status(400).json({ error: 'Cart is empty or invalid' });
                     }
@@ -549,9 +596,27 @@
                         totalProductPrice: Number(item.price) * Number(item.quantity)
                     }));
             
+                    // Check stock availability for all items
+                    for (let item of orderedItem) {
+                        const { productId, quantity, size } = item;
+                        const product = await Product.findById(productId);
+                        if (!product) {
+                            return res.status(400).json({ success: false, message: 'Product not found.' });
+                        }
+            
+                        const sizeIndex = product.stock.findIndex((s) => s.size === size);
+                        if (sizeIndex === -1) {
+                            return res.status(400).json({ success: false, message: `Size ${size} not found for the product.` });
+                        }
+            
+                        const availableStock = product.stock[sizeIndex].quantity;
+                        if (quantity > availableStock) {
+                            return res.status(400).json({ success: false, message: `Insufficient stock for size ${size}. Only ${availableStock} items available.` });
+                        }
+                    } // Added missing closing bracket for the for loop here
+            
                     const coupon = cart.appliedCoupon;
                     
-                 
                     let totalDiscount = 0; 
             
                     if (coupon) {
@@ -562,9 +627,8 @@
                             console.log('totalDiscount', totalDiscount);
                         }
                     }
-
+            
                     const couponName = coupon ? await Coupon.findOne({ _id: coupon }) : null;
-
             
                     if (generated_signature === razorpay_signature) {
                         console.log('Payment verified successfully');
@@ -579,7 +643,7 @@
                             paymentStatus: 'paid',
                             paymentId: razorpay_payment_id,
                             couponCode: couponName ? couponName.couponCode : "",
-                            orginalPrice:cart.cartTotal,
+                            orginalPrice: cart.cartTotal,
                             couponDiscount: totalDiscount,
                             razorpayOrderId: razorpay_order_id
                         };
@@ -587,6 +651,17 @@
                         console.log('Creating order with data:', orderData);
                         const order = new Order(orderData);
                         await order.save();
+            
+                        // Update product stock quantities
+                        for (let item of orderedItem) {
+                            const { productId, quantity, size } = item;
+                            const product = await Product.findById(productId);
+                            const sizeIndex = product.stock.findIndex((s) => s.size === size);
+                            
+                            // Decrease the stock quantity
+                            product.stock[sizeIndex].quantity -= quantity;
+                            await product.save();
+                        }
             
                         // Clear applied coupon & cart
                         cart.appliedCoupon = null;
@@ -621,7 +696,6 @@
                     });
                 }
             };
-            
 
             const paymentFailed = async (req,res)=>{
                 console.log('entering inton payment failed ')

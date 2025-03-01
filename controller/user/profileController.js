@@ -686,18 +686,26 @@ const wishlist = async (req, res) => {
 
 
 
-
         const VerifyPayment = async (req, res) => {
             try {
-              
-        
                 const { razorpay_payment_id, razorpay_order_id, razorpay_signature, amount } = req.body;
-                console.log(req.body)
+                console.log("Payment verification request body:", req.body);
+                
                 const userId = req.session.userId;
+                if (!userId) {
+                    console.log("User not authenticated");
+                    return res.status(401).json({ message: 'User not authenticated' });
+                }
         
                 if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
                     console.log("Missing payment details");
                     return res.status(400).json({ message: 'Missing payment details' });
+                }
+        
+               
+                if (!process.env.key_secret) {
+                    console.error("Razorpay key_secret is missing in environment variables");
+                    return res.status(500).json({ message: 'Server configuration error' });
                 }
         
                 const generated_signature = crypto
@@ -713,23 +721,54 @@ const wishlist = async (req, res) => {
                     return res.status(400).json({ message: "Payment verification failed! Signature mismatch." });
                 }
         
+       
                 let wallet = await Wallet.findOne({ userId });
                 if (!wallet) {
                     console.log("Wallet not found for user:", userId);
                     return res.status(400).json({ message: "Wallet not found" });
                 }
         
-                wallet.balance += parseFloat(amount);
-                await wallet.save();
+               
+                const parsedAmount = parseFloat(amount);
+                if (isNaN(parsedAmount)) {
+                    console.error("Invalid amount:", amount);
+                    return res.status(400).json({ message: "Invalid amount format" });
+                }
         
-                console.log(`Money added successfully! New balance: ₹${wallet.balance}`);
-                return res.json({ message: "Money added successfully!", newBalance: wallet.balance });
+      
+                const newTransaction = {
+                    amount: parsedAmount,
+                    transactionsMethod: "Money Added via Razorpay",
+                    date: new Date(),
+                    status: 'completed'
+                };
+                
+         
+                wallet.balance += parsedAmount;
+                wallet.transactions.push(newTransaction);
+                
+    
+                try {
+                    await wallet.save();
+                    console.log(`Money added successfully! New balance: ₹${wallet.balance}`);
+                    return res.json({ 
+                        message: "Money added successfully!", 
+                        newBalance: wallet.balance 
+                    });
+                } catch (saveError) {
+                    console.error("Error saving wallet:", saveError, saveError.stack);
+                    return res.status(500).json({ message: "Error updating wallet. Please try again." });
+                }
         
             } catch (error) {
-                console.error("Error verifying payment:", error);
+                console.error("Error verifying payment:", error, error.stack);
                 res.status(500).json({ message: "Payment verification failed due to server error." });
             }
         };
+
+
+
+
 const addToWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;

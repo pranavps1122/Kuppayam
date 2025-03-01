@@ -336,7 +336,7 @@
                                         </div>
                                         <div class="transaction-details">
                                             <h3><%= transaction.transactionsMethod %></h3>
-                                            <p class="order-id">Order ID: <%= transaction.orderId %></p>
+                                            <p class="order-id">Order ID: <%= transaction.orderId||transaction._id %></p>
                                         </div>
                                     </div>
                                     <div class="transaction-amount">
