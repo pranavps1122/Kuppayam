@@ -669,7 +669,7 @@
                             <form class="status-form" action="/admin/updateProductStatus" method="POST">
                                 <input type="hidden" name="orderId" value="<%= order._id %>">
                                 <input type="hidden" name="productId" value="<%= item.productId._id %>">
-                                
+                            
                                 <select name="status" <%= item.productStatus === 'cancelled' ? 'disabled' : '' %>>
                                     <% if (item.productStatus !== 'cancelled') { %>
                                         <option value="pending" <%= item.productStatus === 'pending' ? 'selected' : '' %>>Pending</option>
@@ -681,13 +681,14 @@
                                         <option value="cancelled" selected>Cancelled</option>
                                     <% } %>
                                 </select>
-
-                                <button type="submit" class="btn-update" <%= item.productStatus === 'cancelled' ? 'disabled' : '' %>>
-                                    <i class="fas <%= item.productStatus === 'cancelled' ? 'fa-ban' : 'fa-sync-alt' %>"></i>
-                                    <%= item.productStatus === 'cancelled' ? 'Cancelled' : 'Update Status' %>
+                            
+                                <button type="submit" class="btn-update" disabled>
+                                    <i class="fas fa-ban"></i>
+                                    Cancelled
                                 </button>
                             </form>
-
+                            
+                            
                             <% if (item.productStatus === 'Return Requested') { %>
                                 <div class="return-request">
                                     <h5>
