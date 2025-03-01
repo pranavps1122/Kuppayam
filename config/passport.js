@@ -24,7 +24,7 @@ passport.use(
         
         if (user) {
           if (user.Status === false) {
-            return done(null, false, { message: "Account is inactive" });
+            return done(null, false, { message: 'User is Blocked',messageType: 'error'});
           }
           user.name = profile.displayName;
           await user.save();
