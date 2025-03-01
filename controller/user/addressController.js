@@ -293,27 +293,27 @@ const checkoutAddress = async (req,res)=>{
         }
 
         if (!/^[+\d\s()-]{6,}$/.test(postalCode)) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: 'Please enter a valid PostalCode'
             });
         }
 
         if (fullname && fullname.startsWith(' ')) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: 'Full name cannot start with a space'
             });
         }
         if (state && state.startsWith(' ')) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: 'State cannot start with a space'
             });
         }
     
         if (postalCode && postalCode.startsWith(' ')) {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: 'Post code cannot start with a space'
             });

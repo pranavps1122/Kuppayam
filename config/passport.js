@@ -21,16 +21,15 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
-        
-      
-        if (user) {
+     if (user) {
           if (user.Status === false) {
-            return done(null, false, { message: 'User is Blocked', messageType: 'error' });
+            return done(null, false, { message: "Account is inactive" });
           }
           user.name = profile.displayName;
           await user.save();
           return done(null, user);
         }
+
         user = new User({
           name: profile.displayName,
           email: profile.emails[0].value,
