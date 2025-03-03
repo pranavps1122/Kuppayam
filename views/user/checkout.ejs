@@ -430,6 +430,7 @@
       color: var(--text-primary);
       font-size: 14px;
       font-weight: 600;
+      
     }
     
     .wallet-amount {
@@ -438,6 +439,10 @@
       padding: 5px 10px;
       border-radius: var(--border-radius);
       font-weight: 700;
+     
+      
+     
+     
     }
     
     .checkout-actions {
@@ -908,8 +913,8 @@
               <div class="payment-method">
                 <h2>Payment Method</h2>
                 <div class="payment-options">
-                  <% if (cart.cartTotal <= 1000) { %>
-                    <label style="color: var(--danger-color);">Cash on Delivery (COD)  available for orders above Rs 1000</label>
+                  <% if (cart.cartTotal >= 1000) { %>
+                    <label style="color: var(--danger-color);">Cash on Delivery (COD)  available for orders below Rs 1000</label>
                   <% } else { %>
                     <label>
                       <input type="radio" name="paymentMethod" value="COD" required>
@@ -923,18 +928,23 @@
                   </label>
                   
                   <label class="wallet-option">
-                    <div>
-                      <input type="radio" name="paymentMethod" value="Wallet" required>
-                      Wallet
-                    </div>
-                    <div class="wallet-balance">
-                      <% if (wallet) { %>
+                    <% if (wallet.balance < cart.cartTotal) { %>
+                      <div class="wallet-balance">
+                        <label style="color: var(--danger-color);">Insufficient balance</label>
                         <span class="wallet-amount">₹ <%= wallet.balance.toFixed(0) %></span>
-                      <% } else { %>
-                        <span class="wallet-amount">₹ 0</span>
-                      <% } %>
-                    </div>
+
+                      </div>
+                    <% } else { %>
+                      <div>
+                        <input type="radio" name="paymentMethod" value="Wallet" required>
+                        Wallet
+                      </div>
+                      <div class="wallet-balance">
+                        <span class="wallet-amount">₹ <%= wallet.balance.toFixed(0) %></span>
+                      </div>
+                    <% } %>
                   </label>
+                  
                 </div>
               </div>
               
