@@ -156,16 +156,15 @@
 
                     console.log('cart for checkout', cart);
                     console.log('address', address);
-
                     res.render('checkout', {
                         cart,
                         address,
                         user,
-                        key_id: process.env.key_id ,
-                        wallet,
-                        message:null,
-                    
+                        key_id: process.env.key_id,
+                        wallet: wallet || { balance: 0 }, 
+                        message: null
                     });
+                    
                 } catch (error) {
                     console.error('Error loading checkout:', error);
                     res.status(500).send('Internal Server Error');

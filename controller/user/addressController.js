@@ -275,13 +275,16 @@
 
         const checkoutAddress = async (req,res)=>{
 
+
+            console.log('req.body',req.body)
+
             try {
-                const{fullname,street,city,state,postalCode,country,number}=req.body
+                const{fullName,street,city,state,postalCode,country,number}=req.body
                 const userId=req.session.userId
 
 
                 
-                if (!fullname || !street || !city || !state || !postalCode || !country || !number) {
+                if (!fullName || !street || !city || !state || !postalCode || !country || !number) {
                     return res.status(400).json({
                         success: false,
                         message: 'All fields are required'
@@ -295,7 +298,7 @@
                     });
                 }
 
-                if (fullname && fullname.startsWith(' ')) {
+                if (fullName && fullName.startsWith(' ')) {
                     return res.status(400).json({
                         success: false,
                         message: 'Full name cannot start with a space'
@@ -359,8 +362,9 @@
                         message: 'Please enter a valid phone number'
                     });
                 }
+                
                 const newAddress = new Address({
-                    fullName:fullname,
+                    fullName:fullName,
                     street,
                     city,
                     state,
