@@ -12,7 +12,7 @@
             try {
                 const products = await Product.find({}).limit(8).populate('category');
                 
-                // Fetch top-selling products
+           
                 const topSellingProducts = await Product.find({}).sort({ sales: -1 }).limit(4).populate('category'); // Assuming 'sales' is a field that tracks sales count
                 
                 const productIds = products.map(p => p._id);
@@ -46,7 +46,7 @@
                     };
                 });
         
-                // Process top-selling products with discounts
+          
                 const processedTopSellingProducts = topSellingProducts.map(product => {
                     const productOffer = productOffers.find(o => o.productId.toString() === product._id.toString());
                     const categoryOffer = categoryOffers.find(o => o.categoryId.toString() === product.category?._id.toString());
@@ -553,7 +553,7 @@
                 });
                 const mailOptions = {
                     from: email,
-                    to: "your-email@gmail.com", // Your email to receive messages
+                    to: "your-email@gmail.com", 
                     subject: "New Contact Form Message",
                     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
                 };

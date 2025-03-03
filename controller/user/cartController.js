@@ -203,7 +203,7 @@
                 }
                 
 
-                // Check stock availability
+           
                 if (newQuantity > selectedStock.quantity) {
                     return res.status(400).json({ success: false, message: `Only ${selectedStock.quantity} left in stock` });
                 }
@@ -212,10 +212,10 @@
                     cart.item.splice(itemIndex, 1); 
                 } else {
                     cart.item[itemIndex].quantity = newQuantity;
-                    cart.item[itemIndex].total = newQuantity * cart.item[itemIndex].price; // Update total
+                    cart.item[itemIndex].total = newQuantity * cart.item[itemIndex].price;
                 }
 
-                // Update cart total
+             
                 cart.cartTotal = cart.item.length > 0 
                     ? cart.item.reduce((acc, item) => acc + (item.total || 0), 0)
                     : 0;

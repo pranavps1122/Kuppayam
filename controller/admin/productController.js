@@ -15,7 +15,7 @@
         
                 let filter = {};
                 if (searchQuery) {
-                    filter = { productName: { $regex: searchQuery, $options: "i" } }; // Case-insensitive search
+                    filter = { productName: { $regex: searchQuery, $options: "i" } }; 
                 }
         
                 const totalProducts = await Product.countDocuments(filter);

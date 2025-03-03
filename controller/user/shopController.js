@@ -249,11 +249,12 @@
                         cartId: cart._id,
                         orderedItem,
                         deliveryAddress: address,
-                        originalPrice: totalAmount,
+                        orginalPrice:totalAmount,
                         orderAmount: totalAmount - discountAmount,
                         paymentMethod,
                         couponCode: couponCode || null,
                         couponDiscount: discountAmount,
+
                     });
             
                  
@@ -596,7 +597,6 @@
                         totalProductPrice: Number(item.price) * Number(item.quantity)
                     }));
             
-                    // Check stock availability for all items
                     for (let item of orderedItem) {
                         const { productId, quantity, size } = item;
                         const product = await Product.findById(productId);
@@ -613,7 +613,7 @@
                         if (quantity > availableStock) {
                             return res.status(400).json({ success: false, message: `Insufficient stock for size ${size}. Only ${availableStock} items available.` });
                         }
-                    } // Added missing closing bracket for the for loop here
+                    } 
             
                     const coupon = cart.appliedCoupon;
                     
@@ -652,18 +652,18 @@
                         const order = new Order(orderData);
                         await order.save();
             
-                        // Update product stock quantities
+                        
                         for (let item of orderedItem) {
                             const { productId, quantity, size } = item;
                             const product = await Product.findById(productId);
                             const sizeIndex = product.stock.findIndex((s) => s.size === size);
                             
-                            // Decrease the stock quantity
+                            
                             product.stock[sizeIndex].quantity -= quantity;
                             await product.save();
                         }
             
-                        // Clear applied coupon & cart
+                       
                         cart.appliedCoupon = null;
                         await Cart.findOneAndDelete({ userId });
             

@@ -57,10 +57,10 @@ router.get('/cart',logged,cartController.loadCart)
 
 router.post('/cart/:productId/:categoryId',logged,cartController.addtoCart)
 
-router.get('/removeproduct/:id',cartController.removeProduct)
+router.get('/removeproduct/:id',logged,cartController.removeProduct)
 
 
-router.post('/updatequantity',cartController.updateQuantity)
+router.post('/updatequantity',logged,cartController.updateQuantity)
 
 
 
@@ -97,8 +97,8 @@ router.post('/wishlist/:id',logged,profileController.wishlist)
 
 router.post('/removeWishlist/:product_id/:productSize', profileController.removeWishlist);
 
-router.get('/addtocart/:id',profileController.fromWishlist)
-router.post('/addtocart/:id',profileController.fromWishlist)
+router.get('/addtocart/:id',logged,profileController.fromWishlist)
+router.post('/addtocart/:id',logged,profileController.fromWishlist)
 
 router.post('/initiate-razorpay', shopController.initiateRazorpay);
 router.post('/verify-payment', shopController.verifyPayment);
@@ -113,18 +113,18 @@ router.post('/create-wallet', logged, profileController.createWallet);
 router.post('/add-money',logged,profileController.addMoney)
 router.post('/verify-wallet-payment',logged,profileController.VerifyPayment)
 
-router.post('/apply-coupon',profileController.applyCoupon)
+router.post('/apply-coupon',logged,profileController.applyCoupon)
 
-router.post('/remove-coupon',profileController.removeCoupon)
-router.get('/available-coupons', profileController.availableCoupons)
+router.post('/remove-coupon',logged,profileController.removeCoupon)
+router.get('/available-coupons', logged,profileController.availableCoupons)
 
-router.get('/downloadInvoice/:orderId', invoiceController.generateAndDownload);
+router.get('/downloadInvoice/:orderId',logged ,invoiceController.generateAndDownload);
 
 router.get('/about',userController.loadAbout)
 router.get('/contact',userController.loadContact)
 
 router.post('/send-mail',userController.sendMail)
 
-router.post('/address/add',addressController.checkoutAddress)
+router.post('/address/add',logged,addressController.checkoutAddress)
 
 module.exports=router

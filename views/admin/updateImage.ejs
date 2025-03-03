@@ -285,7 +285,7 @@
             background-color: white;
             padding: 25px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            max-width: 70%;
+            max-width: 55%;
             width: 853px;
             height: auto;
             border-radius: 12px;
@@ -293,7 +293,7 @@
         }
 
         .crop-container {
-            height: 400px; /* Adjusted for medium size */
+            height: 400px;
         }
         
         #crop-modal img {
@@ -650,9 +650,7 @@
                 cropper.destroy();
                 cropper = null;
             }
-            
-            // Don't clear the file input here
-            // We want to keep the selected file for when the user clicks update
+
         }
 
         document.addEventListener('DOMContentLoaded', function() {
