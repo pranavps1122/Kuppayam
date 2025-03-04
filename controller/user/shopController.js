@@ -762,13 +762,7 @@
                     const { razorpayOrderId } = req.body;
                     console.log('Retry Payment Request Body:', req.body);
             
-                   
-                    console.log('Environment Variables:', {
-                        KEY_ID: process.env.key_id ? 'Present' : 'Missing',
-                        KEY_SECRET: process.env.key_secret ? 'Present' : 'Missing'
-                    });
-            
-                    
+              
                     const order = await Order.findOne({ razorpayOrderId: razorpayOrderId });
                     if (!order) {
                         console.error('Order not found for ID:', razorpayOrderId);
@@ -791,7 +785,7 @@
             
                     const Razorpay = require('razorpay');
                     
-                    // Validate Razorpay credentials
+                 
                     if (!process.env.key_id || !process.env.key_secret) {
                         console.error('Missing Razorpay credentials');
                         return res.status(500).json({ 
@@ -805,14 +799,14 @@
                         key_secret: process.env.key_secret
                     });
             
-                    // Prepare order options
+     
                     const options = {
-                        amount: Math.round(order.orderAmount * 100), // Ensure integer
+                        amount: Math.round(order.orderAmount * 100), 
                         currency: 'INR',
                         receipt: 'retry_order_' + order._id
                     };
             
-                    // Create new Razorpay order
+               
                     let newOrder;
                     try {
                         newOrder = await razorpay.orders.create(options);
@@ -825,9 +819,8 @@
                         });
                     }
             
-                    // Update order details
                     order.razorpayOrderId = newOrder.id;
-                    order.paymentStatus = 'pending'; // Changed from 'paid' to 'pending'
+                    order.paymentStatus = 'paid'; 
                     
                     try {
                         await order.save();
