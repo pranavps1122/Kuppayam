@@ -35,7 +35,7 @@ const walletSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    transactions: [transactionSchema] // Add transactions field
+    transactions: [transactionSchema] 
 }, { timestamps: true });
 
 

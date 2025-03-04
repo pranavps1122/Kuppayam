@@ -56,7 +56,7 @@ const cartSchema = new mongoose.Schema({
     }
 }, {timestamps: true});
 
-// Add a pre-save middleware to calculate discountedTotal
+
 cartSchema.pre('save', function(next) {
     if (this.discountAmount) {
         this.discountedTotal = this.cartTotal - this.discountAmount;

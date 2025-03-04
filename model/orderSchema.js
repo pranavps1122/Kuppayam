@@ -98,12 +98,12 @@ const orderSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-// Add an index for faster queries
+ 
 orderSchema.index({ userId: 1, date: -1 });
 
-// Virtual for calculating total amount with discount
+
 orderSchema.virtual('discountedAmount').get(function() {
-    return this.orderAmount - this.couponDiscount; // Use couponDiscount instead
+    return this.orderAmount - this.couponDiscount; 
 });
 
 

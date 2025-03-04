@@ -5,8 +5,8 @@ const couponSchema = new mongoose.Schema({
         type: String,
         required: true,
         uppercase: true,
-        unique: true,  // Add unique constraint
-        trim: true     // Remove whitespace
+        unique: true,  
+        trim: true     
     },
     discount: {
         type: Number,
@@ -17,17 +17,17 @@ const couponSchema = new mongoose.Schema({
     minimumPrice: {
         type: Number,
         required: true,
-        min: 0        // Ensure positive value
+        min: 0   
     },
     maxRedeem: {
         type: Number,
         required: true,
-        min: 1        // At least 1 redemption allowed
+        min: 1    
     },
     expiry: {
         type: Date,
         required: true,
-        validate: {   // Ensure expiry date is in the future
+        validate: {  
             validator: function(value) {
                 return value > Date.now();
             },
@@ -39,17 +39,17 @@ const couponSchema = new mongoose.Schema({
         required: true,
         default: true
     },
-    createdAt: {     // Add creation timestamp
+    createdAt: {  
         type: Date,
         default: Date.now
     }
 });
 
-// Compound index for better query performance
+
 couponSchema.index({ couponCode: 1, status: 1 });
 couponSchema.index({ expiry: 1 }, { expireAfterSeconds: 0 });
 
-// Pre-save middleware to ensure coupon code is unique
+
 couponSchema.pre('save', async function(next) {
     if (this.isModified('couponCode')) {
         const existingCoupon = await this.constructor.findOne({ 
@@ -62,7 +62,7 @@ couponSchema.pre('save', async function(next) {
     next();
 });
 
-// Method to check if coupon is valid
+
 couponSchema.methods.isValid = function() {
     return this.status && this.expiry > Date.now();
 };

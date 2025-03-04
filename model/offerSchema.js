@@ -31,8 +31,8 @@ const offerSchema = new mongoose.Schema({
 
     referralCode: {
         type: String,
-        unique: true,  // Keep unique constraint
-        sparse: true,  // Avoid errors when it's null
+        unique: true,  
+        sparse: true, 
         required: function() {
             return this.offerType === 'referral';
         }
@@ -85,7 +85,7 @@ const offerSchema = new mongoose.Schema({
     }
 });
 
-// Only add index if it doesn't already exist
+
 if (!offerSchema.indexes().some(idx => JSON.stringify(idx[0]) === JSON.stringify({ referralCode: 1 }))) {
     offerSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 }

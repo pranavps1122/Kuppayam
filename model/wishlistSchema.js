@@ -23,17 +23,7 @@ const wishlistSchema = new mongoose.Schema({
             }
         }
     ],
-    // wallet: {
-    //     balance: {
-    //         type: Number,
-    //         required:false
-    //     },
-        // userId: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'User',
-        //     required: true
-        // }
-    // }
+   
 }, { timestamps: true });
 
 module.exports = mongoose.model('Wishlist', wishlistSchema);

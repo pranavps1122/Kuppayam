@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const addressSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User', // Assuming you have a User model
+        ref: 'User', 
         required: true
     },
     fullName: {
@@ -44,7 +44,7 @@ const addressSchema = new Schema({
     },
     isPrimary: {
         type: Boolean,
-        default: false // Mark one address as primary
+        default: false 
     },
     createdAt: {
         type: Date,
@@ -56,12 +56,12 @@ const addressSchema = new Schema({
     }
 });
 
-// Pre-save hook to update `updatedAt` field
+
 addressSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
 
-// Export Address model
+
 const Address = mongoose.model('Address', addressSchema);
 module.exports = Address;
