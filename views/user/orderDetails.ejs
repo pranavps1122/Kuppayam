@@ -586,7 +586,7 @@
             })
         });
 
-        // Log the raw response
+      
         console.log('Response Status:', response.status);
         const contentType = response.headers.get('content-type');
         console.log('Content Type:', contentType);
@@ -600,7 +600,7 @@
             console.error('Retry Payment Error:', data);
             alert(`Failed to retry payment: ${data.error || 'Unknown error'}`);
             
-            // Log additional details if available
+           
             if (data.details) {
                 console.error('Error Details:', data.details);
             }

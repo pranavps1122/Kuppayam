@@ -762,10 +762,10 @@
                     const { razorpayOrderId } = req.body;
                     console.log('Retry Payment Request Body:', req.body);
             
-                    // Detailed logging
+                   
                     console.log('Environment Variables:', {
-                        KEY_ID: process.env.KEY_ID ? 'Present' : 'Missing',
-                        KEY_SECRET: process.env.KEY_SECRET ? 'Present' : 'Missing'
+                        KEY_ID: process.env.key_id ? 'Present' : 'Missing',
+                        KEY_SECRET: process.env.key_secret ? 'Present' : 'Missing'
                     });
             
                     // Find the order
