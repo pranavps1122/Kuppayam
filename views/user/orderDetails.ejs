@@ -569,29 +569,34 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-    async function retryPayment(orderId) {
-        console.log('Retrying payment for Order ID:', orderId);
-        try {
-            const response = await fetch('/retry-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ razorpayOrderId: orderId })
-            });
+   async function retryPayment(orderId) {
+    console.log('Retrying payment for Order ID:', orderId);
+    console.log('Typeof Order ID:', typeof orderId);
+    
+    try {
+        const response = await fetch('/retry-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                razorpayOrderId: orderId,
+                originalOrderId: orderId 
+            })
+        });
 
-            const data = await response.json();
-            console.log('Server Response:', data);
+        const data = await response.json();
+        console.log('Full Server Response:', JSON.stringify(data, null, 2));
 
-            if (data.success) {
-                initializeRazorpay(data.razorpayOrderId, data.amount);
-            } else {
-                alert('Failed to retry payment. ' + data.error);
-            }
-        } catch (error) {
-            console.error('Error in retryPayment:', error);
-            alert('An error occurred while retrying the payment.');
+        if (data.success) {
+            initializeRazorpay(data.razorpayOrderId, data.amount);
+        } else {
+            alert(`Failed to retry payment: ${data.error}`);
+            console.error('Detailed Error:', data);
         }
+    } catch (error) {
+        console.error('Comprehensive Error in retryPayment:', error);
+        alert('An error occurred while retrying the payment.');
     }
-
+}
     function initializeRazorpay(orderId, amount) {
         const options = {
             key: '<%= process.env.KEY_ID %>',

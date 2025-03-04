@@ -762,13 +762,27 @@
                     const { razorpayOrderId } = req.body;
                     console.log('Retry Payment Request:', req.body);
             
-                  
-                    const order = await Order.findOne({ razorpayOrderId: razorpayOrderId });
+                    // Try multiple ways to find the order
+                    const order = await Order.findOne({
+                        $or: [
+                            { razorpayOrderId: razorpayOrderId },
+                            { _id: razorpayOrderId },
+                            { 'razorpayOrderId': { $regex: razorpayOrderId, $options: 'i' } }
+                        ]
+                    });
+            
                     if (!order) {
-                        return res.status(400).json({ success: false, error: 'Order not found' });
+                        console.error('No order found with ID:', razorpayOrderId);
+                        return res.status(400).json({ 
+                            success: false, 
+                            error: 'Order not found',
+                            details: {
+                                searchedId: razorpayOrderId,
+                                allOrderIds: await Order.distinct('razorpayOrderId')
+                            }
+                        });
                     }
             
-                  
                     if (order.paymentStatus !== 'failed' && order.paymentStatus !== 'pending') {
                         return res.status(400).json({ success: false, error: 'Only failed payments can be retried' });
                     }
@@ -799,13 +813,11 @@
                         razorpayOrderId: newOrder.id,
                         amount: order.orderAmount
                     });
-            
                 } catch (error) {
                     console.error('Error in retryPayment:', error);
                     res.status(500).json({ success: false, error: 'Failed to retry payment' });
                 }
             };
-            
             const loadWallet = async (req, res) => {
                 try {
                     const userId = req.session.userId;
