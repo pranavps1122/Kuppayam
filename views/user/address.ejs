@@ -168,7 +168,7 @@
 
 <body>
     <%- include('../partials/user/header') %>
-    <%- include('../partials/user/sidebar', { active: 'wallet' }) %>
+    <%- include('../partials/user/sidebar', { active: 'address' }) %>
     
     
     <div class="page-container">
@@ -247,7 +247,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.getElementById("add-address-form").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
     const formData = new FormData(this);
     const formObject = Object.fromEntries(formData.entries());

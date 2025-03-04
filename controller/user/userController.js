@@ -134,12 +134,21 @@
                 });
                 
               const info= await transporter.sendMail({
-                from:process.env.NODEMAILER_EMAIL,
-                to:email,
-                subject:"Verify Your Account",
-                text:`Your Otp Is ${otp}`,
-                html:` <b>Your Otp ${otp}</b> `
-                
+                from: process.env.NODEMAILER_EMAIL,
+                to: email,
+                subject: "🚀 Verify Your Account - OTP Inside!",
+                text: `Hello! 👋\n\nYour one-time password (OTP) is: ${otp}\n\nUse this to verify your account. This code will expire soon, so act fast! ⚡\n\nIf you didn't request this, please ignore this email.`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4;">
+                        <h2 style="color: #333;">🔐 Verify Your Account</h2>
+                        <p style="color: #555;">Use the OTP below to complete your verification process.</p>
+                        <div style="display: inline-block; padding: 15px; font-size: 22px; font-weight: bold; color: #fff; background-color: #007bff; border-radius: 5px;">
+                            ${otp}
+                        </div>
+                        <p style="color: #555; margin-top: 10px;">This OTP will expire soon. If you didn’t request this, please ignore this email.</p>
+                        <p style="color: #777; font-size: 12px;">Need help? Contact our support team.</p>
+                    </div>
+                `
             
             }) 
             return info.accepted.length > 0
