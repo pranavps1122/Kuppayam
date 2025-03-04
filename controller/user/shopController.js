@@ -768,7 +768,7 @@
                         KEY_SECRET: process.env.key_secret ? 'Present' : 'Missing'
                     });
             
-                    // Find the order
+                    
                     const order = await Order.findOne({ razorpayOrderId: razorpayOrderId });
                     if (!order) {
                         console.error('Order not found for ID:', razorpayOrderId);
@@ -779,7 +779,7 @@
                         });
                     }
             
-                    // Check payment status conditions
+                   
                     if (order.paymentStatus !== 'failed' && order.paymentStatus !== 'pending') {
                         console.error('Invalid payment status:', order.paymentStatus);
                         return res.status(400).json({ 
@@ -792,7 +792,7 @@
                     const Razorpay = require('razorpay');
                     
                     // Validate Razorpay credentials
-                    if (!process.env.KEY_ID || !process.env.KEY_SECRET) {
+                    if (!process.env.key_id || !process.env.key_secret) {
                         console.error('Missing Razorpay credentials');
                         return res.status(500).json({ 
                             success: false, 
@@ -801,8 +801,8 @@
                     }
             
                     const razorpay = new Razorpay({
-                        key_id: process.env.KEY_ID,
-                        key_secret: process.env.KEY_SECRET
+                        key_id: process.env.key_id,
+                        key_secret: process.env.key_secret
                     });
             
                     // Prepare order options
