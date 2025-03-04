@@ -711,7 +711,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
      
-   document.getElementById('offerType').addEventListener('change', function() {
+     document.getElementById('offerType').addEventListener('change', function() {
     const productSelection = document.getElementById('productSelection');
     const categorySelection = document.getElementById('categorySelection');
 
@@ -743,7 +743,21 @@ window.onload = function() {
     document.querySelectorAll('[id^="endDate_"]').forEach(input => {
         input.setAttribute('min', today);
     });
+    
+   
+    if (document.getElementById('startDate')) {
+        document.getElementById('startDate').setAttribute('min', today);
+    }
+    if (document.getElementById('endDate')) {
+        document.getElementById('endDate').setAttribute('min', today);
+    }
+    
+  
+    if (document.getElementById('productSelection')) {
+        document.getElementById('productSelection').style.display = 'block';
+    }
 };
+
 document.querySelectorAll('[id^="startDate_"]').forEach(startDateInput => {
     startDateInput.addEventListener('change', function() {
         const startDate = this.value;
@@ -780,10 +794,11 @@ document.querySelectorAll('.edit-offer-form').forEach(form => {
     });
 });
 
-document.getElementById('startDate').addEventListener('change', function() {
-    document.getElementById('endDate').min = this.value;
-});
-
+if (document.getElementById('startDate')) {
+    document.getElementById('startDate').addEventListener('change', function() {
+        document.getElementById('endDate').min = this.value;
+    });
+}
 
 function showTab(tabName) {
     document.querySelectorAll('.tab').forEach(tab => {
@@ -798,49 +813,63 @@ function showTab(tabName) {
     document.getElementById(tabName + '-offers').classList.add('active');
 }
 
-
 function openModal() {
-    document.getElementById('offerModal').style.display = 'block';
+    const modal = document.getElementById('offerModal');
+    if (modal) {
+        modal.style.display = 'block';
+        
+      
+        const productSelection = document.getElementById('productSelection');
+        const categorySelection = document.getElementById('categorySelection');
+        const productId = document.getElementById('productId');
+        
+        if (productSelection) productSelection.style.display = 'block';
+        if (categorySelection) categorySelection.style.display = 'none';
+        if (productId) productId.setAttribute("required", "true");
+    }
 }
 
 function closeModal() {
-    document.getElementById('offerModal').style.display = 'none';
-    document.getElementById('offerForm').reset();
+    const modal = document.getElementById('offerModal');
+    const form = document.getElementById('offerForm');
+    
+    if (modal) modal.style.display = 'none';
+    if (form) form.reset();
 }
 
-
 window.onclick = function(event) {
-    if (event.target == document.getElementById('offerModal')) {
+    const modal = document.getElementById('offerModal');
+    if (event.target == modal) {
         closeModal();
     }
 };
 
+if (document.getElementById('offerForm')) {
+    document.getElementById('offerForm').onsubmit = function(e) {
+        const discount = document.getElementById('discount').value;
+        const offerType = document.getElementById('offerType').value;
+        const productId = document.getElementById('productId').value;
+        const categoryId = document.getElementById('categoryId').value;
 
-document.getElementById('offerForm').onsubmit = function(e) {
-    const discount = document.getElementById('discount').value;
-    const offerType = document.getElementById('offerType').value;
-    const productId = document.getElementById('productId').value;
-    const categoryId = document.getElementById('categoryId').value;
+        if (discount < 0 || discount > 100) {
+            alert("Discount must be between 0 and 100.");
+            e.preventDefault(); 
+            return;
+        }
 
-    if (discount < 0 || discount > 100) {
-        alert("Discount must be between 0 and 100.");
-        e.preventDefault(); 
-        return;
-    }
+        if (offerType === 'product' && !productId) {
+            alert("Please select a product.");
+            e.preventDefault();
+            return;
+        }
 
-    if (offerType === 'product' && !productId) {
-        alert("Please select a product.");
-        e.preventDefault();
-        return;
-    }
-
-    if (offerType === 'category' && !categoryId) {
-        alert("Please select a category.");
-        e.preventDefault();
-        return;
-    }
-};
-
+        if (offerType === 'category' && !categoryId) {
+            alert("Please select a category.");
+            e.preventDefault();
+            return;
+        }
+    };
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     <% if (message) { %>
@@ -855,13 +884,28 @@ document.addEventListener('DOMContentLoaded', function() {
             timerProgressBar: true
         });
     <% } %>
+    
+    
+    const productSelection = document.getElementById('productSelection');
+    if (productSelection) {
+        productSelection.style.display = 'block';
+    }
 });
-
 
 document.querySelectorAll('.cancel-edit').forEach(button => {
     button.addEventListener('click', function() {
         this.closest('.hover-edit-form').style.display = 'none';
     });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const offerType = document.getElementById('offerType');
+    if (offerType) {
+       
+        const event = new Event('change');
+        offerType.dispatchEvent(event);
+    }
 });
 
             </script>
