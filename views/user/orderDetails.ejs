@@ -570,52 +570,31 @@
 
 <script>
    async function retryPayment(orderId) {
+    console.log('Retrying payment for Order ID:', orderId);
+    console.log('Typeof Order ID:', typeof orderId);
+    
     try {
         const response = await fetch('/retry-payment', {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 razorpayOrderId: orderId,
-                originalOrderId: orderId
+                originalOrderId: orderId 
             })
         });
 
-        // Check response status explicitly
-        if (!response.ok) {
-            const errorBody = await response.json();
-            console.error('Server Error Response:', errorBody);
-            
-            Swal.fire({
-                icon: 'error',
-                title: 'Payment Retry Failed',
-                text: errorBody.details || errorBody.error || 'Unknown server error',
-                footer: `Status: ${response.status}`
-            });
-            return;
-        }
-
         const data = await response.json();
-        
-        if (data.success && data.razorpayOrderId) {
+        console.log('Full Server Response:', JSON.stringify(data, null, 2));
+
+        if (data.success) {
             initializeRazorpay(data.razorpayOrderId, data.amount);
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Payment Retry Failed',
-                text: data.error || 'Unknown error occurred'
-            });
+            alert(`Failed to retry payment: ${data.error}`);
+            console.error('Detailed Error:', data);
         }
     } catch (error) {
-        console.error('Comprehensive Retry Payment Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Network Error',
-            text: 'Could not connect to payment server. Please try again.',
-            footer: error.message
-        });
+        console.error('Comprehensive Error in retryPayment:', error);
+        alert('An error occurred while retrying the payment.');
     }
 }
     function initializeRazorpay(orderId, amount) {
