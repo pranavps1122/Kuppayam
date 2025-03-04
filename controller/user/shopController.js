@@ -760,64 +760,102 @@
             const retryPayment = async (req, res) => {
                 try {
                     const { razorpayOrderId } = req.body;
-                    console.log('Retry Payment Request:', req.body);
+                    console.log('Retry Payment Request Body:', req.body);
             
-                    // Try multiple ways to find the order
-                    const order = await Order.findOne({
-                        $or: [
-                            { razorpayOrderId: razorpayOrderId },
-                            { _id: razorpayOrderId },
-                            { 'razorpayOrderId': { $regex: razorpayOrderId, $options: 'i' } }
-                        ]
+                    // Detailed logging
+                    console.log('Environment Variables:', {
+                        KEY_ID: process.env.KEY_ID ? 'Present' : 'Missing',
+                        KEY_SECRET: process.env.KEY_SECRET ? 'Present' : 'Missing'
                     });
             
+                    // Find the order
+                    const order = await Order.findOne({ razorpayOrderId: razorpayOrderId });
                     if (!order) {
-                        console.error('No order found with ID:', razorpayOrderId);
+                        console.error('Order not found for ID:', razorpayOrderId);
                         return res.status(400).json({ 
                             success: false, 
                             error: 'Order not found',
-                            details: {
-                                searchedId: razorpayOrderId,
-                                allOrderIds: await Order.distinct('razorpayOrderId')
-                            }
+                            details: { razorpayOrderId }
                         });
                     }
             
+                    // Check payment status conditions
                     if (order.paymentStatus !== 'failed' && order.paymentStatus !== 'pending') {
-                        return res.status(400).json({ success: false, error: 'Only failed payments can be retried' });
+                        console.error('Invalid payment status:', order.paymentStatus);
+                        return res.status(400).json({ 
+                            success: false, 
+                            error: 'Only failed or pending payments can be retried',
+                            details: { currentStatus: order.paymentStatus }
+                        });
                     }
             
                     const Razorpay = require('razorpay');
                     
+                    // Validate Razorpay credentials
+                    if (!process.env.KEY_ID || !process.env.KEY_SECRET) {
+                        console.error('Missing Razorpay credentials');
+                        return res.status(500).json({ 
+                            success: false, 
+                            error: 'Missing Razorpay credentials' 
+                        });
+                    }
+            
                     const razorpay = new Razorpay({
                         key_id: process.env.KEY_ID,
                         key_secret: process.env.KEY_SECRET
                     });
             
-                    
+                    // Prepare order options
                     const options = {
-                        amount: order.orderAmount * 100, 
+                        amount: Math.round(order.orderAmount * 100), // Ensure integer
                         currency: 'INR',
                         receipt: 'retry_order_' + order._id
                     };
             
-                    const newOrder = await razorpay.orders.create(options);
+                    // Create new Razorpay order
+                    let newOrder;
+                    try {
+                        newOrder = await razorpay.orders.create(options);
+                    } catch (razorpayError) {
+                        console.error('Razorpay Order Creation Error:', razorpayError);
+                        return res.status(500).json({ 
+                            success: false, 
+                            error: 'Failed to create Razorpay order',
+                            details: razorpayError.message
+                        });
+                    }
             
-                    
+                    // Update order details
                     order.razorpayOrderId = newOrder.id;
-                    order.paymentStatus = 'paid';
-                    await order.save();
+                    order.paymentStatus = 'pending'; // Changed from 'paid' to 'pending'
+                    
+                    try {
+                        await order.save();
+                    } catch (saveError) {
+                        console.error('Error saving order:', saveError);
+                        return res.status(500).json({ 
+                            success: false, 
+                            error: 'Failed to update order',
+                            details: saveError.message
+                        });
+                    }
             
                     res.json({
                         success: true,
                         razorpayOrderId: newOrder.id,
                         amount: order.orderAmount
                     });
+            
                 } catch (error) {
-                    console.error('Error in retryPayment:', error);
-                    res.status(500).json({ success: false, error: 'Failed to retry payment' });
+                    console.error('Comprehensive Error in retryPayment:', error);
+                    res.status(500).json({ 
+                        success: false, 
+                        error: 'Failed to retry payment',
+                        details: error.message 
+                    });
                 }
             };
+            
             const loadWallet = async (req, res) => {
                 try {
                     const userId = req.session.userId;
